@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import ButtonU from '~/components/Layout/component/ButtonU';
 const cx = classNames.bind(styles)
 
 
@@ -19,24 +20,26 @@ function Header() {
           <Col sm={8} className={cx('menu-list')}>
             <ul className={cx('list-item')}>
                 <li className={cx('item')}>
-                    <h5>HÀ NỘI</h5>
+                    <h5 className={cx('header-text-item')}>HÀ NỘI</h5>
                 </li>
                 <li className={cx('item')}>
-                    <h5>HỒ CHÍ MINH</h5>
+                    <h5 className={cx('header-text-item')}>HỒ CHÍ MINH</h5>
                 </li>
                 <li className={cx('item')}>
-                    <h5>TƯ VẤN</h5> 
+                    <h5 className={cx('header-text-item')}>TƯ VẤN</h5> 
                 </li>
                 <li className={cx('item')}>
-                    <h5>VĂN PHÒNG TRỌN GÓI</h5> 
+                    <h5 className={cx('header-text-item')}>VĂN PHÒNG TRỌN GÓI</h5> 
                 </li>
                 <li className={cx('item')}>
-                    <h5>LIÊN HỆ</h5> 
+                    <h5 className={cx('header-text-item')}>LIÊN HỆ</h5> 
                 </li>
             </ul>
           </Col>
           <Col sm={2} className={cx('info')}>
-            <Button className={cx('user')}>Tài Khoản</Button>
+            <ButtonU className={cx('user')}>
+              <span className={cx('text-user')}>Tài khoản</span>
+            </ButtonU>
           </Col>
         </Row>
       </div>

@@ -13,6 +13,7 @@
     position: fixed;
     width: 100%;
     margin-right: 45px;
+    z-index: 100;
 }
 
 .content{
@@ -39,6 +40,11 @@
 .item{
     margin-left: 50px;
     color: black;
+    font-size: 30px;
+}
+
+.header-text-item{
+    font-size: 15px;
 }
 
 .info{
@@ -47,4 +53,9 @@
 
 .user{
     margin-top: 25px;
+
+}
+
+.text-user{
+    font-size: 15px;
 }

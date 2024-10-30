@@ -8,7 +8,7 @@ import Header from "../Header";
 import Search from "../Search";
 const cx = classNames.bind(styles);
 
-function HeaderSearch() {
+function HeaderSearch({children}) {
   return (
     <div className={cx("container")}>
       <Header />
@@ -18,9 +18,8 @@ function HeaderSearch() {
         <div className={cx("vertical")}></div>
         <span className={cx("title-content")}>Hà Nội</span>
       </div>
-
       <Search />
-      <div className={cx("test")}></div>
+      <div className={cx("test")}>{children}</div>
     </div>
   );
 }

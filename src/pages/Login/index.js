@@ -4,7 +4,7 @@ import ButtonL from "~/components/Layout/component/ButtonL";
 import { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-// import axios from "axios";
+import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 // import * as request from "~/utils/request";
 import {
@@ -15,9 +15,9 @@ import {
 const cx = classNames.bind(styles);
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
-  const [isEmailEmpty, setIsEmailEmpty] = useState("");
+  const [isUserEmpty, setIsUserEmpty] = useState("");
   const [isPasswordEmpty, setIsPasswordEmpty] = useState("");
   const [isCheckFaildLogin, setIsCheckFaildLogin] = useState("");
   const navigate = useNavigate();
@@ -81,68 +81,56 @@ function Login() {
     let link = "";
     e.preventDefault();
     if (
-      isEmailEmpty != "" ||
+      isUserEmpty != "" ||
       isPasswordEmpty != "" ||
-      email == "" ||
+      user == "" ||
       pass == ""
     ) {
-      if (email == "") {
-        setIsEmailEmpty("Vui lòng nhập email");
+      if (user == "") {
+        setIsUserEmpty("Vui lòng nhập username");
       }
       if (pass == "") {
         setIsPasswordEmpty("Vui lòng nhập password");
       }
     } else {
-    //   axios
-    //     .post("http://localhost:8080/token/login", {
-    //       username: email,
-    //       password: pass,
-    //     })
-    //     .then(function (response) {
-    //       // handle success
-    //       console.log(response.data);
-    //       if (response.data.message === "creatae token success") {
-    //         localStorage.setItem("token", response.data.result.token);
-    //         localStorage.setItem("username", response.data.result.username);
-    //         localStorage.setItem("role", response.data.result.listRole[0].name);
-    //         console.log(response.data.result.listRole[0]);
-    //         var arrRole = response.data.result.listRole;
-    //         var c = 1;
-    //         for(let i = 0; i < arrRole.length; i++){
-    //           if(arrRole[i].name === "MANAGER" || arrRole[i].name === "EMPLOYEE"){
-    //             c = 2;
-    //           }
-    //         }
-    //         if(c == 1){
-    //           navigate("/")
-    //         }else{
-    //           navigate("/admin")
-    //         }
+      axios
+        .post("https://datnbe.up.railway.app/api/authenticate", {
+          username: user,
+          password: pass,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then(function (response) {
+          // handle success
+          console.log(response.data);
+          if (response.data.message === "Đăng nhập thành công") {
+            navigate("/")
             
-    //       } else {
-    //         setIsCheckFaildLogin("Tài khoản hoặc mật khẩu không đúng");
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       // handle error
-    //       console.log(error);
-    //     })
-    //     .finally(function () {
-    //       // always executed
-    //     });
-    navigate("/")
+          } else {
+            setIsCheckFaildLogin("Tài khoản hoặc mật khẩu không đúng");
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .finally(function () {
+          // always executed
+        });
+    
     }
   };
 
-  const handleBlurEmail = (e) => {
-    var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const handleBlurUser = (e) => {
     e.preventDefault();
-    if (email == "") {
-      setIsEmailEmpty("Vui lòng nhập email");
-    } else if (email != "" && !regex.test(email)) {
-      setIsEmailEmpty("Vui lòng nhập định dạng email ");
+    if (user == "") {
+      setIsUserEmpty("Vui lòng nhập username");
     } else {
-      setIsEmailEmpty("");
+      setIsUserEmpty("");
     }
   };
 
@@ -157,10 +145,10 @@ function Login() {
     }
   };
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
-    if (isEmailEmpty != "") {
-      setIsEmailEmpty("");
+  const handleChangeUser = (e) => {
+    setUser(e.target.value);
+    if (isUserEmpty != "") {
+      setIsUserEmpty("");
     }
   };
   const handleChangePassword = (e) => {
@@ -192,22 +180,22 @@ function Login() {
         <form onSubmit={handleSubmit}>
           <div className={cx("login-body")}>
             <input
-              value={email}
-              onChange={handleChangeEmail}
-              onBlur={handleBlurEmail}
-              name="email"
-              className={cx("input-email")}
-              id="emailId"
-              placeholder="Email"
+              value={user}
+              onChange={handleChangeUser}
+              onBlur={handleBlurUser}
+              name="user"
+              className={cx("input-user")}
+              id="userId"
+              placeholder="Username"
             />
-            <span className={cx("input-empty")}>{isEmailEmpty}</span>
+            <span className={cx("input-empty")}>{isUserEmpty}</span>
             <input
               value={pass}
               onChange={handleChangePassword}
               onBlur={handleBlurPassword}
               name="password"
               className={cx("input-password")}
-              id="emailId"
+              id="userId"
               placeholder="Password"
               type="password"
             />
