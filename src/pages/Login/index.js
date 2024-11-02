@@ -6,6 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
+
+import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+
 // import * as request from "~/utils/request";
 import {
   faFacebookF,
@@ -13,6 +19,9 @@ import {
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
 const cx = classNames.bind(styles);
+
+
+
 
 function Login() {
   const [user, setUser] = useState("");
@@ -22,6 +31,8 @@ function Login() {
   const [isCheckFaildLogin, setIsCheckFaildLogin] = useState("");
   const navigate = useNavigate();
   let varToken = localStorage.getItem("token");
+  const [alertText, setAlertText] = useState("");
+  const [open, setOpen] = useState(false);
   console.log(varToken);
 
   // request.getListUser("list-product-group", {

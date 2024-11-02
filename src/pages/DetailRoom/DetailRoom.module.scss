@@ -287,6 +287,26 @@
 
 // select floor
 
+.icon-hide-popup{
+  color: #000;
+  position: absolute;
+  right: 30px;
+  top: 20px;
+  font-size:25px;
+  cursor: pointer;
+}
+
+@keyframes slideDown {
+  0% {
+      transform: translateY(-100%); /* Bắt đầu từ trên màn hình */
+      opacity: 0; /* Ẩn thẻ */
+  }
+  100% {
+      transform: translateY(0); /* Kết thúc ở vị trí ban đầu */
+      opacity: 1; /* Hiện thẻ */
+  }
+}
+
 .center {
   position: fixed;
   top: 0;
@@ -299,8 +319,10 @@
   justify-content: center;
   align-items: center;
   z-index: 1000; /* Đưa lớp nền lên trên các phần tử khác */
+  visibility: hidden;
   }
   .tickets {
+    position: relative;
     width: 700px;
     height: fit-content;
     border: 0.4mm solid rgba(0, 0, 0, 0.08);
@@ -312,6 +334,7 @@
     overflow: auto;
     background: white;
     box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+     /* Thêm animation vào thẻ tickets */
   }
   .ticket-selector {
     background: rgb(243, 243, 243);
@@ -350,18 +373,6 @@
     justify-content: space-evenly;
 
   }
-  .seats::before {
-    // content: "";
-    // position: absolute;
-    // bottom: 0;
-    // left: 50%;
-    // transform: translate(-50%, 0);
-    // width: 220px;
-    // height: 7px;
-    // background: rgb(141, 198, 255);
-    // border-radius: 0 0 3mm 3mm;
-    // border-top: 0.3mm solid rgb(180, 180, 180);
-  }
   .item {
     font-size: 12px;
     position: relative;
@@ -398,6 +409,9 @@
   .seat {
     width: 20px;
     height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #000;
     background: white;
     border-radius: 0.5mm;
@@ -463,10 +477,6 @@
     border-radius: 2mm;
     cursor: pointer;
   }
-  .timings input:checked + label {
-    background: rgb(28, 185, 120);
-    color: white;
-  }
   .price {
     width: 100%;
     box-sizing: border-box;
@@ -508,7 +518,16 @@
 }
 
 .value-label{
-  margin-top: 2px;
-  margin-left: 7px;
+  // margin-top: 2px;
+  // margin-left: 7px;
   display: block;
+}
+
+.choose-floor{
+  margin: 0 auto;
+}
+
+.muiAlert{
+  font-size: 1.5rem;     /* Tăng kích thước chữ */
+  padding: 20px; 
 }

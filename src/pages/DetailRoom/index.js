@@ -2,6 +2,14 @@ import classNames from "classnames/bind";
 import styles from "./DetailRoom.module.scss";
 import $ from "jquery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ButtonFloor from "~/components/Layout/component/ButtonFloor";
+import { useParams } from "react-router-dom";
+import { Link, Route, useNavigate  } from "react-router-dom";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { SnackbarProvider, VariantType, useSnackbar } from "notistack";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import {
   faAngleLeft,
   faAngleRight,
@@ -19,27 +27,68 @@ import {
   faSliders,
   faTimeline,
   faXmark,
+  faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import about_one from "~/assets/image/about-us-img-1.jpeg";
 import about_two from "~/assets/image/about-us-img-2.jpeg";
 import about_three from "~/assets/image/about-us-img-3.jpeg";
 import about_four from "~/assets/image/about-us-img-4.jpeg";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { faAirbnb, faLine } from "@fortawesome/free-brands-svg-icons";
+import Button from "@mui/material/Button";
 
 const cx = classNames.bind(styles);
 
 function DetailRoom() {
+  const navigate = useNavigate();
+  const { rid } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+  const [room, setRoom] = useState({});
+
   const leftTabRef = useRef(null);
   const rightTabRef = useRef(null);
 
   const leftPaneRef = useRef(null);
   const rightPaneRef = useRef(null);
 
+  const [alertStateBook, setAlertStateBook] = useState("");
+  const [alertText, setAlertText] = useState("");
+  const [open, setOpen] = React.useState(false);
+
+  const inputRefs = useRef({});
+  const labelRefs = useRef({});
+  const [valueInputs, setValueInputs] = useState({});
+
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const seatRef = useRef(null);
   const labelRef = useRef(null);
+
+  const showListFloor = useRef(null);
+  const showListFloorMain = useRef(null);
+
+  const listFloorOrder = useState([]);
+
+  const [infor, setInfor] = useState({});
+
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNDg4MzQzLCJleHAiOjE3MzA1NzQ3NDN9.l_ZaxuOPi187g3CrxiJH2f2ZHp_K9LgMixbA6kbIsFYICfxdaf3HejYds3kYxbLE5nNCAUKiqtx8Zsao7Euu5g";
+
+  function decodeToken(token) {
+    try {
+      const decodedData = jwtDecode(token);
+      console.log("decodedData"); // Kiểm tra dữ liệu trong token
+
+      console.log(decodedData); // Kiểm tra dữ liệu trong token
+      setInfor(decodedData);
+      return decodedData;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  }
 
   const handleToggleActiveLeftTab = () => {
     if (leftTabRef.current) {
@@ -60,6 +109,13 @@ function DetailRoom() {
       }
     }
   };
+
+  // const checkBookedOffice = () => {
+  //   if (seatRef.current.classList.value == false) {
+  //     labelRef.current.classList.add(styles["booked"]);
+  //   }
+
+  // };
 
   const handleToggleActiveRightTab = () => {
     if (rightTabRef.current) {
@@ -82,18 +138,74 @@ function DetailRoom() {
     }
   };
 
-  const checkBookedOffice = () => {
-    // if (labelRef.current && labelRef.current.classList.contains("booked")) {
-    //   seatRef.current.disabled = true;
-    // }
+  function handleOfficeDTOS(response) {
+    if (response.data.officeDTOS) {
+      response.data.officeDTOS.forEach((item) => {
+        // Tạo hoặc cập nhật giá trị trong state valueInputs dựa trên item.status
+        setValueInputs((prevValues) => ({
+          ...prevValues,
+          [`valueInput${item.id}`]: item.status === 0,
+        }));
 
-    if(seatRef.current.classList.value == false){
-      labelRef.current.classList.add(styles["booked"]);
+        // Tạo ref cho input nếu chưa tồn tại
+        if (!inputRefs.current[`inputRef${item.id}`]) {
+          inputRefs.current[`inputRef${item.id}`] = React.createRef();
+        }
+        if (!labelRefs.current[`labelRef${item.id}`]) {
+          labelRefs.current[`labelRef${item.id}`] = React.createRef();
+        }
+
+        console.log(labelRefs.current[`labelRef${item.id}`]);
+
+        const inputRef = inputRefs.current[`inputRef${item.id}`];
+        const labelRef = labelRefs.current[`labelRef${item.id}`];
+
+        // Kiểm tra sự tồn tại của các ref và thực hiện logic
+        if (labelRef.current && inputRef.current) {
+          if (inputRef.current.value === "false") {
+            labelRef.current.classList.add(styles["booked"]);
+            console.log("success");
+          } else {
+            labelRef.current.classList.remove(styles["booked"]);
+          }
+        } else {
+          console.log(
+            `Ref cho input hoặc label của item ${item.id} bị undefined`
+          );
+        }
+      });
+    } else {
+      console.log("officeDTOS is undefined or not an array");
     }
-  };
+  }
 
   useEffect(() => {
-    checkBookedOffice();
+    // Thay thế YOUR_BEARER_TOKEN_HERE bằng token của bạn
+
+    decodeToken(token);
+
+    axios
+      .get(`https://datnbe.up.railway.app/api/buildings/${rid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(function (response) {
+        // setRoom((prev) => ({ ...prev, ...response.data }));
+        setRoom(response.data);
+
+        // Tạo 2 mảng useRef để lưu theo id
+
+        handleOfficeDTOS(response);
+        // kiểm tra nếu inputRef tại id nào bằng false thì add class booked
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
 
     // Tìm element có class 'list-image' khi component render xong
     const listImageElement = document.querySelector(`.${styles["list-image"]}`);
@@ -162,6 +274,145 @@ function DetailRoom() {
       });
     }
   }, []); // Mảng rỗng để chỉ chạy một lần sau khi component mount
+  const handleClick = () => {
+    if (showListFloor.current) {
+      // Lấy computed style của phần tử
+      const computedStyle = window.getComputedStyle(showListFloor.current);
+      const computedStyleMain = window.getComputedStyle(
+        showListFloorMain.current
+      );
+
+      // Kiểm tra nếu class "booked" có visibility: hidden
+      if (computedStyle.visibility === "hidden") {
+        // Xóa thuộc tính "visibility: hidden"
+        showListFloor.current.style.visibility = "visible"; // hoặc 'inherit' tùy thuộc vào ý định của bạn
+      }
+
+      // Thêm class "booked"
+      showListFloor.current.classList.add(styles["center"]);
+    }
+  };
+
+  const hanleHidePopup = () => {
+    if (showListFloor.current) {
+      // Lấy computed style của phần tử
+      const computedStyle = window.getComputedStyle(showListFloor.current);
+      const computedStyleMain = window.getComputedStyle(
+        showListFloorMain.current
+      );
+
+      // Kiểm tra nếu class "booked" có visibility: hidden
+      if (computedStyle.visibility === "visible") {
+        // Xóa thuộc tính "visibility: hidden"
+        showListFloor.current.style.visibility = "hidden"; // hoặc 'inherit' tùy thuộc vào ý định của bạn
+      }
+
+      // Thêm class "booked"
+      showListFloor.current.classList.add(styles["center"]);
+    }
+  };
+
+  const handleChosseFloor = () => {};
+
+  function changeInput(id) {
+    setValueInputs((prev) => {
+      const currentValue = prev[`valueInput${id}`];
+
+      // Cập nhật selectedIds dựa trên giá trị hiện tại
+      setSelectedIds((prevSelectedIds) => {
+        if (currentValue) {
+          // Nếu valueInput${id} là true, thêm id vào mảng nếu chưa có
+          if (!prevSelectedIds.includes(id)) {
+            return [...prevSelectedIds, id];
+          }
+        } else {
+          // Nếu valueInput${id} là false, xóa id khỏi mảng nếu có
+          return prevSelectedIds.filter((selectedId) => selectedId !== id);
+        }
+        return prevSelectedIds;
+      });
+
+      console.log(selectedIds);
+
+      // Đảo ngược giá trị của valueInput${id}
+      return {
+        ...prev,
+        [`valueInput${id}`]: !currentValue,
+      };
+    });
+  }
+  const handleClickk = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const BookFloor = () => {
+    const user = parseInt(infor.sub);
+    console.log("user");
+    console.log(user);
+    console.log(selectedIds);
+
+    if (selectedIds.length == 0) {
+      setAlertStateBook("warning");
+      setAlertText("Bạn cần chọn tối thiếu một phòng !");
+      handleClickk();
+    } else {
+      axios
+        .post(
+          "https://datnbe.up.railway.app/api/requests",
+          {
+            userId: user,
+            note: "Tôi muốn xem văn phòng",
+            officeIds: selectedIds,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then(function (response) {
+          console.log("STATE REQUEST");
+          console.log(response);
+          setAlertStateBook("success");
+          setAlertText("Bạn đã đặt phòng thành công !");
+          
+
+        })
+        .catch(function (error) {
+          console.log(error);
+          setAlertStateBook("error");
+          setAlertText("Hệ thống đang gặp lỗi, vui lòng load lại trang !");
+        })
+        .finally(function () {
+        });
+    }
+  };
+
+  useEffect(() => {
+    if (alertText !== "" && alertText === "Bạn đã đặt phòng thành công !" ) {
+        handleClickk();
+
+        // Đặt timeout 4 giây trước khi reload trang
+        const timer = setTimeout(() => {
+            window.location.reload();
+        }, 2300);
+
+        // Hủy bỏ timer nếu `alertText` thay đổi trước khi 4 giây hoàn thành
+        return () => clearTimeout(timer);
+    }
+}, [alertText]);
+
   return (
     // <div className={cx('detail-area')}>
     //     <div className={cx('contain-title')}>
@@ -259,7 +510,7 @@ function DetailRoom() {
                       />
                       <span className={cx("title-location")}>Vị trí</span>
                     </label>
-                    <p className={cx("value-location")}> 198 Trần Quang Khải</p>
+                    <p className={cx("value-location")}> {room.address}</p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-building")}>
@@ -269,7 +520,7 @@ function DetailRoom() {
                       />
                       <span className={cx("title-location")}>Số tầng</span>
                     </label>
-                    <p className={cx("value-location")}>21 tầng nổi + 04 hầm</p>
+                    <p className={cx("value-location")}>{room.numberOfFloor}</p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-height")}>
@@ -277,9 +528,11 @@ function DetailRoom() {
                         icon={faLine}
                         className={cx("item-icon-location")}
                       />
-                      <span className={cx("title-location")}>Chiều cao</span>
+                      <span className={cx("title-location")}>
+                        Chiều cao mỗi tầng
+                      </span>
                     </label>
-                    <p className={cx("value-location")}>2.7m</p>
+                    <p className={cx("value-location")}>{room.floorHeight}</p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-dientich")}>
@@ -289,7 +542,7 @@ function DetailRoom() {
                       />
                       <span className={cx("title-location")}>Diện tích</span>
                     </label>
-                    <p className={cx("value-location")}>741m2</p>
+                    <p className={cx("value-location")}>{room.floorArea} m2</p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-evalator")}>
@@ -297,19 +550,9 @@ function DetailRoom() {
                         icon={faElevator}
                         className={cx("item-icon-location")}
                       />
-                      <span className={cx("title-location")}>Thang máy</span>
+                      <span className={cx("title-location")}>Số tầng hầm</span>
                     </label>
-                    <p className={cx("value-location")}>Elevators</p>
-                  </li>
-                  <li className={cx("item-location")}>
-                    <label className={cx("label-air-conditional")}>
-                      <FontAwesomeIcon
-                        icon={faAirbnb}
-                        className={cx("item-icon-location")}
-                      />
-                      <span className={cx("title-location")}>Điều hòa</span>
-                    </label>
-                    <p className={cx("value-location")}>Chiller</p>
+                    <p className={cx("value-location")}>3</p>
                   </li>
                 </ul>
               </div>
@@ -322,9 +565,9 @@ function DetailRoom() {
                         icon={faDollarSign}
                         className={cx("item-icon-location")}
                       />
-                      <span className={cx("title-location")}>Giá thuê gộp</span>
+                      <span className={cx("title-location")}>Giá thuê/m2</span>
                     </label>
-                    <p className={cx("value-location")}> 45-50$</p>
+                    <p className={cx("value-location")}>{room.pricePerM2}$</p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-building")}>
@@ -334,7 +577,9 @@ function DetailRoom() {
                       />
                       <span className={cx("title-location")}>Phí gửi ô tô</span>
                     </label>
-                    <p className={cx("value-location")}>150 USD/xe/tháng</p>
+                    <p className={cx("value-location")}>
+                      {room.carParkingFee}$ / tháng
+                    </p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-height")}>
@@ -346,19 +591,9 @@ function DetailRoom() {
                         Phí gửi xe máy
                       </span>
                     </label>
-                    <p className={cx("value-location")}>10 USD/xe/tháng</p>
-                  </li>
-                  <li className={cx("item-location")}>
-                    <label className={cx("label-dientich")}>
-                      <FontAwesomeIcon
-                        icon={faTimeline}
-                        className={cx("item-icon-location")}
-                      />
-                      <span className={cx("title-location")}>
-                        Phí làm ngoài giờ:
-                      </span>
-                    </label>
-                    <p className={cx("value-location")}>Thương lượng</p>
+                    <p className={cx("value-location")}>
+                      {room.motorbikeParkingFee}$ / tháng
+                    </p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-evalator")}>
@@ -370,7 +605,9 @@ function DetailRoom() {
                         Dịch vụ bảo vệ 24/24
                       </span>
                     </label>
-                    <p className={cx("value-location")}>10$-100$</p>
+                    <p className={cx("value-location")}>
+                      {room.securityFee}$ / tháng
+                    </p>
                   </li>
                   <li className={cx("item-location")}>
                     <label className={cx("label-air-conditional")}>
@@ -384,17 +621,26 @@ function DetailRoom() {
                   </li>
                 </ul>
               </div>
+              <ButtonFloor onClick={handleClick}>CHỌN TẦNG</ButtonFloor>
             </div>
           </Col>
         </Row>
       </div>
 
-      <div className={cx("center")}>
-        <div className={cx("tickets")}>
+      <div className={cx("center")} ref={showListFloor}>
+        <div className={cx("tickets")} ref={showListFloorMain}>
           <div className={cx("ticket-selector")}>
             <div className={cx("head")}>
               <div className={cx("title")}>
-                DANH SÁCH CÁC TẦNG THUỘC TÒA GELEX
+                DANH SÁCH CÁC TẦNG THUỘC TÒA{" "}
+                {room && room.name ? room.name.toUpperCase() : ""}
+              </div>
+              <div>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  className={cx("icon-hide-popup")}
+                  onClick={hanleHidePopup}
+                />
               </div>
             </div>
             <div className={cx("seats")}>
@@ -404,20 +650,26 @@ function DetailRoom() {
                 <div className={cx("item")}>Selected</div>
               </div>
               <div className={cx("all-seats")}>
-                <input type="checkbox" name="tickets" id="s1" ref={seatRef} value={false}/>
-                <label ref={labelRef} for="s1" className={cx("seat")}>
-                  <span className={cx("value-label")}>1</span>
-                </label>
-
-                <input type="checkbox" name="tickets" id="s2" />
-                <label for="s2" className={cx("seat")}>
-                  <span className={cx("value-label")}>2</span>
-                </label>
-
-                <input type="checkbox" name="tickets" id="s3" />
-                <label for="s3" className={cx("seat")}>
-                  <span className={cx("value-label")}>3</span>
-                </label>
+                {room.officeDTOS &&
+                  room.officeDTOS.map((f) => (
+                    <div key={f.id}>
+                      <input
+                        ref={inputRefs.current[`inputRef${f.id}`]}
+                        type="checkbox"
+                        name="tickets"
+                        id={f.id}
+                        value={valueInputs[`valueInput${f.id}`]}
+                        onChange={() => changeInput(f.id)}
+                      />
+                      <label
+                        ref={labelRefs.current[`labelRef${f.id}`]}
+                        htmlFor={f.id}
+                        className={cx("seat")}
+                      >
+                        <span className={cx("value-label")}>{f.id}</span>
+                      </label>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
@@ -425,11 +677,28 @@ function DetailRoom() {
             <div className={cx("total")}>
               <span className={cx("title-count")}>
                 {" "}
-                <span className={cx("count")}>0</span> Floors selected{" "}
+                <span className={cx("count")}>{selectedIds.length}</span> Floors
+                selected{" "}
               </span>
               <div className={cx("amount")}>0</div>
             </div>
-            <button type="button">Book</button>
+            <Button onClick={BookFloor} variant="contained">
+              Book
+            </Button>
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity={alertStateBook}
+                variant="filled"
+                sx={{
+                  width: "100%",
+                  fontSize: "1.5rem", // Tăng kích thước chữ
+                  padding: "20px",
+                }}
+              >
+                {alertText}
+              </Alert>
+            </Snackbar>
           </div>
         </div>
       </div>

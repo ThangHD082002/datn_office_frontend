@@ -32,7 +32,7 @@ const publicRoutes = [
     component: Search,
   },
   {
-    path: "/detail-room",
+    path: "/detail-room/:rid",
     component: DetailRoom,
     layout: HeaderSearchLayout
   }
