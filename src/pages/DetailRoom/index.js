@@ -74,7 +74,7 @@ function DetailRoom() {
   const [infor, setInfor] = useState({});
 
   const token =
-    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNDg4MzQzLCJleHAiOjE3MzA1NzQ3NDN9.l_ZaxuOPi187g3CrxiJH2f2ZHp_K9LgMixbA6kbIsFYICfxdaf3HejYds3kYxbLE5nNCAUKiqtx8Zsao7Euu5g";
+    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNjQzNzg5LCJleHAiOjE3MzA3MzAxODl9.F1BPfLZnDCwWoiN2GQlDHG0TuscAuBpa6K3KPelRzqqJfHem3kNsG2vy9rJzXndSwI2epfHSRl_00vn1P14QLQ";
 
   function decodeToken(token) {
     try {

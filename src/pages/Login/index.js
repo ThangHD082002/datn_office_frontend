@@ -35,59 +35,6 @@ function Login() {
   const [open, setOpen] = useState(false);
   console.log(varToken);
 
-  // request.getListUser("list-product-group", {
-  //     headers: {
-  //       Authorization: `Bearer ${varToken}`},
-  //   })
-  //   .then(function (response) {
-  //     // handle success
-
-  //     console.log(response);
-  //   })
-  //   .catch(function (error) {
-  //     // handle error
-  //     console.log(error);
-  //   })
-  //   .finally(function () {
-  //     // always executed
-  //   }); !important
-
-  // const instance = axios.create({
-  //   baseURL: "http://localhost:8080/users",
-  //   headers: {
-  //     Authorization: `Bearer ${varToken}`,
-  //   },
-  // });
-  // instance()
-  //   .then(function (response) {
-  //     console.log(response.data);
-  //   })
-  //   .catch(function (error) {
-  //     // handle error
-  //     console.log(error);
-  //   })
-  //   .finally(function () {
-  //     // always executed
-  //   });
-
-  // axios
-  //   .get("http://localhost:8080/users", {
-  //     headers: {
-  //       Authorization: `Bearer ${varToken}`,
-  //     },
-  //   })
-  //   .then(function (response) {
-  //     // handle success
-  //     console.log(response.data);
-  //   })
-  //   .catch(function (error) {
-  //     // handle error
-  //     console.log(error);
-  //   })
-  //   .finally(function () {
-  //     // always executed
-  //   });
-
   const handleSubmit = (e) => {
     let link = "";
     e.preventDefault();

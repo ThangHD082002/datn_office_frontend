@@ -31,7 +31,7 @@ function Home() {
 
   useEffect(() => {
     const token =
-      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNDgyMTgyLCJleHAiOjE3MzA1Njg1ODJ9.EjH4w2y-GU0SbMfUtqVjdq1VkPA0oDeGMskBQP7HBug8EgQtSsnSiGCkzcFsIwPx_vX_rkOrF76gABs7F--giQ"; // Thay thế YOUR_BEARER_TOKEN_HERE bằng token của bạn
+      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNjQzNzg5LCJleHAiOjE3MzA3MzAxODl9.F1BPfLZnDCwWoiN2GQlDHG0TuscAuBpa6K3KPelRzqqJfHem3kNsG2vy9rJzXndSwI2epfHSRl_00vn1P14QLQ"; // Thay thế YOUR_BEARER_TOKEN_HERE bằng token của bạn
 
     axios
       .get("https://datnbe.up.railway.app/api/buildings", {
