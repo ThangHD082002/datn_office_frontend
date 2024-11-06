@@ -9,6 +9,8 @@ import DetailRoom from "~/pages/DetailRoom";
 import { LoginLayout } from "~/components/Layout"
 import AdminLayout from "~/components/Layout/AdminLayout";
 import AdminDashboard from "~/pages/Admin/AdminDashboard";
+import CreateContract from "~/pages/Admin/ContractManagement/CreateContract"
+import MangeContract from "~/pages/Admin/ContractManagement/MangeContract";
 const publicRoutes = [
   {
     path: "/",
@@ -41,6 +43,16 @@ const publicRoutes = [
   {
     path: "/admin",
     component: AdminDashboard,
+    layout: AdminLayout
+  },
+  {
+    path: "admin/create-contract",
+    component: CreateContract,
+    layout: AdminLayout
+  },
+  {
+    path: "admin/contracts",
+    component: MangeContract,
     layout: AdminLayout
   }
 ];
