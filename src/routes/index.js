@@ -4,9 +4,11 @@ import Login from "~/pages/Login";
 import Register from "~/pages/Register";
 import Search from "~/components/Layout/component/Search";
 import HeaderSearch from "~/components/Layout/component/HeaderSearch";
-import { HeaderSearchLayout} from "~/components/Layout"
+import { HeaderSearchLayout } from "~/components/Layout"
 import DetailRoom from "~/pages/DetailRoom";
-import {LoginLayout} from "~/components/Layout"
+import { LoginLayout } from "~/components/Layout"
+import AdminLayout from "~/components/Layout/AdminLayout";
+import AdminDashboard from "~/pages/Admin/AdminDashboard";
 const publicRoutes = [
   {
     path: "/",
@@ -35,6 +37,11 @@ const publicRoutes = [
     path: "/detail-room/:rid",
     component: DetailRoom,
     layout: HeaderSearchLayout
+  },
+  {
+    path: "/admin",
+    component: AdminDashboard,
+    layout: AdminLayout
   }
 ];
 
