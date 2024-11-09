@@ -73,7 +73,7 @@ function DetailRoom() {
 
   const [infor, setInfor] = useState({});
 
-  let token = localStorage.getItem("token");
+  let token = localStorage.getItem("authToken");
 
   function decodeToken(token) {
     try {
@@ -199,8 +199,10 @@ function DetailRoom() {
         // kiểm tra nếu inputRef tại id nào bằng false thì add class booked
       })
       .catch(function (error) {
-        // handle error
-        console.log(error);
+        if (error.response && error.response.status === 401) {
+          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
+          window.location.href = '/error-token';
+        }
       })
       .finally(function () {
         // always executed

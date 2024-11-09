@@ -12,6 +12,8 @@ import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 
+import { jwtDecode } from "jwt-decode";
+
 // import * as request from "~/utils/request";
 import {
   faFacebookF,
@@ -33,7 +35,23 @@ function Login() {
   let varToken = localStorage.getItem("token");
   const [alertText, setAlertText] = useState("");
   const [open, setOpen] = useState(false);
+  const [infor, setInfor] = useState({});
   console.log(varToken);
+
+
+  function decodeToken(token) {
+    try {
+      const decodedData = jwtDecode(token);
+      console.log("decodedData"); // Kiểm tra dữ liệu trong token
+
+      // console.log(decodedData); // Kiểm tra dữ liệu trong token
+      setInfor(decodedData);
+      return decodedData;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  }
 
   const handleSubmit = (e) => {
     let link = "";
@@ -65,10 +83,17 @@ function Login() {
         .then(function (response) {
           // handle success
           console.log(response.data);
-          localStorage.setItem("token", response.data.result.token);
+          
+          console.log(role);
           if (response.data.message === "Đăng nhập thành công") {
-            localStorage.setItem("authToken", response.data.token);
-            navigate("/")
+            localStorage.setItem("authToken", response.data.result.token);
+            var role =  decodeToken(response.data.result.token);
+            // navigate("/")
+            if(role.auth === "ROLE_ADMIN ROLE_USER"){
+              navigate("/")
+            } else{
+              navigate("/admin/requests")
+            }
 
           } else {
             setIsCheckFaildLogin("Tài khoản hoặc mật khẩu không đúng");

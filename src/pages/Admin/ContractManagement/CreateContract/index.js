@@ -12,6 +12,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,6 +24,7 @@ import dayjs from "dayjs";
 const cx = classNames.bind(styles);
 
 function CreateContract() {
+  const { cid } = useParams();
   const [codeContract, setCodeContract] = useState("");
   const [contractType, setContractType] = useState();
   const [listOffice, setListOffice] = useState([]);
@@ -33,15 +36,16 @@ function CreateContract() {
   const [paymentFrequency, setPaymentFrequency] = useState();
   const [handoverDate, setHandoverDate] = useState("");
   const [rentalPurpose, setRentalPurpose] = useState("");
+  const navigate = useNavigate();
 
   const [alertStateBook, setAlertStateBook] = useState("");
   const [alertText, setAlertText] = useState("");
   const [open, setOpen] = useState(false);
 
-  let token = localStorage.getItem("token");
+  let token = localStorage.getItem("authToken");
   useEffect(() => {
     axios
-      .get("https://datnbe.up.railway.app/api/requests/7", {
+      .get(`https://datnbe.up.railway.app/api/requests/${cid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,12 +57,14 @@ function CreateContract() {
         setTenantId(response.data.userId);
         setTenantId(response.data.userId);
       })
-      .catch(function (error) {})
+      .catch(function (error) {
+        if (error.response && error.response.status === 401) {
+          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
+          window.location.href = "/error-token";
+        }
+      })
       .finally(function () {});
   }, []);
-
-  
-
 
   console.log(listOffice);
 
@@ -144,6 +150,7 @@ function CreateContract() {
         console.log(response);
         setAlertStateBook("success");
         setAlertText("Hợp đồng được tạo thành công !");
+        // navigate("/admin/contracts");
       })
       .catch(function (error) {
         console.log(error);
@@ -154,17 +161,17 @@ function CreateContract() {
   };
 
   useEffect(() => {
-    if (alertText !== "" && alertText === "Hợp đồng được tạo thành công !" ) {
-        handleClickk();
+    if (alertText !== "" && alertText === "Hợp đồng được tạo thành công !") {
+      handleClickk();
 
-        // Đặt timeout 4 giây trước khi reload trang
-        const timer = setTimeout(() => {
-            window.location.reload();
-        }, 2300);
-        // Hủy bỏ timer nếu `alertText` thay đổi trước khi 4 giây hoàn thành
-        return () => clearTimeout(timer);
+      // Đặt timeout 4 giây trước khi reload trang
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 2300);
+      // Hủy bỏ timer nếu `alertText` thay đổi trước khi 4 giây hoàn thành
+      return () => clearTimeout(timer);
     }
-}, [alertText]);
+  }, [alertText]);
   return (
     <div className={cx("container-create")}>
       <div className={cx("header")}>
@@ -287,89 +294,97 @@ function CreateContract() {
         </Box>
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { mt: 5, ml: 7, width: "80ch" } }}
+          sx={{
+            "& .MuiTextField-root": { mt: 6, ml: 7, width: "calc(50% - 12px)" }, // Đảm bảo cả 2 TextField chiếm 50% chiều rộng
+            display: "flex", // Sử dụng flex để căn chỉnh các phần tử theo hàng ngang
+            justifyContent: "space-between", // Giữa các TextField có khoảng cách
+            gap: 2, // Khoảng cách giữa các TextField
+          }}
           noValidate
           autoComplete="off"
         >
-          <div>
-            <TextField
-              id="outlined-required"
-              label="Thời hạn"
-              onChange={handleChangeDuration}
-              value={duration}
-              defaultValue=""
-              sx={{
-                // Điều chỉnh kích thước của thẻ TextField
-                width: "300px",
-                // Điều chỉnh kích thước của label
-                "& .MuiInputLabel-root": { fontSize: "18px" },
-                // Điều chỉnh kích thước của value
-                "& .MuiInputBase-input": { fontSize: "16px" },
-                marginTop: "50px",
-                height: "0px",
-              }}
-            />
-            <TextField
-              id="outlined-required"
-              label="Tiền đặt cọc"
-              onChange={handleChangeDepositAmount}
-              value={depositAmount}
-              defaultValue=""
-              sx={{
-                // Điều chỉnh kích thước của thẻ TextField
-                width: "300px",
-                // Điều chỉnh kích thước của label
-                "& .MuiInputLabel-root": { fontSize: "18px" },
-                // Điều chỉnh kích thước của value
-                "& .MuiInputBase-input": { fontSize: "16px" },
-                marginTop: "50px",
-                height: "0px",
-              }}
-            />
-          </div>
+          <TextField
+            id="outlined-required"
+            label="Thời hạn"
+            onChange={handleChangeDuration}
+            value={duration}
+            defaultValue=""
+            sx={{
+              // Điều chỉnh kích thước của thẻ TextField
+              width: "calc(50% - 12px)", // Đảm bảo thẻ chiếm 50% chiều rộng của Box
+              // Điều chỉnh kích thước của label
+              "& .MuiInputLabel-root": { fontSize: "18px" },
+              // Điều chỉnh kích thước của value
+              "& .MuiInputBase-input": { fontSize: "16px" },
+              height: "0px",
+            }}
+          />
+          <TextField
+            id="outlined-required"
+            label="Tiền đặt cọc"
+            onChange={handleChangeDepositAmount}
+            value={depositAmount}
+            defaultValue=""
+            sx={{
+              // Điều chỉnh kích thước của thẻ TextField
+              width: "calc(50% - 12px)", // Đảm bảo thẻ chiếm 50% chiều rộng của Box
+              // Điều chỉnh kích thước của label
+              "& .MuiInputLabel-root": { fontSize: "18px" },
+              // Điều chỉnh kích thước của value
+              "& .MuiInputBase-input": { fontSize: "16px" },
+              height: "0px",
+            }}
+          />
         </Box>
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { mt: 10, ml: 7, width: "80ch" } }}
+          sx={{
+            display: "flex", // Để các thẻ TextField nằm ngang
+            justifyContent: "space-between", // Khoảng cách đều giữa các thẻ TextField
+            gap: 2, // Khoảng cách giữa các thẻ
+            "& .MuiTextField-root": {
+              mt: 10,
+              ml: 7,
+              width: "calc(50% - 12px)",
+            }, // Mỗi TextField chiếm 50% chiều rộng của Box
+          }}
           noValidate
           autoComplete="off"
         >
-          <div>
-            <TextField
-              id="outlined-required"
-              label="Mục đích thuê"
-              onChange={handleChangeRentalPurpose}
-              value={rentalPurpose}
-              defaultValue=""
-              sx={{
-                // Điều chỉnh kích thước của thẻ TextField
-                width: "300px",
-                // Điều chỉnh kích thước của label
-                "& .MuiInputLabel-root": { fontSize: "18px" },
-                // Điều chỉnh kích thước của value
-                "& .MuiInputBase-input": { fontSize: "16px" },
-                marginTop: "50px",
-                height: "0px",
-              }}
-            />
-            <TextField
-              id="outlined-required"
-              label="Chu kì đóng tiền"
-              onChange={handleChangePaymentFrequency}
-              value={paymentFrequency}
-              defaultValue=""
-              sx={{
-                // Điều chỉnh kích thước của thẻ TextField
-                width: "300px",
-                // Điều chỉnh kích thước của label
-                "& .MuiInputLabel-root": { fontSize: "18px" },
-                // Điều chỉnh kích thước của value
-                "& .MuiInputBase-input": { fontSize: "16px" },
-              }}
-            />
-            
-          </div>
+          <TextField
+            id="outlined-required"
+            label="Mục đích thuê"
+            onChange={handleChangeRentalPurpose}
+            value={rentalPurpose}
+            defaultValue=""
+            sx={{
+              // Điều chỉnh kích thước của thẻ TextField
+              width: "100%", // Đảm bảo chiếm hết 50% chiều rộng của Box
+              // Điều chỉnh kích thước của label
+              "& .MuiInputLabel-root": { fontSize: "18px" },
+              // Điều chỉnh kích thước của value
+              "& .MuiInputBase-input": { fontSize: "16px" },
+              marginTop: "50px",
+              height: "0px",
+            }}
+          />
+          <TextField
+            id="outlined-required"
+            label="Chu kì đóng tiền"
+            onChange={handleChangePaymentFrequency}
+            value={paymentFrequency}
+            defaultValue=""
+            sx={{
+              // Điều chỉnh kích thước của thẻ TextField
+              width: "100%", // Đảm bảo chiếm hết 50% chiều rộng của Box
+              // Điều chỉnh kích thước của label
+              "& .MuiInputLabel-root": { fontSize: "18px" },
+              // Điều chỉnh kích thước của value
+              "& .MuiInputBase-input": { fontSize: "16px" },
+            }}
+          />
         </Box>
+
         <Button
           onClick={SubmitCreateContract}
           variant="contained"
@@ -380,7 +395,7 @@ function CreateContract() {
             height: "40px",
             position: "absolute",
             right: "20px", // Chiều cao của nút (tuỳ chọn)
-            bottom: "-100px",
+            bottom: "-50px",
           }}
         >
           TẠO HỢP ĐỒNG

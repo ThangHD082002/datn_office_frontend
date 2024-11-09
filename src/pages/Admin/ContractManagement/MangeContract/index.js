@@ -23,9 +23,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import Button from "@mui/material/Button";
-import Stack from '@mui/material/Stack';
+import Stack from "@mui/material/Stack";
 import classNames from "classnames/bind";
-import TextField from '@mui/material/TextField';
+import TextField from "@mui/material/TextField";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
 
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -34,31 +35,22 @@ import axios from "axios";
 import styles from "./ManageContract.module.scss";
 
 function ManageContract() {
-
-  let token = localStorage.getItem("token");
+  let token = localStorage.getItem("authToken");
 
   const [filteredArray, setFilteredArray] = useState([]);
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [valueSearch, setValueSearch] = useState("");
   const [loading, setLoading] = useState(false); // Trạng thái loading
   const [progress, setProgress] = useState(0); // Tiến trình tải
   useEffect(() => {
-    
     axios
       .post(
         "https://datnbe.up.railway.app/api/contract",
         {
           pageNumber: 0,
           pageSize: 10,
-          filter: [
-        //             {
-        //     "operator": "contain",
-        //     "key": "code",
-        //     "value": "0000",
-        //     "otherValue": null,
-        //     "valueSelected": null
-        // }
-          ],
+          filter: [],
           sortProperty: "contract.lastModifiedDate",
           sortOrder: "DESC",
           buildingIds: [],
@@ -81,6 +73,10 @@ function ManageContract() {
       })
       .catch(function (error) {
         console.error("Error:", error);
+        if (error.response && error.response.status === 401) {
+          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
+          window.location.href = "/error-token";
+        }
       })
       .finally(function () {
         console.log("Request completed.");
@@ -339,46 +335,48 @@ function ManageContract() {
       setProgress((prev) => (prev < 95 ? prev + 1 : prev)); // Tăng đến 95%
     }, 100); // Mỗi 100ms tăng 1%
     axios
-  .get(`https://datnbe.up.railway.app/api/contract/${id}/export-pdf`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    responseType: "blob", // Đảm bảo nhận dữ liệu dưới dạng blob cho file
-    onDownloadProgress: (progressEvent) => {
-      if (progressEvent.total) {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        setProgress(percentCompleted); // Cập nhật tiến trình thực tế từ API
-      }
-    },
-  })
-  .then(function (response) {
-    // Tạo URL blob từ dữ liệu PDF
-    const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "contract.pdf"); // Tên file tải xuống
-    document.body.appendChild(link);
-    link.click(); // Bắt đầu tải file
-    document.body.removeChild(link); // Xóa link sau khi tải xong
-  })
-  .catch(function (error) {
-    console.log("Error downloading file:", error);
-  })
-  .finally(function () {
-    console.log("Request completed.");
-    clearInterval(progressInterval); // Ngừng tăng dần tiến trình
-    setProgress(100); // Đặt tiến trình là 100% khi hoàn tất
-    setTimeout(() => setLoading(false), 500); // Đóng loading sau khi đạt 100%
-  });
-
-  }
-
+      .get(`https://datnbe.up.railway.app/api/contract/${id}/export-pdf`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob", // Đảm bảo nhận dữ liệu dưới dạng blob cho file
+        onDownloadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setProgress(percentCompleted); // Cập nhật tiến trình thực tế từ API
+          }
+        },
+      })
+      .then(function (response) {
+        // Tạo URL blob từ dữ liệu PDF
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], { type: "application/pdf" })
+        );
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "contract.pdf"); // Tên file tải xuống
+        document.body.appendChild(link);
+        link.click(); // Bắt đầu tải file
+        document.body.removeChild(link); // Xóa link sau khi tải xong
+      })
+      .catch(function (error) {
+        console.log("Error downloading file:", error);
+      })
+      .finally(function () {
+        console.log("Request completed.");
+        clearInterval(progressInterval); // Ngừng tăng dần tiến trình
+        setProgress(100); // Đặt tiến trình là 100% khi hoàn tất
+        setTimeout(() => setLoading(false), 500); // Đóng loading sau khi đạt 100%
+      });
+  };
 
   const handleChangeValueSearch = (e) => {
-    setValueSearch(e.target.value)
-  }
+    setValueSearch(e.target.value);
+  };
 
-  const handleSubmitSearch = () =>{
+  const handleSubmitSearch = () => {
     axios
       .post(
         "https://datnbe.up.railway.app/api/contract",
@@ -386,13 +384,13 @@ function ManageContract() {
           pageNumber: 0,
           pageSize: 10,
           filter: [
-                    {
-            "operator": "contain",
-            "key": "code",
-            "value": valueSearch,
-            "otherValue": null,
-            "valueSelected": null
-        }
+            {
+              operator: "contain",
+              key: "code",
+              value: valueSearch,
+              otherValue: null,
+              valueSelected: null,
+            },
           ],
           sortProperty: "contract.lastModifiedDate",
           sortOrder: "DESC",
@@ -420,7 +418,12 @@ function ManageContract() {
       .finally(function () {
         console.log("Request completed.");
       });
+  };
+
+  const HandleCreateContract = () =>{
+    navigate("/admin/create-contract")
   }
+
   return (
     <div className={cx("container")}>
       <h1>Manage Contracts</h1>
@@ -431,15 +434,20 @@ function ManageContract() {
           value={valueSearch}
           variant="outlined"
           placeholder="Search by code"
-          sx = {{
+          sx={{
             width: "30%",
           }}
         />
         <Button
-        onClick={handleSubmitSearch}
+          onClick={handleSubmitSearch}
           variant="contained"
           // color="primary"
-          sx={{ whiteSpace: 'nowrap', fontSize: "15px", backgroundColor: "#c781f6", color: "#fff" }}
+          sx={{
+            whiteSpace: "nowrap",
+            fontSize: "15px",
+            backgroundColor: "#c781f6",
+            color: "#fff",
+          }}
         >
           Search
         </Button>
@@ -506,7 +514,22 @@ function ManageContract() {
                         {row.rentalPurpose}
                       </TableCell>
                       <TableCell sx={{ fontSize: "15px" }} align="right">
-                        {row.status}
+                        {row.status === 1 ? (
+                          <Box
+                            component="span"
+                            sx={{
+                              backgroundColor: "#e9f5e9",
+                              color: "#65af50",
+                              borderRadius: "4px",
+                              padding: "2px 6px", // khoảng cách xung quanh chữ
+                              display: "inline-block", // đảm bảo nền chỉ bao quanh chữ
+                            }}
+                          >
+                            đã xử lí
+                          </Box>
+                        ) : (
+                          row.status
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -538,19 +561,33 @@ function ManageContract() {
           label="Dense padding"
         />
       </Box>
-      <Stack spacing={2} direction="row"  sx={{
-            position: "absolute",
-            right: "0",
-            height: "35px",
-            fontSize: "15px",
-            bottom: "10px",
-          }}>
-
-      <Button
+      <Stack
+        spacing={2}
+        direction="row"
+        sx={{
+          position: "absolute",
+          right: "0",
+          height: "35px",
+          fontSize: "15px",
+          bottom: "10px",
+        }}
+      >
+        <Button
           variant="contained"
           sx={{
             fontSize: "15px",
-            backgroundColor: "green"
+            backgroundColor: "#b7272d",
+          }}
+          onClick={HandleCreateContract}
+        >
+          TẠO MỚI
+        </Button>
+
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: "15px",
+            backgroundColor: "green",
           }}
           disabled={selected.length === 0}
         >
@@ -568,8 +605,16 @@ function ManageContract() {
           Export
         </Button>
       </Stack>
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-        <CircularProgress variant="determinate" value={progress} size={60} thickness={4} />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress
+          variant="determinate"
+          value={progress}
+          size={60}
+          thickness={4}
+        />
         <Typography variant="h6" sx={{ marginLeft: 2 }}>
           {progress}%
         </Typography>

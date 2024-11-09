@@ -29,7 +29,7 @@ const cx = classNames.bind(styles);
 function Home() {
   const [result, setResult] = useState([]);
 
-  let token = localStorage.getItem("token");
+  let token = localStorage.getItem("authToken");
 
   useEffect(() => {
     axios
@@ -46,6 +46,10 @@ function Home() {
       .catch(function (error) {
         // handle error
         console.log(error);
+        if (error.response && error.response.status === 401) {
+          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
+          window.location.href = '/error-token';
+        }
       })
       .finally(function () {
         // always executed

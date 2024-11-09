@@ -14,6 +14,7 @@ import OfficeManagementList from "~/pages/Admin/OfficeManagement/List";
 import CreateContract from "~/pages/Admin/ContractManagement/CreateContract"
 import MangeContract from "~/pages/Admin/ContractManagement/MangeContract";
 import RequestManagementCreate from "~/pages/Admin/RequestManagement/Create";
+import ErrorToken from "~/pages/ErrorToken";
 
 const publicRoutes = [
   {
@@ -50,7 +51,7 @@ const publicRoutes = [
     layout: AdminLayout
   },
   {
-    path: "admin/create-contract",
+    path: "admin/create-contract/:cid",
     component: CreateContract,
     layout: AdminLayout
   },
@@ -78,7 +79,12 @@ const publicRoutes = [
     path: "/admin/create-request",
     component: RequestManagementCreate,
     layout: AdminLayout
-  }
+  },
+  {
+    path: '/error-token',   
+    component: ErrorToken,
+    layout: null
+},
 ];
 
 const privateRoutes = [];

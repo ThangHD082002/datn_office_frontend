@@ -147,7 +147,7 @@ function RequestManagementList() {
                                             <IconButton color="primary" title="Chi tiết">
                                                 <VisibilityIcon />
                                             </IconButton>
-                                            {row.status === 3 && (
+                                            {1===1 && (
                                                 <IconButton
                                                     color="success"
                                                     title="Tạo hợp đồng"
