@@ -1,0 +1,26 @@
+.th {
+    // text-align: center;
+    font-size: 1.5rem !important;
+    font-weight: light !important;
+}
+
+.td {
+    font-size: 1.3rem !important;
+    // font-weight: 500 !important;
+}
+
+.btn-create {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #b7272d !important;
+    border: #b7272d !important;
+    width: 100px;
+    height: 30px;
+    font-size: 1.2rem !important;
+    font-weight: 500 !important;
+
+    &:hover {
+        background-color: #7A1A1E !important;
+        border: #7A1A1E !important;
+    }
+}
