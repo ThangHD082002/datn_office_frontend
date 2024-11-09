@@ -73,8 +73,7 @@ function DetailRoom() {
 
   const [infor, setInfor] = useState({});
 
-  const token =
-    "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNjQzNzg5LCJleHAiOjE3MzA3MzAxODl9.F1BPfLZnDCwWoiN2GQlDHG0TuscAuBpa6K3KPelRzqqJfHem3kNsG2vy9rJzXndSwI2epfHSRl_00vn1P14QLQ";
+  let token = localStorage.getItem("token");
 
   function decodeToken(token) {
     try {

@@ -29,10 +29,9 @@ const cx = classNames.bind(styles);
 function Home() {
   const [result, setResult] = useState([]);
 
-  useEffect(() => {
-    const token =
-      "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMwNjQzNzg5LCJleHAiOjE3MzA3MzAxODl9.F1BPfLZnDCwWoiN2GQlDHG0TuscAuBpa6K3KPelRzqqJfHem3kNsG2vy9rJzXndSwI2epfHSRl_00vn1P14QLQ"; // Thay thế YOUR_BEARER_TOKEN_HERE bằng token của bạn
+  let token = localStorage.getItem("token");
 
+  useEffect(() => {
     axios
       .get("https://datnbe.up.railway.app/api/buildings", {
         headers: {
@@ -43,7 +42,6 @@ function Home() {
         // handle success
         console.log(response.data.content);
         setResult(response.data.content);
-        
       })
       .catch(function (error) {
         // handle error
@@ -110,18 +108,18 @@ function Home() {
           {result.map((r) => (
             <div key={r.id} className={cx("room-card")}>
               <a href={`/detail-room/${r.id}`} className={cx("item")}>
-                  <img src={room_1} className={cx("room-img")} />
-                  <div className={cx("room-card-content")}>
-                    <h4 className={cx("room-card-heading")}>{r.name}</h4>
-                    <p className={cx("room-card-paragraph")}>
-                      {r.address}
-                    </p>
-                    <p className={cx("room-price")}>$99.00</p>
-                    <button className={cx("room-card-btn")}>
-                      Book Now
-                      <i className={cx("fas fa-angle-double-right btn-arrow")}></i>
-                    </button>
-                  </div>
+                <img src={room_1} className={cx("room-img")} />
+                <div className={cx("room-card-content")}>
+                  <h4 className={cx("room-card-heading")}>{r.name}</h4>
+                  <p className={cx("room-card-paragraph")}>{r.address}</p>
+                  <p className={cx("room-price")}>$99.00</p>
+                  <button className={cx("room-card-btn")}>
+                    Book Now
+                    <i
+                      className={cx("fas fa-angle-double-right btn-arrow")}
+                    ></i>
+                  </button>
+                </div>
               </a>
             </div>
           ))}

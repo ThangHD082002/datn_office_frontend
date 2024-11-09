@@ -65,6 +65,7 @@ function Login() {
         .then(function (response) {
           // handle success
           console.log(response.data);
+          localStorage.setItem("token", response.data.result.token);
           if (response.data.message === "Đăng nhập thành công") {
             localStorage.setItem("authToken", response.data.token);
             navigate("/")
