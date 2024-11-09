@@ -1,9 +1,11 @@
 .container {
     padding: 24px;
     margin-left: 120px;
-    margin-top: 64px;
+    margin-top: 84px;
     box-sizing: border-box;
     transition: opacity 0.3s ease;
+    font-size: large;
+    // width: 1000px;
 
     &.overlay {
         pointer-events: none;
