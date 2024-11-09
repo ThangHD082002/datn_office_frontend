@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import { useNavigate } from "react-router-dom";
 
 
 const cx = classNames.bind(styles);
@@ -38,6 +40,8 @@ const getUserName = (user) => {
 }
 
 function RequestManagementList() {
+
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -143,6 +147,15 @@ function RequestManagementList() {
                                             <IconButton color="primary" title="Chi tiết">
                                                 <VisibilityIcon />
                                             </IconButton>
+                                            {row.status === 3 && (
+                                                <IconButton
+                                                    color="success"
+                                                    title="Tạo hợp đồng"
+                                                    onClick={() => navigate(`/admin/create-contract/${row.id}`)}
+                                                >
+                                                    <AssignmentIcon />
+                                                </IconButton>
+                                            )}
                                             <IconButton color="error" title="Xoá">
                                                 <DeleteIcon />
                                             </IconButton>
