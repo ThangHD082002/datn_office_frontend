@@ -46,7 +46,7 @@ function ManageContract() {
   useEffect(() => {
     axios
       .post(
-        "https://datnbe.up.railway.app/api/contract",
+        "https://orca-app-khbcx.ondigitalocean.app/api/contract",
         {
           pageNumber: 0,
           pageSize: 10,
@@ -335,7 +335,7 @@ function ManageContract() {
       setProgress((prev) => (prev < 95 ? prev + 1 : prev)); // Tăng đến 95%
     }, 100); // Mỗi 100ms tăng 1%
     axios
-      .get(`https://datnbe.up.railway.app/api/contract/${id}/export-pdf`, {
+      .get(`https://orca-app-khbcx.ondigitalocean.app/api/contract/${id}/export-pdf`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -379,7 +379,7 @@ function ManageContract() {
   const handleSubmitSearch = () => {
     axios
       .post(
-        "https://datnbe.up.railway.app/api/contract",
+        "https://orca-app-khbcx.ondigitalocean.app/api/contract",
         {
           pageNumber: 0,
           pageSize: 10,

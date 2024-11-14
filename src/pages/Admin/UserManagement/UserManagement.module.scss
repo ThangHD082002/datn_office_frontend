@@ -1,0 +1,64 @@
+/* Căn chỉnh tiêu đề bảng */
+.th {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #333;
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Căn chỉnh nội dung bảng */
+.td {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #555;
+    padding: 10px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Tạo khoảng cách và màu sắc cho từng hàng */
+.tr {
+    &:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    &:hover {
+        background-color: #f1f1f1;
+    }
+}
+
+/* Nút tạo người dùng */
+.btn-create {
+    margin: 20px 0;
+    background-color: #b7272d;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    width: 120px;
+    height: 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-create:hover {
+    background-color: #7a1a1e;
+}
+
+/* Đáp ứng trên thiết bị di động */
+@media (max-width: 768px) {
+    .th,
+    .td {
+        font-size: 1.2rem;
+        padding: 8px 10px;
+    }
+
+    .btn-create {
+        width: 100%;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}

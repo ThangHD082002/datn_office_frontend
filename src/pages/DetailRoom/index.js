@@ -184,7 +184,7 @@ function DetailRoom() {
     decodeToken(token);
 
     axios
-      .get(`https://datnbe.up.railway.app/api/buildings/${rid}`, {
+      .get(`https://orca-app-khbcx.ondigitalocean.app/api/buildings/${rid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -370,7 +370,7 @@ function DetailRoom() {
     } else {
       axios
         .post(
-          "https://datnbe.up.railway.app/api/requests",
+          "https://orca-app-khbcx.ondigitalocean.app/api/requests",
           {
             userId: user,
             note: "Tôi muốn xem văn phòng",

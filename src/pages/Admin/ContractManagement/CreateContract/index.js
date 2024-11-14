@@ -45,7 +45,7 @@ function CreateContract() {
   let token = localStorage.getItem("authToken");
   useEffect(() => {
     axios
-      .get(`https://datnbe.up.railway.app/api/requests/${cid}`, {
+      .get(`https://orca-app-khbcx.ondigitalocean.app/api/requests/${cid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -122,7 +122,7 @@ function CreateContract() {
   const SubmitCreateContract = () => {
     axios
       .post(
-        "https://datnbe.up.railway.app/api/contract/save",
+        "https://orca-app-khbcx.ondigitalocean.app/api/contract/save",
         {
           code: codeContract, // mã hợp đồng
           request: {
