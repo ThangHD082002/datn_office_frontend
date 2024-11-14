@@ -33,7 +33,7 @@ function Home() {
 
   useEffect(() => {
     axios
-      .get("https://datnbe.up.railway.app/api/buildings", {
+      .get("https://orca-app-khbcx.ondigitalocean.app/api/buildings", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -70,7 +70,7 @@ function Login() {
       }
     } else {
       axios
-        .post("https://datnbe.up.railway.app/api/authenticate", {
+        .post("https://orca-app-khbcx.ondigitalocean.app/api/authenticate", {
           username: user,
           password: pass,
         },
