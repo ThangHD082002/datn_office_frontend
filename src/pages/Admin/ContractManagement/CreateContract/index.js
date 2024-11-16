@@ -10,17 +10,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { Link, Routes, Route, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-
 const cx = classNames.bind(styles);
 
 function CreateContract() {
@@ -63,7 +52,7 @@ function CreateContract() {
           window.location.href = "/error-token";
         }
       })
-      .finally(function () {});
+      .finally(function () { });
   }, []);
 
   console.log(listOffice);
@@ -157,7 +146,7 @@ function CreateContract() {
         setAlertStateBook("error");
         setAlertText("Hệ thống đang gặp lỗi, vui lòng load lại trang !");
       })
-      .finally(function () {});
+      .finally(function () { });
   };
 
   useEffect(() => {
@@ -180,17 +169,15 @@ function CreateContract() {
       <div className={cx("body")}>
         <Box
           component="form"
-          sx={{ "& .MuiTextField-root": { m: 6, ml: 7, width: "50ch" } }}
+          sx={{ "& .MuiTextField-root": { m: 6, width: "50ch" } }}
           noValidate
           autoComplete="off"
         >
           <div>
             <TextField
               id="outlined-required"
-              onChange={handleChangeContractCodeChange}
-              value={codeContract}
-              label="Mã hợp đồng"
-              defaultValue=""
+              label="Khách hàng"
+              defaultValue="Hello World"
               sx={{
                 // Điều chỉnh kích thước của thẻ TextField
                 width: "300px",
@@ -202,7 +189,7 @@ function CreateContract() {
                 height: "0px",
               }}
             />
-            <FormControl sx={{ minWidth: 250, marginTop: "50px" }}>
+            <FormControl sx={{ minWidth: 250, marginTop: '50px' }}>
               <InputLabel id="demo-simple-select-label">DS Phòng</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -211,19 +198,15 @@ function CreateContract() {
                 label="Age"
                 onChange={handleChange}
               >
-                {listOffice.map((id) => (
-                  <MenuItem key={id} value={id}>
-                    {id}
-                  </MenuItem>
-                ))}
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
               </Select>
             </FormControl>
             <TextField
               id="outlined-required"
-              onChange={handleChangeTypeContract}
-              value={contractType}
-              label="Loại hợp đồng"
-              defaultValue=""
+              label="DS phòng chọn thuê"
+              defaultValue="Hello World"
               sx={{
                 // Điều chỉnh kích thước của thẻ TextField
                 width: "300px",
@@ -238,155 +221,70 @@ function CreateContract() {
         </Box>
         <Box
           component="form"
-          sx={{
-            marginLeft: "60px",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            "& .MuiTextField-root": { m: 0, width: "30ch" },
-          }}
+          sx={{ "& .MuiTextField-root": { m: 6, width: "80ch" } }}
           noValidate
           autoComplete="off"
         >
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                value={startDate ? dayjs(startDate) : null}
-                onChange={handleChangeStartDate}
-                label="Thời gian bắt đầu"
-                sx={{
-                  "& .MuiInputBase-root": { fontSize: "16px" }, // Kích thước chữ của phần input
-                  "& .MuiInputLabel-root": { fontSize: "16px" }, // Kích thước chữ của label
-                  "& .MuiSvgIcon-root": { fontSize: "20px" }, // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                value={endDate ? dayjs(endDate) : null}
-                onChange={handleChangeEndDate}
-                label="Thời gian kết thúc"
-                sx={{
-                  "& .MuiInputBase-root": { fontSize: "16px" }, // Kích thước chữ của phần input
-                  "& .MuiInputLabel-root": { fontSize: "16px" }, // Kích thước chữ của label
-                  "& .MuiSvgIcon-root": { fontSize: "20px" }, // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                value={handoverDate ? dayjs(handoverDate) : null}
-                onChange={handleChangeHandOverDate}
-                label="Thời gian bàn giao"
-                sx={{
-                  "& .MuiInputBase-root": { fontSize: "16px" }, // Kích thước chữ của phần input
-                  "& .MuiInputLabel-root": { fontSize: "16px" }, // Kích thước chữ của label
-                  "& .MuiSvgIcon-root": { fontSize: "20px" }, // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
+          <div>
+            <TextField
+              id="outlined-required"
+              label="Name Client"
+              defaultValue="Hello World"
+              sx={{
+                // Điều chỉnh kích thước của thẻ TextField
+                width: "300px",
+                // Điều chỉnh kích thước của label
+                "& .MuiInputLabel-root": { fontSize: "18px" },
+                // Điều chỉnh kích thước của value
+                "& .MuiInputBase-input": { fontSize: "16px" },
+                marginTop: "50px",
+              }}
+            />
+            <TextField
+              id="outlined-required"
+              label="Name Client"
+              defaultValue="Hello World"
+              sx={{
+                // Điều chỉnh kích thước của thẻ TextField
+                width: "300px",
+                // Điều chỉnh kích thước của label
+                "& .MuiInputLabel-root": { fontSize: "18px" },
+                // Điều chỉnh kích thước của value
+                "& .MuiInputBase-input": { fontSize: "16px" },
+                marginLeft: "50px",
+              }}
+            />
+            <TextField
+              id="outlined-required"
+              label="Name Client"
+              defaultValue="Hello World"
+              sx={{
+                // Điều chỉnh kích thước của thẻ TextField
+                width: "300px",
+                // Điều chỉnh kích thước của label
+                "& .MuiInputLabel-root": { fontSize: "18px" },
+                // Điều chỉnh kích thước của value
+                "& .MuiInputBase-input": { fontSize: "16px" },
+                marginLeft: "50px",
+              }}
+            />
+            <TextField
+              id="outlined-required"
+              label="Name Client"
+              defaultValue="Hello World"
+              sx={{
+                // Điều chỉnh kích thước của thẻ TextField
+                width: "300px",
+                // Điều chỉnh kích thước của label
+                "& .MuiInputLabel-root": { fontSize: "18px" },
+                // Điều chỉnh kích thước của value
+                "& .MuiInputBase-input": { fontSize: "16px" },
+                marginLeft: "50px",
+              }}
+            />
+          </div>
         </Box>
-        <Box
-          component="form"
-          sx={{
-            "& .MuiTextField-root": { mt: 6, ml: 7, width: "calc(50% - 12px)" }, // Đảm bảo cả 2 TextField chiếm 50% chiều rộng
-            display: "flex", // Sử dụng flex để căn chỉnh các phần tử theo hàng ngang
-            justifyContent: "space-between", // Giữa các TextField có khoảng cách
-            gap: 2, // Khoảng cách giữa các TextField
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            id="outlined-required"
-            label="Thời hạn"
-            onChange={handleChangeDuration}
-            value={duration}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: "calc(50% - 12px)", // Đảm bảo thẻ chiếm 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              "& .MuiInputLabel-root": { fontSize: "18px" },
-              // Điều chỉnh kích thước của value
-              "& .MuiInputBase-input": { fontSize: "16px" },
-              height: "0px",
-            }}
-          />
-          <TextField
-            id="outlined-required"
-            label="Tiền đặt cọc"
-            onChange={handleChangeDepositAmount}
-            value={depositAmount}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: "calc(50% - 12px)", // Đảm bảo thẻ chiếm 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              "& .MuiInputLabel-root": { fontSize: "18px" },
-              // Điều chỉnh kích thước của value
-              "& .MuiInputBase-input": { fontSize: "16px" },
-              height: "0px",
-            }}
-          />
-        </Box>
-        <Box
-          component="form"
-          sx={{
-            display: "flex", // Để các thẻ TextField nằm ngang
-            justifyContent: "space-between", // Khoảng cách đều giữa các thẻ TextField
-            gap: 2, // Khoảng cách giữa các thẻ
-            "& .MuiTextField-root": {
-              mt: 10,
-              ml: 7,
-              width: "calc(50% - 12px)",
-            }, // Mỗi TextField chiếm 50% chiều rộng của Box
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            id="outlined-required"
-            label="Mục đích thuê"
-            onChange={handleChangeRentalPurpose}
-            value={rentalPurpose}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: "100%", // Đảm bảo chiếm hết 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              "& .MuiInputLabel-root": { fontSize: "18px" },
-              // Điều chỉnh kích thước của value
-              "& .MuiInputBase-input": { fontSize: "16px" },
-              marginTop: "50px",
-              height: "0px",
-            }}
-          />
-          <TextField
-            id="outlined-required"
-            label="Chu kì đóng tiền"
-            onChange={handleChangePaymentFrequency}
-            value={paymentFrequency}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: "100%", // Đảm bảo chiếm hết 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              "& .MuiInputLabel-root": { fontSize: "18px" },
-              // Điều chỉnh kích thước của value
-              "& .MuiInputBase-input": { fontSize: "16px" },
-            }}
-          />
-        </Box>
-
         <Button
-          onClick={SubmitCreateContract}
           variant="contained"
           sx={{
             fontSize: "16px", // Kích thước chữ
@@ -394,26 +292,11 @@ function CreateContract() {
             width: "170px", // Chiều rộng của nút (tuỳ chọn)
             height: "40px",
             position: "absolute",
-            right: "20px", // Chiều cao của nút (tuỳ chọn)
-            bottom: "-50px",
+            right: "100px", // Chiều cao của nút (tuỳ chọn)
           }}
         >
           TẠO HỢP ĐỒNG
         </Button>
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity={alertStateBook}
-            variant="filled"
-            sx={{
-              width: "100%",
-              fontSize: "1.5rem", // Tăng kích thước chữ
-              padding: "20px",
-            }}
-          >
-            {alertText}
-          </Alert>
-        </Snackbar>
       </div>
     </div>
   );

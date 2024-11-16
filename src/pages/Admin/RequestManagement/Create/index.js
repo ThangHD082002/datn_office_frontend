@@ -9,7 +9,6 @@ import classNames from 'classnames/bind';
 import { axiosInstance } from '~/utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
