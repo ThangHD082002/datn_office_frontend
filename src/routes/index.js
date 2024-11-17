@@ -17,6 +17,8 @@ import RequestManagementCreate from '~/pages/Admin/RequestManagement/Create'
 import ErrorToken from '~/pages/ErrorToken'
 import UserManagementList from '~/pages/Admin/UserManagement/List'
 import UserManagementCreate from '~/pages/Admin/UserManagement/Create'
+import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
+import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
 
 const publicRoutes = [
   {
@@ -65,6 +67,16 @@ const publicRoutes = [
   {
     path: '/admin/buildings',
     component: BuildingManagementList,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/create-building',
+    component: BuildingManagementCreate,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/buildings/:bid',
+    component: BuildingManagementDetail,
     layout: AdminLayout
   },
   {

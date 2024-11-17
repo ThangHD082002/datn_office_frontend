@@ -20,6 +20,7 @@ import {
   faGooglePlusG,
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
+import { axiosInstance } from "~/utils/axiosInstance";
 const cx = classNames.bind(styles);
 
 
@@ -69,29 +70,24 @@ function Login() {
         setIsPasswordEmpty("Vui lòng nhập password");
       }
     } else {
-      axios
-        .post("https://orca-app-khbcx.ondigitalocean.app/api/authenticate", {
+      axiosInstance
+        .post("/authenticate", {
           username: user,
           password: pass,
-        },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
+        }
         )
         .then(function (response) {
           // handle success
           console.log(response.data);
-          
+
           console.log(role);
           if (response.data.message === "Đăng nhập thành công") {
             localStorage.setItem("authToken", response.data.result.token);
-            var role =  decodeToken(response.data.result.token);
+            var role = decodeToken(response.data.result.token);
             // navigate("/")
-            if(role.auth === "ROLE_ADMIN ROLE_USER"){
+            if (role.auth === "ROLE_ADMIN ROLE_USER") {
               navigate("/")
-            } else{
+            } else {
               navigate("/admin/requests")
             }
 

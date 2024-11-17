@@ -3,7 +3,7 @@ import axios from 'axios'
 export const axiosInstance = axios.create({
   // baseURL: "https://orca-app-khbcx.ondigitalocean.app/api",
   baseURL: 'http://localhost:9999/api', // Replace with your API base URL
-  timeout: 10000, // Set the timeout to 10 seconds
+  // timeout: 15000, // Set the timeout to 15 seconds
   headers: { 'Content-Type': 'application/json' }
 }) // Create the axios instance
 

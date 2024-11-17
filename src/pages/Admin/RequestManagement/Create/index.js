@@ -229,7 +229,6 @@ function RequestManagementCreate() {
                                             time: formData.time ? formData.time.format('HH:mm:ss') : null
                                         };
                                         await axiosInstance.post('/requests', requestBody)
-                                            // await axios.post('http://localhost:9999/api/requests', requestBody)
                                             .then(() => {
                                                 navigate('/admin/requests');
                                             }).catch(error => {

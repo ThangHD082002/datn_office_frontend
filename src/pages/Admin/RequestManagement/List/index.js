@@ -36,19 +36,12 @@ const getStatusInfo = (status) => {
     case 1:
       return { text: 'Đã chấp thuận', color: '#4CAF50' }
     case 2:
-      return { text: 'Đã từ chối', color: '#F44336' }
-    case 3:
       return { text: 'Đã hoàn thành', color: '#2196F3' }
+    case 3:
+      return { text: 'Đã từ chối', color: '#F44336' }
     default:
       return { text: 'Huỷ bỏ', color: '#9E9E9E' }
   }
-}
-
-const getUserName = (user) => {
-  if (user && user.firstName && user.lastName) {
-    return `${user.lastName} ${user.firstName}`
-  }
-  return 'Không xác định'
 }
 
 function RequestManagementList() {
@@ -82,6 +75,20 @@ function RequestManagementList() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const getUserName = (user) => {
+    if (user && user.firstName && user.lastName) {
+      return `${user.lastName} ${user.firstName}`
+    }
+    return 'Không xác định'
+  }
+
+  const getBuildingName = (building) => {
+    if (building) {
+      return building.name;
+    }
+    return 'Không xác định';
   }
 
   useEffect(() => {
@@ -119,7 +126,7 @@ function RequestManagementList() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                zIndex: 1
+                zIndex: 999
               }}
             >
               <CircularProgress />
@@ -139,7 +146,7 @@ function RequestManagementList() {
                   <TableRow key={row.id}>
                     <TableCell className={cx('td')}>{row.id}</TableCell>
                     <TableCell className={cx('td')}>{getUserName(row.userDTO)}</TableCell>
-                    <TableCell className={cx('td')}>{row.buildingDTO.name}</TableCell>
+                    <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
                     <TableCell className={cx('td')}>{row.note}</TableCell>
                     <TableCell className={cx('td')}>{row.date}</TableCell>
                     <TableCell className={cx('td')}>{row.time}</TableCell>
