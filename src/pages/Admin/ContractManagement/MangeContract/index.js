@@ -486,8 +486,10 @@ function ManageContract() {
       })
   }
 
-  const HandleCreateContract = () => {
-    navigate('/admin/create-contract')
+  const HandlePreviewContract = () => {
+    const id = Number(selected[0])
+    // navigate('/admin/create-contract')
+    navigate(`/admin/preview-contract/${id}`);
   }
 
   return (
@@ -631,7 +633,7 @@ function ManageContract() {
             fontSize: '15px',
             backgroundColor: '#b7272d'
           }}
-          onClick={HandleCreateContract}
+          onClick={HandlePreviewContract}
           disabled={selected.length === 0}
         >
           DELETE

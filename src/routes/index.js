@@ -17,6 +17,7 @@ import RequestManagementCreate from '~/pages/Admin/RequestManagement/Create'
 import ErrorToken from '~/pages/ErrorToken'
 import UserManagementList from '~/pages/Admin/UserManagement/List'
 import UserManagementCreate from '~/pages/Admin/UserManagement/Create'
+import PreviewContract from '~/pages/Admin/ContractManagement/PreviewContract'
 import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
 import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
 
@@ -108,6 +109,11 @@ const publicRoutes = [
     path: '/error-token',
     component: ErrorToken,
     layout: null
+  },
+  {
+    path: '/admin/preview-contract/:pid',
+    component: PreviewContract,
+    layout: AdminLayout
   }
 ]
 
