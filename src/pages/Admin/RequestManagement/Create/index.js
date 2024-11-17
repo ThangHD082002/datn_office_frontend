@@ -9,7 +9,6 @@ import classNames from 'classnames/bind';
 import { axiosInstance } from '~/utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -230,7 +229,6 @@ function RequestManagementCreate() {
                                             time: formData.time ? formData.time.format('HH:mm:ss') : null
                                         };
                                         await axiosInstance.post('/requests', requestBody)
-                                            // await axios.post('http://localhost:9999/api/requests', requestBody)
                                             .then(() => {
                                                 navigate('/admin/requests');
                                             }).catch(error => {

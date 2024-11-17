@@ -56,43 +56,6 @@ function Login() {
         setIsPasswordEmpty('Vui lòng nhập password')
       }
     } else {
-      // axios
-      //   .post("https://office-nest-ohcid.ondigitalocean.app/api/authenticate", {
-      //     username: user,
-      //     password: pass,
-      //   },
-      //     {
-      //       headers: {
-      //         'Content-Type': 'application/json',
-      //       },
-      //     }
-      //   )
-      //   .then(function (response) {
-      //     // handle success
-      //     console.log(response.data);
-
-      //     console.log(role);
-      //     if (response.data.message === "Đăng nhập thành công") {
-      //       localStorage.setItem("authToken", response.data.result.token);
-      //       var role =  decodeToken(response.data.result.token);
-      //       // navigate("/")
-      //       if(role.auth === "ROLE_ADMIN ROLE_USER"){
-      //         navigate("/admin/requests")
-      //       } else{
-      //         navigate("/")
-      //       }
-
-      //     } else {
-      //       setIsCheckFaildLogin("Tài khoản hoặc mật khẩu không đúng");
-      //     }
-      //   })
-      //   .catch(function (error) {
-      //     // handle error
-      //     console.log(error);
-      //   })
-      //   .finally(function () {
-      //     // always executed
-      //   });
       axiosInstance
         .post('/authenticate', {
           username: user,
