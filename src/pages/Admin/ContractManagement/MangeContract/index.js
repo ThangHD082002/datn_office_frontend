@@ -636,7 +636,7 @@ function ManageContract() {
           onClick={HandlePreviewContract}
           disabled={selected.length === 0}
         >
-          DELETE
+          PREVIEW
         </Button>
 
         <Button
