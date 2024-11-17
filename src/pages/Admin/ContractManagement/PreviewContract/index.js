@@ -14,8 +14,7 @@ import {
 } from "@mui/material";
 import { ArrowBack, ArrowForward, GetApp } from "@mui/icons-material";
 
-
-pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const PdfViewer = () => {
   const [pdfFile, setPdfFile] = useState(null); // URL PDF
