@@ -72,6 +72,8 @@ function DetailRoom() {
 
   const listFloorOrder = useState([])
 
+  const [bid, setBid] = useState();
+
   const [infor, setInfor] = useState({})
 
   let token = localStorage.getItem('authToken')
@@ -212,7 +214,7 @@ function DetailRoom() {
       .then(function (response) {
         // setRoom((prev) => ({ ...prev, ...response.data }));
         setRoom(response.data)
-
+        setBid(response.data.id);
         // Tạo 2 mảng useRef để lưu theo id
         handleOfficeDTOS(response)
 
@@ -403,7 +405,8 @@ function DetailRoom() {
       .post('/requests', {
         userId: user,
         note: 'Tôi muốn xem văn phòng',
-        officeIds: selectedIds
+        officeIds: selectedIds,
+        buildingId: bid
       })
       .then((response) => {
         console.log('STATE REQUEST');
