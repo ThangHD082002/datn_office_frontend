@@ -1,0 +1,109 @@
+.container{
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    height: 514px;
+    width: 514px;
+    margin: 0 0 0 140px;
+    margin-top: 10px;
+    position: absolute;
+    top: 15%;
+    // top: 150px;
+   
+}
+
+.search-contain{    
+
+    padding-left: 20px;
+}
+
+.search-area{
+    border: solid 1px #000;
+}
+
+.search-inline{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.text-search{
+    color: #606060;
+    font-size: 18px;
+}
+
+.icon-search{
+    color: #606060;
+    font-size: 18px;
+    margin-left: 16px;
+}
+
+.input-search{
+    color: #606060;
+    font-size: 18px;
+    height: 47px;
+    width: 100%;
+    padding-left: 15px;
+    outline-color: #e7e7e7;
+}
+
+.icon-search-input{
+    color: #8d8d8d;
+    font-size: 18px;
+    margin-left: 16px;
+    width: 23px;
+    height: 22px;
+    margin-left: -30px;
+    font-weight: 100;
+}
+
+.search-input-contain{
+    
+}
+
+.search-contain{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+}
+.search-by-name{
+
+}
+
+.search-border{
+    border: solid 1px #e7e7e7;
+    height: 47px;
+    width: 100%;
+}
+
+.title-text-main{
+    color: #b7272d;
+    font-weight: 800;
+    font-size: 30px;
+    margin: 40px 0 10px 8px;
+}
+.title-text-extra{
+    color: #000;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.area-search-one,
+.area-search-two{
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-search{
+    margin-top: 40px;
+    margin-left: 20px;
+}
+
+
+
+
+
+// ABOUT US
+

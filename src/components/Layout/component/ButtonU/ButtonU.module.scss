@@ -1,0 +1,32 @@
+.wraper {
+    width: 160px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    background-color: red;
+    color: #fff;
+    margin-top: 20px;
+    border: none;
+    font-weight: 600    ;
+}
+
+
+
+// .submit{
+//     width: 200px;
+//     height: 40px;
+//     margin-left: 125px;
+//     background-image: linear-gradient(90deg, #9e78c3,#d489a8);
+//     border: none;
+//     border-radius: 20px;
+//     color: white;
+//     font-weight: 550;
+//     font-size: 15px;
+//     cursor: pointer;
+    
+// }
+
+.submitLink,
+.submitButton:hover{
+    opacity: 0.9;
+}

@@ -1,0 +1,28 @@
+.container {
+    padding: 24px;
+    margin-left: 120px;
+    margin-top: 84px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+    font-size: large;
+    // width: 1000px;
+
+    &.overlay {
+        pointer-events: none;
+        /* Disable interaction */
+        opacity: 0.5;
+        /* Greyed out */
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    /* Semi-transparent grey */
+    z-index: 1;
+    /* Above container but below sidebar */
+}

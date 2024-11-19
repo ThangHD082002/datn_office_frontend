@@ -1,0 +1,39 @@
+.detail-area{
+    height: 405px;
+    width: 325px;
+    background-color: #f4f4f4;
+    margin-left: 30px;
+    margin-top:80px;
+    border: 1px solid #333;
+}
+
+
+.detail-area{
+
+}
+.contain-title{
+    display: flex;
+    justify-content: space-around;
+}
+.text-left{
+    color: black;
+    margin-top: 20px;
+    margin-right: 40px;
+}
+.icon{
+    color: #606060;
+    margin-right: 15px;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+.text-right{
+    color: #606060;
+    font-style: italic;
+}
+
+.contain-reset{
+    display: flex;
+    margin: 20px;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -74,7 +74,7 @@ body {
     flex-direction: column;
 }
 
-.input-email,
+.input-user,
 .input-password{
     width: 280px;
     height: 38px;
@@ -87,9 +87,10 @@ body {
     color: #a8a8a8;
     border-radius: 8px;
     font-size: 16px;
+    display: block;
 }
 
-.input-email{
+.input-user{
     
 }
 .input-password{
