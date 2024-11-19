@@ -39,6 +39,8 @@ const getUserStatus = (activated) => {
 }
 
 function UserManagementList() {
+  const navigate = useNavigate()
+
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState([])
   const [page, setPage] = useState(1)
@@ -167,7 +169,11 @@ function UserManagementList() {
                       </span>
                     </TableCell>
                     <TableCell className={cx('td')}>
-                      <IconButton color="primary" title="View Details">
+                      <IconButton
+                        color="primary"
+                        title="View Details"
+                        onClick={() => navigate(`/admin/users/${user.id}`)}
+                      >
                         <VisibilityIcon />
                       </IconButton>
                       <IconButton color="error" title="Delete" onClick={() => handleDeleteClick(user)}>

@@ -12,15 +12,16 @@ import {
   Typography,
   Autocomplete
 } from '@mui/material'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { axiosInstance } from '~/utils/axiosInstance'
 
 let theme = createTheme()
 theme = responsiveFontSizes(theme)
 
-function UserCreate() {
+function UserDetail() {
   const navigate = useNavigate()
+  const { uid } = useParams()
   const [formData, setFormData] = useState({
     login: '',
     fullName: '',
@@ -31,26 +32,60 @@ function UserCreate() {
     dob: '',
     phoneNumber: '',
     authorities: [],
-    imageDigitalSignature: null // Chỉ lưu file, không lưu base64
+    imageDigitalSignature: null
   })
   const [imagePreview, setImagePreview] = useState(null)
   const [loading, setLoading] = useState(false)
-
+  const [isEditing, setIsEditing] = useState(false) // Trạng thái chỉnh sửa
   const rolesOptions = ['ROLE_MANAGER', 'ROLE_USER']
+
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      setLoading(true)
+      try {
+        const response = await axiosInstance.get(`admin/users/${uid}`)
+        const userData = response.data
+        setFormData({
+          login: userData.login,
+          fullName: userData.fullName,
+          email: userData.email,
+          langKey: userData.langKey || 'en',
+          cccd: userData.cccd || '',
+          address: userData.address || '',
+          dob: userData.dob || '',
+          phoneNumber: userData.phoneNumber || '',
+          authorities: userData.authorities || [],
+          signImage: userData.signImage || null
+        })
+        // Nếu user có ảnh chữ ký (URL), hiển thị preview
+        if (userData.signImage) {
+          setImagePreview(userData.signImage)
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchUserDetail()
+  }, [uid])
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
     if (file) {
-      setImagePreview(URL.createObjectURL(file)) // Tạo URL để preview ảnh
-      setFormData({ ...formData, imageDigitalSignature: file }) // Lưu file vào formData
+      setImagePreview(URL.createObjectURL(file))
+      setFormData({ ...formData, imageDigitalSignature: file })
     }
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true)
   }
 
   const handleSubmit = async () => {
     try {
       setLoading(true)
 
-      // Chuẩn bị FormData
       const data = new FormData()
       data.append('login', formData.login)
       data.append('fullName', formData.fullName)
@@ -62,24 +97,20 @@ function UserCreate() {
       data.append('phoneNumber', formData.phoneNumber)
       formData.authorities.forEach((role) => data.append('authorities', role))
       if (formData.imageDigitalSignature) {
-        data.append('imageDigitalSignature', formData.imageDigitalSignature) // Đính kèm file
+        data.append('imageDigitalSignature', formData.imageDigitalSignature)
       }
 
-      // Gửi API
-      await axiosInstance
-        .post('/admin/users', data, {
-          headers: {
-            'Content-Type': 'multipart/form-data' // Cần header này để gửi FormData
-          }
-        })
-        .then(() => {
-          navigate('/admin/users')
-        })
-        .catch((error) => {
-          console.error('Error creating user:', error)
-        })
+      await axiosInstance.put(`/admin/users/${uid}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      alert('User details updated successfully!')
+      setIsEditing(false)
     } catch (error) {
-      console.error('Error creating user:', error)
+      console.error('Error updating user details:', error)
+      alert('Failed to update user details. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -89,19 +120,14 @@ function UserCreate() {
     <ThemeProvider theme={theme}>
       <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
         <Typography variant="h2" gutterBottom>
-          Tạo Người Dùng Mới
+          {isEditing ? 'Edit User Details' : 'User Details'}
         </Typography>
         <Divider sx={{ mb: 3 }} />
 
         <Paper elevation={3} sx={{ p: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                label="Tên đăng nhập"
-                fullWidth
-                value={formData.login}
-                onChange={(e) => setFormData({ ...formData, login: e.target.value })}
-              />
+              <TextField label="Tên đăng nhập" fullWidth value={formData.login} disabled />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -109,6 +135,7 @@ function UserCreate() {
                 fullWidth
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -119,6 +146,7 @@ function UserCreate() {
                 InputLabelProps={{ shrink: true }}
                 value={formData.phoneNumber}
                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -127,6 +155,7 @@ function UserCreate() {
                 fullWidth
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -135,6 +164,7 @@ function UserCreate() {
                 fullWidth
                 value={formData.cccd}
                 onChange={(e) => setFormData({ ...formData, cccd: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -143,6 +173,7 @@ function UserCreate() {
                 fullWidth
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -153,6 +184,7 @@ function UserCreate() {
                 InputLabelProps={{ shrink: true }}
                 value={formData.dob}
                 onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -160,16 +192,13 @@ function UserCreate() {
                 multiple
                 options={rolesOptions}
                 getOptionLabel={(option) => option}
-                onChange={(event, newValue) => {
-                  setFormData({ ...formData, authorities: newValue })
-                }}
+                value={formData.authorities}
+                onChange={(event, newValue) => setFormData({ ...formData, authorities: newValue })}
                 renderInput={(params) => <TextField {...params} label="Chọn quyền" />}
+                disabled={!isEditing}
               />
             </Grid>
             <Grid item xs={12} sm={12} container justifyContent="center">
-              {/* <Typography variant="subtitle1" gutterBottom>
-                Tải chữ kí dạng ảnh
-              </Typography> */}
               <Stack direction="row" spacing={2} alignItems="center">
                 <label htmlFor="raised-button-file">
                   <input
@@ -178,8 +207,9 @@ function UserCreate() {
                     id="raised-button-file"
                     type="file"
                     onChange={handleImageUpload}
+                    disabled={!isEditing}
                   />
-                  <Button variant="contained" component="span">
+                  <Button variant="contained" component="span" disabled={!isEditing}>
                     Chọn chữ kí
                   </Button>
                 </label>
@@ -215,20 +245,36 @@ function UserCreate() {
               >
                 Quay lại
               </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  width: '150px',
-                  bgcolor: '#B7272D',
-                  '&:hover': {
-                    bgcolor: '#7A1A1E'
-                  }
-                }}
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                Tạo người dùng
-              </Button>
+              {isEditing ? (
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: '150px',
+                    bgcolor: '#B7272D',
+                    '&:hover': {
+                      bgcolor: '#7A1A1E'
+                    }
+                  }}
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  Lưu
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: '150px',
+                    bgcolor: '#B7272D',
+                    '&:hover': {
+                      bgcolor: '#7A1A1E'
+                    }
+                  }}
+                  onClick={handleEdit}
+                >
+                  Chỉnh sửa
+                </Button>
+              )}
             </Stack>
           </Box>
         </Paper>
@@ -237,4 +283,4 @@ function UserCreate() {
   )
 }
 
-export default UserCreate
+export default UserDetail

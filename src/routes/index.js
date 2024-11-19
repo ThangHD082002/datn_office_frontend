@@ -17,6 +17,7 @@ import RequestManagementCreate from '~/pages/Admin/RequestManagement/Create'
 import ErrorToken from '~/pages/ErrorToken'
 import UserManagementList from '~/pages/Admin/UserManagement/List'
 import UserManagementCreate from '~/pages/Admin/UserManagement/Create'
+import UserManagementDetail from '~/pages/Admin/UserManagement/Detail'
 import PreviewContract from '~/pages/Admin/ContractManagement/PreviewContract'
 import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
 import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
@@ -93,6 +94,11 @@ const publicRoutes = [
   {
     path: '/admin/create-managers',
     component: UserManagementCreate,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/users/:uid',
+    component: UserManagementDetail,
     layout: AdminLayout
   },
   {
