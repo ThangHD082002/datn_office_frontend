@@ -18,6 +18,7 @@ import ErrorToken from '~/pages/ErrorToken'
 import UserManagementList from '~/pages/Admin/UserManagement/List'
 import UserManagementCreate from '~/pages/Admin/UserManagement/Create'
 import UserManagementDetail from '~/pages/Admin/UserManagement/Detail'
+import AssignBuilding from '~/pages/Admin/UserManagement/AssignBuilding'
 import PreviewContract from '~/pages/Admin/ContractManagement/PreviewContract'
 import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
 import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
@@ -99,6 +100,11 @@ const publicRoutes = [
   {
     path: '/admin/users/:uid',
     component: UserManagementDetail,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/assign-building',
+    component: AssignBuilding,
     layout: AdminLayout
   },
   {

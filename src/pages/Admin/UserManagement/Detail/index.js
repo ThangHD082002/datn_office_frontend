@@ -67,6 +67,7 @@ function UserDetail() {
         setLoading(false)
       }
     }
+
     fetchUserDetail()
   }, [uid])
 
@@ -127,7 +128,7 @@ function UserDetail() {
         <Paper elevation={3} sx={{ p: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField label="Tên đăng nhập" fullWidth value={formData.login} disabled />
+              <TextField label="Tên đăng nhập" fullWidth value={formData.login} disabled={!isEditing} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField

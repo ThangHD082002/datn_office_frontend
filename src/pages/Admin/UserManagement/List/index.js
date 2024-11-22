@@ -114,8 +114,30 @@ function UserManagementList() {
         </Typography>
         <Divider />
         <div>
-          <Button variant="primary" className={cx('btn-create')} href="/admin/create-managers">
-            Add New User &nbsp; <AddIcon />
+          {/* Nút thêm user */}
+          <Button
+            variant="contained"
+            href="/admin/create-managers"
+            sx={{
+              bgcolor: '#0000FF', // Đặt màu nền
+              color: '#fff', // Màu chữ
+              '&:hover': { bgcolor: '#7B00B5' } // Màu nền khi hover
+            }}
+          >
+            Thêm User Manager &nbsp; <AddIcon />
+          </Button>
+
+          {/* Nút gán tòa nhà */}
+          <Button
+            variant="contained"
+            href="/admin/assign-building"
+            sx={{
+              bgcolor: '#0000FF', // Đặt màu nền
+              color: '#fff', // Màu chữ
+              '&:hover': { bgcolor: '#006666' } // Màu nền khi hover
+            }}
+          >
+            Gán Tòa Nhà &nbsp; <AddIcon />
           </Button>
         </div>
 
