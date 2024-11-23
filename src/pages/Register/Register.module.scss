@@ -10,8 +10,9 @@
 }
 
 .login-container {
-    width: 450px;
-    height: 800px;
+    width: 900px;
+    height: 600px;
+    overflow: auto;
     margin: auto;
     background-color: white;
     z-index: 1;
@@ -102,7 +103,7 @@ body {
     flex-direction: row;
 }
 .sign-up-note{
-    margin-left: 105px;
+    margin-left: 305px;
     margin-bottom: 6px;
 }
 .sign-up-link{
@@ -114,6 +115,13 @@ body {
 .input-empty{
     color: red;
     margin-left: 82px;
+    font-size: 15px;
+    margin-top: 5px;
+}
+
+.input-empty-dob{
+    color: red;
+    margin-left: 10px;
     font-size: 15px;
     margin-top: 5px;
 }
@@ -153,3 +161,17 @@ body {
 // .helo{
 //     color: red;
 // }
+
+.first-body-container{
+    display: flex;
+}
+
+.dob{
+    margin-left: 35%;
+    margin-bottom: 10px;
+}
+
+.btn-signup{
+    margin-left: 22%;
+    margin-bottom: 15px;
+}
