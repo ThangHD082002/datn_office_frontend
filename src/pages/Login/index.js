@@ -67,7 +67,12 @@ function Login() {
 
           console.log(role)
           if (response.data.message === 'Đăng nhập thành công') {
-            localStorage.setItem('authToken', response.data.result.token)
+            const tokenKey = 'authToken'
+            const newToken = response.data.result.token
+            if (localStorage.getItem(tokenKey)) {
+              localStorage.removeItem(tokenKey) // Xóa nếu tồn tại
+            }
+            localStorage.setItem(tokenKey, newToken);
             var role = decodeToken(response.data.result.token)
             // navigate("/")
             if (role.auth === 'ROLE_ADMIN ROLE_USER') {
