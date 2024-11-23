@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const axiosInstance = axios.create({
-  baseURL: "https://office-nest-ohcid.ondigitalocean.app/api",
+  baseURL: 'https://office-nest-ohcid.ondigitalocean.app/api',
   // baseURL: 'http://localhost:9999/api', // Replace with your API base URL
   // timeout: 15000, // Set the timeout to 15 seconds
   headers: { 'Content-Type': 'application/json' }
