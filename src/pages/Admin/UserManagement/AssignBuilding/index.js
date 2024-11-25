@@ -45,8 +45,8 @@ const AssignBuilding = () => {
   }
 
   // Fetch Users with Pagination
-  const fetchUsers = async (page) => {
-    const response = await axiosInstance.get(`/admin/managers`)
+  const fetchUsers = async (page, buildingId) => {
+    const response = await axiosInstance.get(`/admin/get-all-managers-not-assigned/${buildingId}`)
     const data = await response.data
     setUsers(data)
   }
@@ -60,13 +60,14 @@ const AssignBuilding = () => {
 
   useEffect(() => {
     fetchBuildings(buildingPage)
-    fetchUsers(userPage)
+    // fetchUsers(userPage)
   }, [buildingPage, userPage])
 
   const handleBuildingChange = async (event) => {
     const buildingId = event.target.value
     setSelectedBuilding(buildingId)
     fetchAssignedUsers(buildingId)
+    fetchUsers(userPage, buildingId)
   }
 
   const handleUserChange = (event) => {
@@ -77,7 +78,7 @@ const AssignBuilding = () => {
   const handleDeleteUser = async () => {
     if (!userToDelete) return
     try {
-      await axiosInstance.delete(`/admin/manager/${userToDelete.id}`) // Gọi API xóa
+      await axiosInstance.delete(`/admin/remove-assigned-manager/${selectedBuilding}/${userToDelete.id}`) // Gọi API xóa
       setBuildingUsers((prev) => prev.filter((user) => user.id !== userToDelete.id)) // Xóa user khỏi danh sách
     } catch (error) {
       console.error('Error deleting user:', error)
