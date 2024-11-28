@@ -101,9 +101,15 @@ const AssignBuilding = () => {
       const dataToSubmit = {
         listUserId: selectedUsers
       }
-      await axiosInstance.post(`/admin/assign-users-responsible-by-building-id/${selectedBuilding}`, dataToSubmit)
+      const response = await axiosInstance.post(
+        `/admin/assign-users-responsible-by-building-id/${selectedBuilding}`,
+        dataToSubmit
+      )
       fetchAssignedUsers(selectedBuilding) // Cập nhật danh sách sau khi lưu
+
+      alert(response.data.result)
     } catch (error) {
+      alert(error.response.data.message)
       console.error('Error creating user:', error)
     }
   }
