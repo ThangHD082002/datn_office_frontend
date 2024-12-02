@@ -1,0 +1,22 @@
+.container{
+    display: flex;
+    margin-bottom: 100px;
+    margin-left: 190px;
+}
+
+.signature{
+    height: 100%;
+    margin-top: 10px;
+    margin-left: 60px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.label-upload{
+    display: block;
+    background-color: green;
+    cursor: pointer;
+    color: white;
+    padding: 10px 10px;
+    border-radius: 4px;
+}

@@ -25,6 +25,7 @@
     "classnames": "^2.5.1",
     "datn_frontend_main": "file:",
     "dayjs": "^1.11.13",
+    "form-data": "^4.0.1",
     "jquery": "^3.7.1",
     "jspdf": "^2.5.2",
     "jwt-decode": "^4.0.0",

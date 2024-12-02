@@ -35,7 +35,7 @@ function Login() {
     try {
       const decodedData = jwtDecode(token)
       console.log('decodedData') // Kiểm tra dữ liệu trong token
-
+      console.log(decodedData);
       // console.log(decodedData); // Kiểm tra dữ liệu trong token
       setInfor(decodedData)
       return decodedData
@@ -74,8 +74,10 @@ function Login() {
             }
             localStorage.setItem(tokenKey, newToken);
             var role = decodeToken(response.data.result.token)
-            // navigate("/")
-            if (role.auth === 'ROLE_ADMIN ROLE_USER') {
+            localStorage.setItem('role', role.auth);
+            localStorage.setItem('id_user', role.sub);
+            navigate("/")
+            if (role.auth.includes("ROLE_ADMIN")) {
               navigate('/admin/requests')
             } else {
               navigate('/')

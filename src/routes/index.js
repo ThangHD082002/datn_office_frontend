@@ -22,6 +22,8 @@ import AssignBuilding from '~/pages/Admin/UserManagement/AssignBuilding'
 import PreviewContract from '~/pages/Admin/ContractManagement/PreviewContract'
 import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
 import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
+import UserContract from '~/pages/UserContract'
+import UserPreviewContract from '~/pages/UserPreviewContract'
 
 const publicRoutes = [
   {
@@ -50,6 +52,16 @@ const publicRoutes = [
   {
     path: '/detail-room/:rid',
     component: DetailRoom,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/user-contract',
+    component: UserContract,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/user/preview-contract/:pid',
+    component: UserPreviewContract,
     layout: HeaderSearchLayout
   },
   {

@@ -32,9 +32,9 @@ import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
 
 import axios from 'axios'
-import styles from './ManageContract.module.scss'
+import styles from './UserContract.module.scss'
 
-function ManageContract() {
+function UserContract() {
   let token = localStorage.getItem('authToken')
 
   const [filteredArray, setFilteredArray] = useState([])
@@ -43,75 +43,81 @@ function ManageContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
+  var idUser = localStorage.getItem('id_user');
+  console.log(idUser);
   useEffect(() => {
-    // axios
-    //   .post(
-    //     "https://office-nest-ohcid.ondigitalocean.app/api/contract",
-    //     {
-    //       pageNumber: 0,
-    //       pageSize: 10,
-    //       filter: [],
-    //       sortProperty: "contract.lastModifiedDate",
-    //       sortOrder: "DESC",
-    //       buildingIds: [],
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   )
-    //   .then(function (response) {
+
+    // axiosInstance
+    //   .post('/contract', {
+    //     pageNumber: 0,
+    //     pageSize: 10,
+    //     filter: [],
+    //     sortProperty: 'contract.lastModifiedDate',
+    //     sortOrder: 'DESC',
+    //     buildingIds: []
+    //   })
+    //   .then((response) => {
     //     const newArray = response.data.data.map((item) => ({
     //       id: item.id,
     //       code: item.code,
     //       startDate: item.startDate,
     //       rentalPurpose: item.rentalPurpose,
-    //       status: item.status,
-    //     }));
-    //     setRows(newArray);
+    //       status: item.status
+    //     }))
+    //     setRows(newArray)
     //   })
-    //   .catch(function (error) {
-    //     console.error("Error:", error);
+    //   .catch((error) => {
+    //     console.error('Error:', error)
     //     if (error.response && error.response.status === 401) {
-    //       // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
-    //       window.location.href = "/error-token";
+    //       // Chuyển đến trang /error-token nếu   mã lỗi là 401 Unauthorized
+    //       window.location.href = '/error-token'
     //     }
     //   })
-    //   .finally(function () {
-    //     console.log("Request completed.");
-    //   });
+    //   .finally(() => {
+    //     console.log('Request completed.')
+    //   })
+
 
     axiosInstance
-      .post('/contract', {
-        pageNumber: 0,
-        pageSize: 10,
-        filter: [],
-        sortProperty: 'contract.lastModifiedDate',
-        sortOrder: 'DESC',
-        buildingIds: []
-      })
-      .then((response) => {
-        const newArray = response.data.data.map((item) => ({
-          id: item.id,
-          code: item.code,
-          startDate: item.startDate,
-          rentalPurpose: item.rentalPurpose,
-          status: item.status
-        }))
-        setRows(newArray)
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-        if (error.response && error.response.status === 401) {
-          // Chuyển đến trang /error-token nếu   mã lỗi là 401 Unauthorized
-          window.location.href = '/error-token'
-        }
-      })
-      .finally(() => {
-        console.log('Request completed.')
-      })
+    .post(
+      '/contract', // Sử dụng đường dẫn tương đối
+      {
+        "pageNumber": 0,
+        "pageSize": 10,
+        "filter": [
+            {
+                "operator": "=",
+                "key": "user",
+                "value": idUser,
+                "otherValue": null,
+                "valueSelected": null
+            }
+        ],
+        "sortProperty": "contract.lastModifiedDate",
+        "sortOrder": "DESC",
+        "buildingIds": []
+    }
+    )
+    .then((response) => {
+      console.log('CONTRACT');
+      console.log(response);
+      const newArray = response.data.data.map((item) => ({
+        id: item.id,
+        code: item.code,
+        startDate: item.startDate,
+        rentalPurpose: item.rentalPurpose,
+        status: item.status
+      }))
+      setRows(newArray)
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+    .finally(() => {
+      console.log('Request completed.')
+    })
   }, [])
+
 
   // console.log(filteredArray);
 
@@ -489,7 +495,7 @@ function ManageContract() {
   const HandlePreviewContract = () => {
     const id = Number(selected[0])
     // navigate('/admin/create-contract')
-    navigate(`/admin/preview-contract/${id}`);
+    navigate(`/user/preview-contract/${id}`);
   }
 
   return (
@@ -671,4 +677,4 @@ function ManageContract() {
   )
 }
 
-export default ManageContract
+export default UserContract

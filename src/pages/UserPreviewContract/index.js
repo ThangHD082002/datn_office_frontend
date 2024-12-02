@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { pdfjs, Document, Page } from 'react-pdf'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
-import styles from './PreviewContract.module.scss'
+import styles from './UserPreviewContract.module.scss'
 import classNames from 'classnames/bind'
 import { AppBar, Toolbar, IconButton, Button, Box, Typography, CircularProgress } from '@mui/material'
 import { Clear } from '@mui/icons-material'
@@ -14,7 +14,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const cx = classNames.bind(styles)
 
-const PdfViewer = () => {
+const UserPreviewContract = () => {
   const [pdfFile, setPdfFile] = useState(null) // URL PDF
   const [numPages, setNumPages] = useState(null) // Tổng số trang
   const [pageNumber, setPageNumber] = useState(1) // Trang hiện tại
@@ -22,8 +22,8 @@ const PdfViewer = () => {
   const { pid } = useParams() // Lấy ID từ URL params
   const token = localStorage.getItem('authToken') // Lấy token từ localStorage
   const [signaturePlaced, setSignaturePlaced] = useState(false) // Trạng thái xác định chữ ký đã đặt đúng vị trí chưa
-  const [signaturePositionB, setSignaturePositionB] = useState({ x: 80, y: 370, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
-  const [signaturePositionA, setSignaturePositionA] = useState({ x: 400, y: 370, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionB, setSignaturePositionB] = useState({ x: 280, y: 520, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionA, setSignaturePositionA] = useState({ x: 280, y: 520, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
 
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
@@ -129,17 +129,6 @@ const PdfViewer = () => {
   }
 
   // Hàm upload file ảnh
-  // const handleImageUpload = (e) => {
-  //   const file = e.target.files[0]
-  //   if (file && file.type.startsWith('image/')) {
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setImage(reader.result) // Đọc và lưu dữ liệu ảnh vào state
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -153,33 +142,9 @@ const PdfViewer = () => {
     setImage(null) // Xóa ảnh
   }
 
-  //Hàm xử lý khi lưu chữ ký
-  // const handleSave = () => {
-  //   if (signaturePlaced) {
-  //     const formData = new FormData();
-  //     formData.append('file', image);
-  //     axiosInstance
-  //       .post(
-  //         `/contract/${pid}/verify-signature`,
-  //         formData
-  //       )
-  //       .then((response) => {
-  //         console.log('Chữ ký đã được lưu:', response.data);
-  //         alert('Chữ ký đã được lưu thành công!');
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error saving signature:', error);
-  //         alert('Đã xảy ra lỗi khi lưu chữ ký!');
-  //       });
-  //     // call api to save signature
-  //   } else {
-  //     alert('Vui lòng đặt chữ ký vào vùng chỉ định trước khi lưu!')
-  //   }
-  // }
-
+  // Hàm xử lý khi lưu chữ ký
   const handleSave = () => {
     console.log(image);
-    if (signaturePlaced && image) {
       const formData = new FormData();
       formData.set('file', image); // Gửi file ảnh với key 'file'
   
@@ -197,9 +162,6 @@ const PdfViewer = () => {
           console.error('Error saving signature:', error);
           alert('Đã xảy ra lỗi khi lưu chữ ký!');
         });
-    } else {
-      alert('Vui lòng đặt chữ ký vào vùng chỉ định trước khi lưu và chọn ảnh!');
-    }
   }
 
   return (
@@ -309,7 +271,7 @@ const PdfViewer = () => {
               onMouseDown={handleDragStart}
             >
               <img
-                 src={image ? URL.createObjectURL(image) : ''}
+                src={image ? URL.createObjectURL(image) : ''}
                 alt="Uploaded"
                 style={{
                   width: '300px', // Thay đổi width thành 300px
@@ -356,4 +318,4 @@ const PdfViewer = () => {
   )
 }
 
-export default PdfViewer
+export default UserPreviewContract

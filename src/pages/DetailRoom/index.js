@@ -576,7 +576,7 @@ function DetailRoom() {
                   </li>
                 </ul>
               </div>
-              <ButtonFloor onClick={handleClick}>CHỌN TẦNG</ButtonFloor>
+              <ButtonFloor onClick={handleClick}>CHỌN PHÒNG</ButtonFloor>
             </div>
           </Col>
         </Row>
@@ -587,7 +587,7 @@ function DetailRoom() {
           <div className={cx('ticket-selector')}>
             <div className={cx('head')}>
               <div className={cx('title')}>
-                DANH SÁCH CÁC TẦNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
+                DANH SÁCH CÁC PHÒNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
               </div>
               <div>
                 <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
