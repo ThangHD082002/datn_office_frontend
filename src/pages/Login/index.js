@@ -35,7 +35,7 @@ function Login() {
     try {
       const decodedData = jwtDecode(token)
       console.log('decodedData') // Kiểm tra dữ liệu trong token
-      console.log(decodedData);
+      console.log(decodedData)
       // console.log(decodedData); // Kiểm tra dữ liệu trong token
       setInfor(decodedData)
       return decodedData
@@ -72,12 +72,12 @@ function Login() {
             if (localStorage.getItem(tokenKey)) {
               localStorage.removeItem(tokenKey) // Xóa nếu tồn tại
             }
-            localStorage.setItem(tokenKey, newToken);
+            localStorage.setItem(tokenKey, newToken)
             var role = decodeToken(response.data.result.token)
-            localStorage.setItem('role', role.auth);
-            localStorage.setItem('id_user', role.sub);
-            navigate("/")
-            if (role.auth.includes("ROLE_ADMIN")) {
+            localStorage.setItem('role', role.auth)
+            localStorage.setItem('id_user', role.sub)
+            // navigate("/")
+            if (role.auth.includes('ROLE_ADMIN') || role.auth.includes('ROLE_MANAGER')) {
               navigate('/admin/requests')
             } else {
               navigate('/')

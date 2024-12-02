@@ -68,6 +68,7 @@ const AssignBuilding = () => {
     setSelectedBuilding(buildingId)
     fetchAssignedUsers(buildingId)
     fetchUsers(userPage, buildingId)
+    setSelectedUsers([])
   }
 
   const handleUserChange = (event) => {
