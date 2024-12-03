@@ -89,13 +89,13 @@ function UserCreate() {
         })
         .catch((error) => {
           setAlertSeverity('error')
-          setAlertText(error.response.data.fieldErrors[0].message)
-          console.error('Error creating user:', error.response)
+          setAlertText(error.response.data.message)
+          console.error('Error creating user1:', error.response.data.message)
         })
     } catch (error) {
       setAlertSeverity('error')
       // setAlertText(error)
-      console.error('Error creating user:', error.response)
+      console.error('Error creating user:', error)
     } finally {
       setSnackbarOpen(true)
       setLoading(false)
