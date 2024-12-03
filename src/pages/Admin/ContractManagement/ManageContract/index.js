@@ -92,6 +92,7 @@ function ManageContract() {
         buildingIds: []
       })
       .then((response) => {
+        console.log(response);
         const newArray = response.data.data.map((item) => ({
           id: item.id,
           code: item.code,

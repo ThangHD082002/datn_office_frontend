@@ -22,8 +22,8 @@ const PdfViewer = () => {
   const { pid } = useParams() // Lấy ID từ URL params
   const token = localStorage.getItem('authToken') // Lấy token từ localStorage
   const [signaturePlaced, setSignaturePlaced] = useState(false) // Trạng thái xác định chữ ký đã đặt đúng vị trí chưa
-  const [signaturePositionB, setSignaturePositionB] = useState({ x: 80, y: 370, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
-  const [signaturePositionA, setSignaturePositionA] = useState({ x: 400, y: 370, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionB, setSignaturePositionB] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionA, setSignaturePositionA] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
 
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
@@ -98,24 +98,50 @@ const PdfViewer = () => {
     setNumPages(numPages) // Lưu số trang PDF
   }
 
-  const goToPreviousPage = () => {
-    setPageNumber((prevPageNumber) => Math.max(prevPageNumber - 1, 1)) // Chuyển sang trang trước
-  }
-
   const goToNextPage = () => {
-    setPageNumber((prevPageNumber) => Math.min(prevPageNumber + 1, numPages)) // Chuyển sang trang tiếp theo
-    if (pageNumber + 1 === numPages) {
-      // check role manager thì hiển thị ô kí bên A, client thì hiển thị ô kí bên B
-      var role = localStorage.getItem('role');
-      if(role.includes("ROLE_USER")){
-        document.getElementById('signature-boxA').style.display = 'block';
-      } else{
-        document.getElementById('signature-boxB').style.display = 'block';
+    setPageNumber((prevPageNumber) => {
+      const newPageNumber = Math.min(prevPageNumber + 1, numPages); // Chuyển sang trang tiếp theo
+      if (newPageNumber === numPages) {
+        // Khi ở trang cuối cùng, hiển thị ô ký
+        var role = localStorage.getItem('role');
+        if(role && role.includes("ROLE_USER")){
+          document.getElementById('signature-boxA').style.display = 'block';
+          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        } else {
+          document.getElementById('signature-boxB').style.display = 'block';
+          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+        }
+      } else {
+        // Khi không phải trang cuối cùng, ẩn ô ký
+        document.getElementById('signature-boxA').style.display = 'none';
+        document.getElementById('signature-boxB').style.display = 'none';
       }
-      
-      // document.getElementById('signature-boxB').style.display = 'block'
-    }
+      return newPageNumber;
+    });
   }
+  
+  const goToPreviousPage = () => {
+    setPageNumber((prevPageNumber) => {
+      const newPageNumber = Math.max(prevPageNumber - 1, 1); // Chuyển sang trang trước và không nhỏ hơn 1
+      if (newPageNumber === numPages) {
+        // Khi ở trang cuối cùng, hiển thị ô ký
+        var role = localStorage.getItem('role');
+        if(role && role.includes("ROLE_USER")){
+          document.getElementById('signature-boxA').style.display = 'block';
+          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        } else {
+          document.getElementById('signature-boxB').style.display = 'block';
+          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+        }
+      } else {
+        // Khi không phải trang cuối cùng, ẩn ô ký
+        document.getElementById('signature-boxA').style.display = 'none';
+        document.getElementById('signature-boxB').style.display = 'none';
+      }
+      return newPageNumber;
+    });
+  }
+  
 
   const handleDownload = () => {
     if (pdfFile) {
@@ -144,6 +170,10 @@ const PdfViewer = () => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       setImage(file); // Lưu đối tượng File vào state thay vì Data URL
+      setImagePosition({
+        x: 450, 
+        y: 660,
+      });
     } else {
       alert('Vui lòng chọn một tệp ảnh hợp lệ!');
     }

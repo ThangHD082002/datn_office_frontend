@@ -9,6 +9,7 @@ import { Clear } from '@mui/icons-material'
 import { ArrowBack, ArrowForward, GetApp } from '@mui/icons-material'
 import FormData from 'form-data'
 import { axiosInstance } from '~/utils/axiosInstance'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 
@@ -22,12 +23,21 @@ const UserPreviewContract = () => {
   const { pid } = useParams() // Lấy ID từ URL params
   const token = localStorage.getItem('authToken') // Lấy token từ localStorage
   const [signaturePlaced, setSignaturePlaced] = useState(false) // Trạng thái xác định chữ ký đã đặt đúng vị trí chưa
-  const [signaturePositionB, setSignaturePositionB] = useState({ x: 280, y: 520, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
-  const [signaturePositionA, setSignaturePositionA] = useState({ x: 280, y: 520, width: 300, height: 150 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionB, setSignaturePositionB] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
+  const [signaturePositionA, setSignaturePositionA] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
 
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
   const [dragging, setDragging] = useState(false) // Trạng thái kéo ảnh
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   // Hàm kiểm tra nếu chữ ký nằm trong vùng ký
   const checkSignaturePosition = (x, y) => {
@@ -98,23 +108,67 @@ const UserPreviewContract = () => {
     setNumPages(numPages) // Lưu số trang PDF
   }
 
-  const goToPreviousPage = () => {
-    setPageNumber((prevPageNumber) => Math.max(prevPageNumber - 1, 1)) // Chuyển sang trang trước
-  }
+  // const goToPreviousPage = () => {
+  //   setPageNumber((prevPageNumber) => Math.max(prevPageNumber - 1, 1)) // Chuyển sang trang trước
+  // }
+
+  // const goToNextPage = () => {
+  //   setPageNumber((prevPageNumber) => Math.min(prevPageNumber + 1, numPages)) // Chuyển sang trang tiếp theo
+  //   if (pageNumber + 1 === numPages) {
+  //     // check role manager thì hiển thị ô kí bên A, client thì hiển thị ô kí bên B
+  //     var role = localStorage.getItem('role');
+  //     if(role.includes("ROLE_USER")){
+  //       document.getElementById('signature-boxA').style.display = 'block';
+  //     } else{
+  //       document.getElementById('signature-boxB').style.display = 'block';
+  //     }
+      
+  //     // document.getElementById('signature-boxB').style.display = 'block'
+  //   }
+  // }
 
   const goToNextPage = () => {
-    setPageNumber((prevPageNumber) => Math.min(prevPageNumber + 1, numPages)) // Chuyển sang trang tiếp theo
-    if (pageNumber + 1 === numPages) {
-      // check role manager thì hiển thị ô kí bên A, client thì hiển thị ô kí bên B
-      var role = localStorage.getItem('role');
-      if(role.includes("ROLE_USER")){
-        document.getElementById('signature-boxA').style.display = 'block';
-      } else{
-        document.getElementById('signature-boxB').style.display = 'block';
+    setPageNumber((prevPageNumber) => {
+      const newPageNumber = Math.min(prevPageNumber + 1, numPages); // Chuyển sang trang tiếp theo
+      if (newPageNumber === numPages) {
+        // Khi ở trang cuối cùng, hiển thị ô ký
+        var role = localStorage.getItem('role');
+        if(role && role.includes("ROLE_USER")){
+          document.getElementById('signature-boxA').style.display = 'block';
+          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        } else {
+          document.getElementById('signature-boxB').style.display = 'block';
+          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+        }
+      } else {
+        // Khi không phải trang cuối cùng, ẩn ô ký
+        document.getElementById('signature-boxA').style.display = 'none';
+        document.getElementById('signature-boxB').style.display = 'none';
       }
-      
-      // document.getElementById('signature-boxB').style.display = 'block'
-    }
+      return newPageNumber;
+    });
+  }
+  
+  const goToPreviousPage = () => {
+    setPageNumber((prevPageNumber) => {
+      const newPageNumber = Math.max(prevPageNumber - 1, 1); // Chuyển sang trang trước và không nhỏ hơn 1
+      if (newPageNumber === numPages) {
+        // Khi ở trang cuối cùng, hiển thị ô ký
+        var role = localStorage.getItem('role');
+        if(role && role.includes("ROLE_USER")){
+          document.getElementById('signature-boxA').style.display = 'block';
+          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        } else {
+          document.getElementById('signature-boxB').style.display = 'block';
+          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+        }
+      } else {
+        // Khi không phải trang cuối cùng, ẩn ô ký
+        document.getElementById('signature-boxA').style.display = 'none';
+        document.getElementById('signature-boxB').style.display = 'none';
+      }
+      return newPageNumber;
+    });
   }
 
   const handleDownload = () => {
@@ -133,6 +187,10 @@ const UserPreviewContract = () => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       setImage(file); // Lưu đối tượng File vào state thay vì Data URL
+      setImagePosition({
+        x: 240, 
+        y: 550,
+      });
     } else {
       alert('Vui lòng chọn một tệp ảnh hợp lệ!');
     }
@@ -156,11 +214,17 @@ const UserPreviewContract = () => {
         })
         .then((response) => {
           console.log('Chữ ký đã được lưu:', response.data);
-          alert('Chữ ký đã được lưu thành công!');
+          setAlertSeverity('success')
+          setAlertText('Hoàn tất thực hiện kí xác thực')
+          setNavigatePath('/user-contract') // Đường dẫn chuyển hướng sau khi thành công
         })
         .catch((error) => {
-          console.error('Error saving signature:', error);
-          alert('Đã xảy ra lỗi khi lưu chữ ký!');
+          setAlertSeverity('error')
+          setAlertText('Đã xảy ra lỗi trong quá trình kí')
+        })
+        .finally(function () {
+          // always executed
+          setSnackbarOpen(true)
         });
   }
 
@@ -314,6 +378,13 @@ const UserPreviewContract = () => {
           </Button>
         </div>
       </div>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }
