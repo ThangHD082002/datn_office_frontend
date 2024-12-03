@@ -56,6 +56,11 @@ function Login() {
   }
 
   const handleSubmit = (e) => {
+    // Remove all localStorage when login
+    localStorage.removeItem('role');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('id_user');
+
     let link = ''
     e.preventDefault()
     if (isUserEmpty != '' || isPasswordEmpty != '' || user == '' || pass == '') {

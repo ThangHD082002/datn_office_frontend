@@ -78,8 +78,8 @@ function RequestManagementList() {
   }
 
   const getUserName = (user) => {
-    if (user && user.firstName && user.lastName) {
-      return `${user.lastName} ${user.firstName}`
+    if (user && user.fullName) {
+      return `${user.fullName}`
     }
     return 'Không xác định'
   }
@@ -164,7 +164,8 @@ function RequestManagementList() {
                       </span>
                     </TableCell>
                     <TableCell className={cx('td')}>
-                      <IconButton color="primary" title="Chi tiết">
+                      <IconButton color="primary" title="Chi tiết"
+                        onClick={() => navigate(`/admin/requests/${row.id}`)}>
                         <VisibilityIcon />
                       </IconButton>
                       {1 === 1 && (
