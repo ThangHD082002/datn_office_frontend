@@ -24,6 +24,7 @@ import {
   DialogTitle
 } from '@mui/material'
 import { axiosInstance } from '~/utils/axiosInstance'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 const AssignBuilding = () => {
   const [openDialog, setOpenDialog] = useState(false)
@@ -36,6 +37,15 @@ const AssignBuilding = () => {
   const [buildingUsers, setBuildingUsers] = useState([])
   const [buildingPage, setBuildingPage] = useState(1)
   const [userPage, setUserPage] = useState(1)
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   // Fetch Buildings with Pagination
   const fetchBuildings = async (page) => {
@@ -107,10 +117,14 @@ const AssignBuilding = () => {
         dataToSubmit
       )
       fetchAssignedUsers(selectedBuilding) // Cập nhật danh sách sau khi lưu
-
-      alert(response.data.result)
+      setAlertSeverity('success')
+      setAlertText(response.data.result)
+      setNavigatePath(null) // Đường dẫn chuyển hướng sau khi thành công
+      setSnackbarOpen(true)
     } catch (error) {
-      alert(error.response.data.message)
+      setAlertSeverity('error')
+      setAlertText(error.response.data.message)
+      setSnackbarOpen(true)
       console.error('Error creating user:', error)
     }
   }
@@ -284,6 +298,13 @@ const AssignBuilding = () => {
           </Dialog>
         </Paper>
       </Box>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </Container>
   )
 }

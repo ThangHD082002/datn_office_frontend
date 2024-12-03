@@ -15,6 +15,7 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { axiosInstance } from '~/utils/axiosInstance'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 let theme = createTheme()
 theme = responsiveFontSizes(theme)
@@ -37,6 +38,15 @@ function UserCreate() {
   const [loading, setLoading] = useState(false)
 
   const rolesOptions = ['ROLE_MANAGER', 'ROLE_USER']
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
@@ -73,14 +83,21 @@ function UserCreate() {
           }
         })
         .then(() => {
-          navigate('/admin/users')
+          setAlertSeverity('success')
+          setAlertText('Tạo tài khoản thành công')
+          setNavigatePath('/admin/users') // Đường dẫn chuyển hướng sau khi thành công
         })
         .catch((error) => {
-          console.error('Error creating user:', error)
+          setAlertSeverity('error')
+          setAlertText(error.response.data.fieldErrors[0].message)
+          console.error('Error creating user:', error.response)
         })
     } catch (error) {
-      console.error('Error creating user:', error)
+      setAlertSeverity('error')
+      // setAlertText(error)
+      console.error('Error creating user:', error.response)
     } finally {
+      setSnackbarOpen(true)
       setLoading(false)
     }
   }
@@ -233,6 +250,13 @@ function UserCreate() {
           </Box>
         </Paper>
       </Box>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </ThemeProvider>
   )
 }

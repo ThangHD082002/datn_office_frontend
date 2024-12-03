@@ -20,14 +20,14 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { axiosInstance } from '~/utils/axiosInstance'
 import { Axios } from 'axios'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 const cx = classNames.bind(styles)
 function Register() {
   const [login, setLogin] = useState('')
   const [pass, setPass] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [cccd, setCccd] = useState('')
   const [address, setAddress] = useState('')
@@ -38,8 +38,7 @@ function Register() {
   const [isLoginEmpty, setIsLoginEmpty] = useState('')
   const [isPasswordEmpty, setIsPasswordEmpty] = useState('')
   const [isConfirmPassEmpty, setIsConfirmPassEmpty] = useState('')
-  const [isFirstNameEmpty, setIsFirstNameEmpty] = useState('')
-  const [isLastNameEmpty, setIsLastNameEmpty] = useState('')
+  const [isFullNameEmpty, setIsFullNameEmpty] = useState('')
   const [isEmailEmpty, setIsEmailEmpty] = useState('')
   const [isCccdEmpty, setIsCccdEmpty] = useState('')
   const [isAddressEmpty, setIsAddressEmpty] = useState('')
@@ -49,6 +48,15 @@ function Register() {
   const [checkClickRegister, setCheckClickRegister] = useState(false)
   const [isCheckFaildRegister, setIsCheckFaildRegister, isCheckSuccessPassword] = useState('')
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
+
   const navigate = useNavigate()
   let link = ''
 
@@ -56,8 +64,7 @@ function Register() {
     e.preventDefault()
     if (
       isLoginEmpty != '' ||
-      isFirstNameEmpty != '' ||
-      isLastNameEmpty != '' ||
+      isFullNameEmpty != '' ||
       isAddressEmpty != '' ||
       isDobEmpty != '' ||
       isCccdEmpty != '' ||
@@ -66,8 +73,7 @@ function Register() {
       isConfirmPassEmpty != '' ||
       login == '' ||
       email == '' ||
-      firstName == '' ||
-      lastName == '' ||
+      fullName == '' ||
       address == '' ||
       dob == '' ||
       cccd == '' ||
@@ -84,11 +90,8 @@ function Register() {
       if (login == '') {
         setIsLoginEmpty('Vui lòng nhập username')
       }
-      if (firstName == '') {
-        setIsFirstNameEmpty('Vui lòng nhập first name')
-      }
-      if (lastName == '') {
-        setIsLastNameEmpty('Vui lòng nhập last name')
+      if (fullName == '') {
+        setIsFullNameEmpty('Vui lòng nhập full name')
       }
       if (cccd == '') {
         setIsCccdEmpty('Vui lòng nhập căn cước công dân')
@@ -106,36 +109,38 @@ function Register() {
         setIsConfirmPassEmpty('Vui lòng confirm password')
       }
     } else {
-        axiosInstance
-          .post('register', {
-           login: login,
-           password: pass,
-           firstName: firstName,
-           lastName: lastName,
-           email: email,
-           imageUrl: "aaa",
-           langKey: "abc",
-           cccd: cccd,
-           address: address,
-           dob: dob,
-          })
-          .then(function (response) {
-            console.log(response)
-            setIsCheckSuccessRegister("Đăng kí thành công")
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .finally(function () {
-            // always executed
-          });
-        // DoRegister(email, pass);
-      }
-    
+      axiosInstance
+        .post('register', {
+          login: login,
+          password: pass,
+          fullName: fullName,
+          email: email,
+          imageUrl: 'aaa',
+          langKey: 'abc',
+          cccd: cccd,
+          address: address,
+          dob: dob
+        })
+        .then(function (response) {
+          console.log(response.data)
+          setAlertSeverity('success')
+          setAlertText('Bạn đã đăng kí thành công')
+          setNavigatePath('/login') // Đường dẫn chuyển hướng sau khi thành công
+        })
+        .catch(function (error) {
+          console.log(error)
+          setAlertSeverity('error')
+          setAlertText(error.response.data.fieldErrors[0].message)
+        })
+        .finally(function () {
+          // always executed
+          setSnackbarOpen(true)
+        })
+      // DoRegister(email, pass);
+    }
+
     navigate(link)
   }
-
 
   const handleBlurEmail = (e) => {
     var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -165,21 +170,12 @@ function Register() {
     }
   }
 
-  const handleBlurFirstName = (e) => {
+  const handleBlurFullName = (e) => {
     e.preventDefault()
-    if (firstName === '') {
-      setIsFirstNameEmpty('Vui lòng nhập first name')
+    if (fullName === '') {
+      setIsFullNameEmpty('Vui lòng nhập full name')
     } else {
-      setIsFirstNameEmpty('')
-    }
-  }
-
-  const handleBlurLastName = (e) => {
-    e.preventDefault()
-    if (lastName === '') {
-      setIsLastNameEmpty('Vui lòng nhập last name')
-    } else {
-      setIsLastNameEmpty('')
+      setIsFullNameEmpty('')
     }
   }
 
@@ -242,16 +238,10 @@ function Register() {
     }
   }
 
-  const handleChangeFirstName = (e) => {
-    setFirstName(e.target.value)
-    if (isFirstNameEmpty != '') {
-      setIsFirstNameEmpty('')
-    }
-  }
-  const handleChangeLastName = (e) => {
-    setLastName(e.target.value)
-    if (isLastNameEmpty != '') {
-      setIsLastNameEmpty('')
+  const handleChangeFullName = (e) => {
+    setFullName(e.target.value)
+    if (isFullNameEmpty != '') {
+      setIsFullNameEmpty('')
     }
   }
 
@@ -360,7 +350,7 @@ function Register() {
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                 />
 
@@ -401,31 +391,16 @@ function Register() {
             <div className={cx('first-body-container')}>
               <div>
                 <input
-                  value={firstName}
-                  onChange={handleChangeFirstName}
-                  onBlur={handleBlurFirstName}
-                  name="firstName"
+                  value={fullName}
+                  onChange={handleChangeFullName}
+                  onBlur={handleBlurFullName}
+                  name="fullName"
                   className={cx('input-password')}
-                  id="firstNameId"
-                  placeholder="Enter first name"
+                  id="fullNameId"
+                  placeholder="Enter full name"
                 />
-                <span className={cx('input-empty')}>{isFirstNameEmpty}</span>
+                <span className={cx('input-empty')}>{isFullNameEmpty}</span>
               </div>
-              <div>
-                <input
-                  value={lastName}
-                  onChange={handleChangeLastName}
-                  onBlur={handleBlurLastName}
-                  name="lastName"
-                  className={cx('input-password')}
-                  id="lastName"
-                  placeholder="Enter last name"
-                />
-                <span className={cx('input-empty')}>{isLastNameEmpty}</span>
-              </div>
-            </div>
-
-            <div className={cx('first-body-container')}>
               <div>
                 <input
                   value={address}
@@ -438,6 +413,9 @@ function Register() {
                 />
                 <span className={cx('input-empty')}>{isAddressEmpty}</span>
               </div>
+            </div>
+
+            <div className={cx('first-body-container')}>
               <div>
                 <input
                   value={cccd}
@@ -450,23 +428,23 @@ function Register() {
                 />
                 <span className={cx('input-empty')}>{isCccdEmpty}</span>
               </div>
-            </div>
-            <div className={cx('dob')}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']}>
-                  <DatePicker
-                    value={dob ? dayjs(dob) : null}
-                    onChange={handleChangeDob}
-                    label="DOB"
-                    sx={{
-                      '& .MuiInputBase-root': { fontSize: '10px' }, // Kích thước chữ của phần input
-                      '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                      '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
-                    }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-              <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
+              <div className={cx('dob')}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      value={dob ? dayjs(dob) : null}
+                      onChange={handleChangeDob}
+                      label="DOB"
+                      sx={{
+                        '& .MuiInputBase-root': { fontSize: '20px' }, // Kích thước chữ của phần input
+                        '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
+                        '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch,
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+                <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
+              </div>
             </div>
           </div>
           <div className={cx('sign-up-contain')}>
@@ -593,6 +571,13 @@ function Register() {
           />
         </svg>
       </div>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }

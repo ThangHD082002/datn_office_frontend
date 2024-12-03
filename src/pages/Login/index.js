@@ -11,6 +11,7 @@ import { SnackbarProvider, VariantType, useSnackbar } from 'notistack'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 import { jwtDecode } from 'jwt-decode'
 
@@ -26,9 +27,18 @@ function Login() {
   const [isCheckFaildLogin, setIsCheckFaildLogin] = useState('')
   const navigate = useNavigate()
   let varToken = localStorage.getItem('token')
-  const [alertText, setAlertText] = useState('')
   const [open, setOpen] = useState(false)
   const [infor, setInfor] = useState({})
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
+
   console.log(varToken)
 
   function decodeToken(token) {
@@ -78,9 +88,13 @@ function Login() {
             localStorage.setItem('id_user', role.sub)
             // navigate("/")
             if (role.auth.includes('ROLE_ADMIN') || role.auth.includes('ROLE_MANAGER')) {
-              navigate('/admin/requests')
+              setAlertSeverity('success')
+              setAlertText('Bạn đã đăng nhập thành công')
+              setNavigatePath('/admin/requests') // Đường dẫn chuyển hướng sau khi thành công
             } else {
-              navigate('/')
+              setAlertSeverity('success')
+              setAlertText('Bạn đã đăng nhập thành công')
+              setNavigatePath('/') // Đường dẫn chuyển hướng sau khi thành công
             }
           } else {
             setIsCheckFaildLogin('Tài khoản hoặc mật khẩu không đúng')
@@ -89,9 +103,12 @@ function Login() {
         .catch(function (error) {
           // handle error
           console.log(error)
+          setAlertSeverity('error')
+          setAlertText(error.response.data.fieldErrors[0].message)
         })
         .finally(function () {
           // always executed
+          setSnackbarOpen(true)
         })
     }
   }
@@ -291,6 +308,13 @@ function Login() {
           />
         </svg>
       </div>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }

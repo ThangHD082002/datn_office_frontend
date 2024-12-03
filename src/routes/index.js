@@ -12,7 +12,7 @@ import RequestManagementList from '~/pages/Admin/RequestManagement/List'
 import BuildingManagementList from '~/pages/Admin/BuildingManagement/List'
 import OfficeManagementList from '~/pages/Admin/OfficeManagement/List'
 import CreateContract from '~/pages/Admin/ContractManagement/CreateContract'
-import MangeContract from '~/pages/Admin/ContractManagement/MangeContract'
+import ManageContract from '~/pages/Admin/ContractManagement/ManageContract'
 import RequestManagementCreate from '~/pages/Admin/RequestManagement/Create'
 import ErrorToken from '~/pages/ErrorToken'
 import UserManagementList from '~/pages/Admin/UserManagement/List'
@@ -76,7 +76,7 @@ const publicRoutes = [
   },
   {
     path: 'admin/contracts',
-    component: MangeContract,
+    component: ManageContract,
     layout: AdminLayout
   },
   {
