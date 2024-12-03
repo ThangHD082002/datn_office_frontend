@@ -38,43 +38,43 @@
 //     align-items: center;
 // }
 .container{
-    width: 1300px;
-    height: 100%;
-    margin: 20px auto;
+  width: 1300px;
+  height: 100%;
+  margin: 20px auto;
 }
 
 .main-content{
-    height: 60%;
-    width: 100%;
+  height: 60%;
+  width: 100%;
 }
 
 .row-main{
-    width: 100%;
+  width: 100%;
 }
 
 .image-content-main{
-    background-color: red;
+  background-color: red;
 }
 
 .infor-content-main{
-    
+  
 }
 
 .slide-show{
-    height: 600px;
-    width: 100%;
-    margin: auto;
-    position: relative;
-    overflow: hidden;
+  height: 600px;
+  width: 100%;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
 }
 
 .list-image{
-    height: 600px;
+  height: 600px;
 
-    display: flex;
-    margin-top: 20px;
-    transition: 0.5s;
-    
+  display: flex;
+  margin-top: 20px;
+  transition: 0.5s;
+  
 }
 
 .image-slide{
@@ -82,25 +82,25 @@
 }
 
 .btn{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 40px;
-    color: #999;
-    transition: 0.5s;
-    cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 40px;
+  color: #999;
+  transition: 0.5s;
+  cursor: pointer;
 }
 
 .btn:hover{
-    color: #fff;
+  color: #fff;
 }
 
 .btn-left{
-    left: 0;
+  left: 0;
 }
 
 .btn-right{
-    right: 0;
+  right: 0;
 }
 
 .icon-right{
@@ -111,45 +111,45 @@
 }
 
 .index-images{
-    position: absolute;
-    bottom: 40px;
-    display: flex;
-    left: 50%;
-    transform: translateX(-50%);
+  position: absolute;
+  bottom: 40px;
+  display: flex;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .index-item{
-    border: 2px solid #999;
-    padding: 10px;
-    margin: 3px;
-    border-radius: 50%;
+  border: 2px solid #999;
+  padding: 10px;
+  margin: 3px;
+  border-radius: 50%;
 }
 
 .active-tab{
-    background-color: #fff!important;
-    color: #606060;
-    font-weight: 700;
+  background-color: #fff!important;
+  color: #606060;
+  font-weight: 700;
 }
 .index-item-0{
-    border: 2px solid #999;
+  border: 2px solid #999;
 }
 
 .index-item-1{
-    border: 2px solid #999;
+  border: 2px solid #999;
 }
 
 .index-item-2{
-    
-    border: 2px solid #999;
+  
+  border: 2px solid #999;
 }
 
 .index-item-3{
- 
-    border: 2px solid #999;
+
+  border: 2px solid #999;
 }
 
 .infor-content-main{
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .infor-tab{
@@ -157,71 +157,71 @@
 }
 
 .list-tab{
-    list-style: none;
-    color: #606060;
-    font-size: 25px;
-    display: flex;
-    height: 70px;
-    padding-left: 0;
-    
+  list-style: none;
+  color: #606060;
+  font-size: 25px;
+  display: flex;
+  height: 70px;
+  padding-left: 0;
+  
 }
 .left-tab{
-    display: block;
-    height: 100%;
-    width: 50%;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    background-color: #f4f4f4;
+  display: block;
+  height: 100%;
+  width: 50%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4f4f4;
 }
 
 .show-pane{
-    display: block;
+  display: block;
 }
 .right-tab{
-    display: block;
-    height: 100%;
-    text-align: center;
-    width: 50%;
-    background-color: #f4f4f4
+  display: block;
+  height: 100%;
+  text-align: center;
+  width: 50%;
+  background-color: #f4f4f4
 }
 
 .right-tab{
-    cursor: pointer;
+  cursor: pointer;
 }
 
 
 .contain-sub-images{
-    display: flex;
+  display: flex;
 }
 
 .sub-image{
-    width: 180px;
-    margin: 5px 3px;
+  width: 180px;
+  margin: 5px 3px;
 }
 
 
 .text-left-tab{
-    display: block;
-    margin-top: 18px;
-    font-size: 20px;
+  display: block;
+  margin-top: 18px;
+  font-size: 20px;
 }
 .text-right-tab{
-    display: block;
-    margin-top: 18px;
-    font-size: 20px;
+  display: block;
+  margin-top: 18px;
+  font-size: 20px;
 }
 
 .show-pane{
-    display: block!important;
+  display: block!important;
 }
 
 .pane-left-tab{
-    display: none;
+  display: none;
 }
 
 .pane-right-tab{
-    display: none;
+  display: none;
 }
 
 
@@ -233,10 +233,10 @@
 
 
 .item-location{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .label-location{
@@ -247,7 +247,7 @@
 }
 
 .label-height{
-  
+
 }
 
 .label-dientich{
@@ -264,270 +264,270 @@
 
 
 .item-icon-location{
-    color: red;
-    font-size: 20px;
-    margin-right: 15px;
+  color: red;
+  font-size: 20px;
+  margin-right: 15px;
 }
 
 .title-location{
-    color: #333;
-    font-size: 20px;
+  color: #333;
+  font-size: 20px;
 
 }
 
 .item-cotent-location{
-    
+  
 }
 
 .value-location{
-    font-size: 20px;
-    color: #333;
+  font-size: 20px;
+  color: #333;
 }
 
 
 // select floor
 
 .icon-hide-popup{
-  color: #000;
-  position: absolute;
-  right: 30px;
-  top: 20px;
-  font-size:25px;
-  cursor: pointer;
+color: #000;
+position: absolute;
+right: 30px;
+top: 20px;
+font-size:25px;
+cursor: pointer;
 }
 
 @keyframes slideDown {
-  0% {
-      transform: translateY(-100%); /* Bắt đầu từ trên màn hình */
-      opacity: 0; /* Ẩn thẻ */
-  }
-  100% {
-      transform: translateY(0); /* Kết thúc ở vị trí ban đầu */
-      opacity: 1; /* Hiện thẻ */
-  }
+0% {
+    transform: translateY(-100%); /* Bắt đầu từ trên màn hình */
+    opacity: 0; /* Ẩn thẻ */
+}
+100% {
+    transform: translateY(0); /* Kết thúc ở vị trí ban đầu */
+    opacity: 1; /* Hiện thẻ */
+}
 }
 
 .center {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
-  backdrop-filter: blur(5px); /* Làm mờ toàn bộ nền */
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+backdrop-filter: blur(5px); /* Làm mờ toàn bộ nền */
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000; /* Đưa lớp nền lên trên các phần tử khác */
+visibility: hidden;
+}
+.tickets {
+  position: relative;
+  width: 700px;
+  height: fit-content;
+  border: 0.4mm solid rgba(0, 0, 0, 0.08);
+  border-radius: 3mm;
+  box-sizing: border-box;
+  padding: 10px;
+  font-family: poppins;
+  max-height: 96vh;
+  overflow: auto;
+  background: white;
+  box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+   /* Thêm animation vào thẻ tickets */
+}
+.ticket-selector {
+  background: rgb(243, 243, 243);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000; /* Đưa lớp nền lên trên các phần tử khác */
-  visibility: hidden;
-  }
-  .tickets {
-    position: relative;
-    width: 700px;
-    height: fit-content;
-    border: 0.4mm solid rgba(0, 0, 0, 0.08);
-    border-radius: 3mm;
-    box-sizing: border-box;
-    padding: 10px;
-    font-family: poppins;
-    max-height: 96vh;
-    overflow: auto;
-    background: white;
-    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
-     /* Thêm animation vào thẻ tickets */
-  }
-  .ticket-selector {
-    background: rgb(243, 243, 243);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
-    box-sizing: border-box;
-    padding: 20px;
-  }
-  .head {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
-  .title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #000;
-  }
-  .seats {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    min-height: 150px;
-    position: relative;
-  }
-  .status {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+  justify-content: space-between;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 20px;
+}
+.head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+.seats {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 150px;
+  position: relative;
+}
+.status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 
-  }
-  .item {
-    font-size: 12px;
-    position: relative;
-    color: #000;
-  }
-  .item::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -12px;
-    transform: translate(0, -50%);
-    width: 10px;
-    height: 10px;
-    background: rgb(255, 255, 255);
-    outline: 0.2mm solid rgb(120, 120, 120);
-    border-radius: 0.3mm;
-  }
-  .item:nth-child(2)::before {
-    background: rgb(180, 180, 180);
-    outline: none;
-  }
-  .item:nth-child(3)::before {
-    background: rgb(28, 185, 120);
-    outline: none;
-  }
-  .all-seats {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-gap: 15px;
-    margin: 60px 0;
-    margin-top: 20px;
-    position: relative;
-  }
-  .seat {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    background: white;
-    border-radius: 0.5mm;
-    outline: 0.3mm solid rgb(180, 180, 180);
-    outline: none;
-    cursor: pointer;
-  }
-  .all-seats input:checked + label {
-    background: rgb(28, 185, 120);
-    outline: none;
-  }
-  .seat.booked {
-    background: rgb(180, 180, 180);
-    color: white;
-    pointer-events: none;
-    outline: none;
-  }
-  input {
-    display: none;
-  }
-  .timings {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 30px;
-  }
-  .dates {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .dates-item {
-    width: 50px;
-    height: 40px;
-    background: rgb(233, 233, 233);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 10px 0;
-    border-radius: 2mm;
-    cursor: pointer;
-  }
-  .day {
-    font-size: 12px;
-  }
-  .times {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  .time {
-    font-size: 14px;
-    width: fit-content;
-    padding: 7px 14px;
-    background: rgb(233, 233, 233);
-    border-radius: 2mm;
-    cursor: pointer;
-  }
-  .price {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .total {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .total span {
-    font-size: 11px;
-    font-weight: 400;
-  }
-  .price button {
-    background: rgb(60, 60, 60);
-    color: white;
-    font-family: poppins;
-    font-size: 14px;
-    padding: 7px 14px;
-    border-radius: 2mm;
-    outline: none;
-    border: none;
-    cursor: pointer;
-  }
+}
+.item {
+  font-size: 12px;
+  position: relative;
+  color: #000;
+}
+.item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  transform: translate(0, -50%);
+  width: 10px;
+  height: 10px;
+  background: rgb(255, 255, 255);
+  outline: 0.2mm solid rgb(120, 120, 120);
+  border-radius: 0.3mm;
+}
+.item:nth-child(2)::before {
+  background: rgb(180, 180, 180);
+  outline: none;
+}
+.item:nth-child(3)::before {
+  background: rgb(28, 185, 120);
+  outline: none;
+}
+.all-seats {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-gap: 15px;
+  margin: 60px 0;
+  margin-top: 20px;
+  position: relative;
+}
+.seat {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  background: white;
+  border-radius: 0.5mm;
+  outline: 0.3mm solid rgb(180, 180, 180);
+  outline: none;
+  cursor: pointer;
+}
+.all-seats input:checked + label {
+  background: rgb(28, 185, 120);
+  outline: none;
+}
+.seat.booked {
+  background: rgb(180, 180, 180);
+  color: white;
+  pointer-events: none;
+  outline: none;
+}
+input {
+  display: none;
+}
+.timings {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+.dates {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dates-item {
+  width: 50px;
+  height: 40px;
+  background: rgb(233, 233, 233);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px 0;
+  border-radius: 2mm;
+  cursor: pointer;
+}
+.day {
+  font-size: 12px;
+}
+.times {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.time {
+  font-size: 14px;
+  width: fit-content;
+  padding: 7px 14px;
+  background: rgb(233, 233, 233);
+  border-radius: 2mm;
+  cursor: pointer;
+}
+.price {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+.total span {
+  font-size: 11px;
+  font-weight: 400;
+}
+.price button {
+  background: rgb(60, 60, 60);
+  color: white;
+  font-family: poppins;
+  font-size: 14px;
+  padding: 7px 14px;
+  border-radius: 2mm;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
 
 .count{
-  color: black;
+color: black;
 }
 
 .title-count{
-  color: black;
+color: black;
 }
 
 .value-label{
-  // margin-top: 2px;
-  // margin-left: 7px;
-  display: block;
+// margin-top: 2px;
+// margin-left: 7px;
+display: block;
 }
 
 .choose-floor{
-  margin: 0 auto;
+margin: 0 auto;
 }
 
 .muiAlert{
-  font-size: 1.5rem;     /* Tăng kích thước chữ */
-  padding: 20px; 
+font-size: 1.5rem;     /* Tăng kích thước chữ */
+padding: 20px; 
 }

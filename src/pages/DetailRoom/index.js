@@ -39,7 +39,6 @@ import Col from 'react-bootstrap/Col'
 import { faAirbnb, faLine } from '@fortawesome/free-brands-svg-icons'
 import Button from '@mui/material/Button'
 import { axiosInstance } from '~/utils/axiosInstance'
-import CustomSnackbar from '~/components/Layout/component/CustomSnackbar';
 
 const cx = classNames.bind(styles)
 
@@ -56,6 +55,7 @@ function DetailRoom() {
   const rightPaneRef = useRef(null)
 
   const [alertStateBook, setAlertStateBook] = useState('')
+  const [alertText, setAlertText] = useState('')
   const [open, setOpen] = React.useState(false)
 
   const inputRefs = useRef({})
@@ -72,20 +72,11 @@ function DetailRoom() {
 
   const listFloorOrder = useState([])
 
-  const [bid, setBid] = useState()
+  const [bid, setBid] = useState();
 
   const [infor, setInfor] = useState({})
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [alertText, setAlertText] = useState('')
-  const [alertSeverity, setAlertSeverity] = useState('success')
-  const [navigatePath, setNavigatePath] = useState('')
-
   let token = localStorage.getItem('authToken')
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false)
-  }
 
   function decodeToken(token) {
     try {
@@ -223,7 +214,7 @@ function DetailRoom() {
       .then(function (response) {
         // setRoom((prev) => ({ ...prev, ...response.data }));
         setRoom(response.data)
-        setBid(response.data.id)
+        setBid(response.data.id);
         // Tạo 2 mảng useRef để lưu theo id
         handleOfficeDTOS(response)
 
@@ -380,36 +371,87 @@ function DetailRoom() {
     console.log(selectedIds)
 
     if (selectedIds.length == 0) {
-      setAlertSeverity('warning')
-      setAlertText('Bạn cần chọn tối thiểu một phòng!')
-      setSnackbarOpen(true)
+      setAlertStateBook('warning')
+      setAlertText('Bạn cần chọn tối thiếu một phòng !')
+      handleClickk()
     } else {
+      // axios
+      //   .post(
+      //     'https://office-nest-ohcid.ondigitalocean.app/api/requests',
+      //     {
+      //       userId: user,
+      //       note: 'Tôi muốn xem văn phòng',
+      //       officeIds: selectedIds
+      //     },
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${token}`
+      //       }
+      //     }
+      //   )
+      //   .then(function (response) {
+      //     console.log('STATE REQUEST')
+      //     console.log(response)
+      //     setAlertStateBook('success')
+      //     setAlertText('Bạn đã đặt phòng thành công !')
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error)
+      //     setAlertStateBook('error')
+      //     setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang !')
+      //   })
+      //   .finally(function () {})
       axiosInstance
-        .post('/requests', {
-          userId: user,
-          note: 'Tôi muốn xem văn phòng',
-          officeIds: selectedIds,
-          buildingId: bid
-        })
-        .then((response) => {
-          console.log('STATE REQUEST')
-          console.log(response)
-          setAlertSeverity('success')
-          setAlertText('Bạn đã đặt phòng thành công!')
-          setNavigatePath('/') // Đường dẫn chuyển hướng sau khi thành công
-        })
-        .catch((error) => {
-          console.error('Request Error:', error)
-          setAlertSeverity('error')
-          setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang!')
-        })
-        .finally(() => {
-          setSnackbarOpen(true)
-        })
+      .post('/requests', {
+        userId: user,
+        note: 'Tôi muốn xem văn phòng',
+        officeIds: selectedIds,
+        buildingId: bid
+      })
+      .then((response) => {
+        console.log('STATE REQUEST');
+        console.log(response);
+        setAlertStateBook('success');
+        setAlertText('Bạn đã đặt phòng thành công!');
+      })
+      .catch((error) => {
+        console.error('Request Error:', error);
+        setAlertStateBook('error');
+        setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang!');
+      })
+      .finally(() => {
+        console.log('Request completed');
+      });
+    
     }
   }
 
+  useEffect(() => {
+    if (alertText === 'Bạn đã đặt phòng thành công!') {
+      handleClickk();
+  
+      // Đặt timeout 2.3 giây trước khi reload trang
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 2300);
+  
+      // Cleanup timer nếu `alertText` thay đổi
+      return () => clearTimeout(timer);
+    }
+  }, [alertText]);
+  
+
   return (
+    // <div className={cx('detail-area')}>
+    //     <div className={cx('contain-title')}>
+    //         <h3 className={cx('text-left')}>Khu vực</h3>
+    //         <div className={cx('contain-reset')}>
+    //             <FontAwesomeIcon icon={faXmark} className={cx('icon')}/>
+    //             <h3 className={cx('text-right')}>Đặt lại</h3>
+    //         </div>
+    //     </div>
+    // </div>
+
     <div className={cx('container')}>
       <div className={cx('main-content')}>
         <Row className={cx('row-main')}>
@@ -534,7 +576,7 @@ function DetailRoom() {
                   </li>
                 </ul>
               </div>
-              <ButtonFloor onClick={handleClick}>CHỌN PHÒNG</ButtonFloor>
+              <ButtonFloor onClick={handleClick}>CHỌN TẦNG</ButtonFloor>
             </div>
           </Col>
         </Row>
@@ -545,7 +587,7 @@ function DetailRoom() {
           <div className={cx('ticket-selector')}>
             <div className={cx('head')}>
               <div className={cx('title')}>
-                DANH SÁCH CÁC PHÒNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
+                DANH SÁCH CÁC TẦNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
               </div>
               <div>
                 <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
@@ -588,13 +630,20 @@ function DetailRoom() {
             <Button onClick={BookFloor} variant="contained">
               Book
             </Button>
-            <CustomSnackbar
-              open={snackbarOpen}
-              onClose={handleSnackbarClose}
-              message={alertText}
-              severity={alertSeverity}
-              navigatePath={navigatePath}
-            />
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+              <Alert
+                onClose={handleClose}
+                severity={alertStateBook}
+                variant="filled"
+                sx={{
+                  width: '100%',
+                  fontSize: '1.5rem', // Tăng kích thước chữ
+                  padding: '20px'
+                }}
+              >
+                {alertText}
+              </Alert>
+            </Snackbar>
           </div>
         </div>
       </div>

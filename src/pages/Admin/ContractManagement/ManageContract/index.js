@@ -36,52 +36,12 @@ import styles from './ManageContract.module.scss'
 
 function ManageContract() {
   let token = localStorage.getItem('authToken')
-
-  const [filteredArray, setFilteredArray] = useState([])
   const navigate = useNavigate()
   const [rows, setRows] = useState([])
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
   useEffect(() => {
-    // axios
-    //   .post(
-    //     "https://office-nest-ohcid.ondigitalocean.app/api/contract",
-    //     {
-    //       pageNumber: 0,
-    //       pageSize: 10,
-    //       filter: [],
-    //       sortProperty: "contract.lastModifiedDate",
-    //       sortOrder: "DESC",
-    //       buildingIds: [],
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   )
-    //   .then(function (response) {
-    //     const newArray = response.data.data.map((item) => ({
-    //       id: item.id,
-    //       code: item.code,
-    //       startDate: item.startDate,
-    //       rentalPurpose: item.rentalPurpose,
-    //       status: item.status,
-    //     }));
-    //     setRows(newArray);
-    //   })
-    //   .catch(function (error) {
-    //     console.error("Error:", error);
-    //     if (error.response && error.response.status === 401) {
-    //       // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
-    //       window.location.href = "/error-token";
-    //     }
-    //   })
-    //   .finally(function () {
-    //     console.log("Request completed.");
-    //   });
-
     axiosInstance
       .post('/contract', {
         pageNumber: 0,
@@ -324,8 +284,8 @@ function ManageContract() {
 
   const visibleRows = React.useMemo(
     () => [...rows].sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
-  )
+    [order, orderBy, page, rowsPerPage, rows]  // Thêm `rows` vào dependencies để đảm bảo dữ liệu được cập nhật khi `rows` thay đổi
+);
 
   const handleExport = () => {
     setLoading(true)
@@ -335,39 +295,7 @@ function ManageContract() {
     const progressInterval = setInterval(() => {
       setProgress((prev) => (prev < 95 ? prev + 1 : prev)) // Tăng đến 95%
     }, 100) // Mỗi 100ms tăng 1%
-    // axios
-    //   .get(`https://office-nest-ohcid.ondigitalocean.app/api/contract/${id}/export-pdf`, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`
-    //     },
-    //     responseType: 'blob', // Đảm bảo nhận dữ liệu dưới dạng blob cho file
-    //     onDownloadProgress: (progressEvent) => {
-    //       if (progressEvent.total) {
-    //         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-    //         setProgress(percentCompleted) // Cập nhật tiến trình thực tế từ API
-    //       }
-    //     }
-    //   })
-    //   .then(function (response) {
-    //     // Tạo URL blob từ dữ liệu PDF
-    //     const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
-    //     const link = document.createElement('a')
-    //     link.href = url
-    //     link.setAttribute('download', 'contract.pdf') // Tên file tải xuống
-    //     document.body.appendChild(link)
-    //     link.click() // Bắt đầu tải file
-    //     document.body.removeChild(link) // Xóa link sau khi tải xong
-    //   })
-    //   .catch(function (error) {
-    //     console.log('Error downloading file:', error)
-    //   })
-    //   .finally(function () {
-    //     console.log('Request completed.')
-    //     clearInterval(progressInterval) // Ngừng tăng dần tiến trình
-    //     setProgress(100) // Đặt tiến trình là 100% khi hoàn tất
-    //     setTimeout(() => setLoading(false), 500) // Đóng loading sau khi đạt 100%
-    //   })
-
+   
     axiosInstance
       .get(`/contract/${id}/export-pdf`, {
         headers: {
@@ -406,49 +334,46 @@ function ManageContract() {
     setValueSearch(e.target.value)
   }
 
-  const handleSubmitSearch = () => {
-    // axios
-    //   .post(
-    //     'https://office-nest-ohcid.ondigitalocean.app/api/contract',
-    //     {
-    //       pageNumber: 0,
-    //       pageSize: 10,
-    //       filter: [
-    //         {
-    //           operator: 'contain',
-    //           key: 'code',
-    //           value: valueSearch,
-    //           otherValue: null,
-    //           valueSelected: null
-    //         }
-    //       ],
-    //       sortProperty: 'contract.lastModifiedDate',
-    //       sortOrder: 'DESC',
-    //       buildingIds: []
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`
-    //       }
-    //     }
-    //   )
-    //   .then(function (response) {
-    //     const newArray = response.data.data.map((item) => ({
-    //       id: item.id,
-    //       code: item.code,
-    //       startDate: item.startDate,
-    //       rentalPurpose: item.rentalPurpose,
-    //       status: item.status
-    //     }))
-    //     setRows(newArray)
-    //   })
-    //   .catch(function (error) {
-    //     console.error('Error:', error)
-    //   })
-    //   .finally(function () {
-    //     console.log('Request completed.')
-    //   })
+  // const handleSubmitSearch = () => {
+  //   axiosInstance
+  //     .post(
+  //       '/contract', // Sử dụng đường dẫn tương đối
+  //       {
+  //         pageNumber: 0,
+  //         pageSize: 10,
+  //         filter: [
+  //           {
+  //             operator: 'contain',
+  //             key: 'code',
+  //             value: valueSearch,
+  //             otherValue: null,
+  //             valueSelected: null
+  //           }
+  //         ],
+  //         sortProperty: 'contract.lastModifiedDate',
+  //         sortOrder: 'DESC',
+  //         buildingIds: []
+  //       }
+  //     )
+  //     .then((response) => {
+  //       const newArray = response.data.data.map((item) => ({
+  //         id: item.id,
+  //         code: item.code,
+  //         startDate: item.startDate,
+  //         rentalPurpose: item.rentalPurpose,
+  //         status: item.status
+  //       }))
+  //       setRows(newArray)
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error:', error)
+  //     })
+  //     .finally(() => {
+  //       console.log('Request completed.')
+  //     })
+  // }
 
+  const handleSubmitSearch = () => {
     axiosInstance
       .post(
         '/contract', // Sử dụng đường dẫn tương đối
@@ -476,16 +401,21 @@ function ManageContract() {
           startDate: item.startDate,
           rentalPurpose: item.rentalPurpose,
           status: item.status
-        }))
-        setRows(newArray)
+        }));
+        
+        // Cập nhật rows mới
+        setRows(newArray);
+        
+        // Đặt lại page về 0 khi search
+        setPage(0);
       })
       .catch((error) => {
-        console.error('Error:', error)
+        console.error('Error:', error);
       })
       .finally(() => {
-        console.log('Request completed.')
-      })
-  }
+        console.log('Request completed.');
+      });
+  };
 
   const HandlePreviewContract = () => {
     const id = Number(selected[0])
@@ -536,7 +466,7 @@ function ManageContract() {
                 rowCount={rows.length}
               />
               <TableBody>
-                {rows.map((row, index) => {
+                {visibleRows.map((row, index) => {
                   const isItemSelected = selected.includes(row.id)
                   const labelId = `enhanced-table-checkbox-${index}`
 

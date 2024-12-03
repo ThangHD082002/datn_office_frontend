@@ -13,18 +13,27 @@ import about_two from '~/assets/image/about-us-img-2.jpeg'
 import about_three from '~/assets/image/about-us-img-3.jpeg'
 import about_four from '~/assets/image/about-us-img-4.jpeg'
 import { axiosInstance } from '~/utils/axiosInstance'
+import {IconButton} from '@mui/material'
 import room_1 from '~/assets/image/room1.jpeg'
 import room_2 from '~/assets/image/room2.jpeg'
 import room_3 from '~/assets/image/room3.jpeg'
 import room_4 from '~/assets/image/room4.jpeg'
 import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
+import { ArrowUpward } from '@mui/icons-material'
 const cx = classNames.bind(styles)
 
 function Home() {
   const [result, setResult] = useState([])
 
   let token = localStorage.getItem('authToken')
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Cuộn mượt mà
+    })
+  }
 
   useEffect(() => {
     // axios
@@ -116,7 +125,7 @@ function Home() {
           {result.map((r) => (
             <div key={r.id} className={cx('room-card')}>
               <a href={`/detail-room/${r.id}`} className={cx('item')}>
-                <img src={room_1} className={cx('room-img')} />
+                <img src={r.imageUrls[0]} className={cx('room-img')} />
                 <div className={cx('room-card-content')}>
                   <h4 className={cx('room-card-heading')}>{r.name}</h4>
                   <p className={cx('room-card-paragraph')}>{r.address}</p>
@@ -135,6 +144,21 @@ function Home() {
       <div className={cx('rooms-btn-wrapper')}>
         <button className={cx('rooms-btn')}>Check All Rooms</button>
       </div>
+      <IconButton
+        onClick={handleScrollToTop}
+        sx={{
+          position: 'fixed',
+          bottom: '20px', // Đặt vị trí của nút ở dưới cùng
+          right: '20px', // Đặt nút ở góc phải
+          backgroundColor: 'primary.main', // Màu nền của nút
+          color: 'white', // Màu icon
+          '&:hover': {
+            backgroundColor: 'primary.dark', // Màu khi hover
+          },
+        }}
+      >
+        <ArrowUpward />
+      </IconButton>
     </div>
   )
 }

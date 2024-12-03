@@ -9,6 +9,7 @@ import { Clear } from '@mui/icons-material'
 import { ArrowBack, ArrowForward, GetApp } from '@mui/icons-material'
 import FormData from 'form-data'
 import { axiosInstance } from '~/utils/axiosInstance'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 
@@ -28,6 +29,15 @@ const PdfViewer = () => {
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
   const [dragging, setDragging] = useState(false) // Trạng thái kéo ảnh
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   // Hàm kiểm tra nếu chữ ký nằm trong vùng ký
   const checkSignaturePosition = (x, y) => {
@@ -154,17 +164,6 @@ const PdfViewer = () => {
     }
   }
 
-  // Hàm upload file ảnh
-  // const handleImageUpload = (e) => {
-  //   const file = e.target.files[0]
-  //   if (file && file.type.startsWith('image/')) {
-  //     const reader = new FileReader()
-  //     reader.onloadend = () => {
-  //       setImage(reader.result) // Đọc và lưu dữ liệu ảnh vào state
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -183,33 +182,9 @@ const PdfViewer = () => {
     setImage(null) // Xóa ảnh
   }
 
-  //Hàm xử lý khi lưu chữ ký
-  // const handleSave = () => {
-  //   if (signaturePlaced) {
-  //     const formData = new FormData();
-  //     formData.append('file', image);
-  //     axiosInstance
-  //       .post(
-  //         `/contract/${pid}/verify-signature`,
-  //         formData
-  //       )
-  //       .then((response) => {
-  //         console.log('Chữ ký đã được lưu:', response.data);
-  //         alert('Chữ ký đã được lưu thành công!');
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error saving signature:', error);
-  //         alert('Đã xảy ra lỗi khi lưu chữ ký!');
-  //       });
-  //     // call api to save signature
-  //   } else {
-  //     alert('Vui lòng đặt chữ ký vào vùng chỉ định trước khi lưu!')
-  //   }
-  // }
 
   const handleSave = () => {
     console.log(image);
-    if (signaturePlaced && image) {
       const formData = new FormData();
       formData.set('file', image); // Gửi file ảnh với key 'file'
   
@@ -220,16 +195,18 @@ const PdfViewer = () => {
           }
         })
         .then((response) => {
-          console.log('Chữ ký đã được lưu:', response.data);
-          alert('Chữ ký đã được lưu thành công!');
+          setAlertSeverity('success')
+          setAlertText('Thực hiện kí thành công')
+          setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
         })
         .catch((error) => {
-          console.error('Error saving signature:', error);
-          alert('Đã xảy ra lỗi khi lưu chữ ký!');
-        });
-    } else {
-      alert('Vui lòng đặt chữ ký vào vùng chỉ định trước khi lưu và chọn ảnh!');
-    }
+          setAlertSeverity('error')
+          setAlertText('Đã xảy ra lỗi khi xác thực chữ kí')
+        })
+        .finally(function () {
+          // always executed
+          setSnackbarOpen(true)
+        })
   }
 
   return (
@@ -382,6 +359,13 @@ const PdfViewer = () => {
           </Button>
         </div>
       </div>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }

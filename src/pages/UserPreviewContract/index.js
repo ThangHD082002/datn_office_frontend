@@ -10,6 +10,7 @@ import { ArrowBack, ArrowForward, GetApp } from '@mui/icons-material'
 import FormData from 'form-data'
 import { axiosInstance } from '~/utils/axiosInstance'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
+import { ArrowUpward } from '@mui/icons-material'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 
@@ -37,6 +38,13 @@ const UserPreviewContract = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false)
+  }
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Cuộn mượt mà
+    })
   }
 
   // Hàm kiểm tra nếu chữ ký nằm trong vùng ký
@@ -188,8 +196,8 @@ const UserPreviewContract = () => {
     if (file && file.type.startsWith('image/')) {
       setImage(file); // Lưu đối tượng File vào state thay vì Data URL
       setImagePosition({
-        x: 240, 
-        y: 550,
+        x: 240, // Vị trí x của ảnh
+        y: 530, // Vị trí y của ảnh
       });
     } else {
       alert('Vui lòng chọn một tệp ảnh hợp lệ!');
@@ -237,92 +245,75 @@ const UserPreviewContract = () => {
         </AppBar>
 
         {/* Nội dung PDF */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2, border: '1px solid #333' }}>
-          {loading ? (
-            <CircularProgress />
-          ) : pdfFile ? (
-            <Document file={pdfFile} onLoadSuccess={onLoadSuccess} loading="Loading PDF..." noData="No PDF file found">
-              <Page
-                pageNumber={pageNumber}
-                width={800}
-                onRenderSuccess={() => {
-                  const pageElement = document.querySelector('.react-pdf__Page')
-                  if (pageElement) {
-                    const others = pageElement.querySelectorAll(
-                      '.react-pdf__Page__textContent, .react-pdf__Page__annotations'
-                    )
-                    others.forEach((el) => {
-                      el.style.display = 'none'
-                    })
-                  }
-                }}
-              >
-                {/* Thêm vùng ký được chỉ định */}
-
-                <Box
-                  id="signature-boxB"
-                  sx={{
-                    position: 'absolute',
-                    top: `${signaturePositionB.y}px`,
-                    left: `${signaturePositionB.x}px`,
-                    width: `${signaturePositionB.width}px`,
-                    height: `${signaturePositionB.height}px`,
-                    border: '2px dashed red',
-                    zIndex: 5,
-                    pointerEvents: 'none'
-                  }}
-                  display="none"
-                >
-                  <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
-                    Ký vào đây
-                  </Typography>
-                </Box>
-                {/* Thêm vùng ký được chỉ định */}
-                <Box
-                  id="signature-boxA"
-                  sx={{
-                    position: 'absolute',
-                    top: `${signaturePositionA.y}px`,
-                    left: `${signaturePositionA.x}px`,
-                    width: `${signaturePositionA.width}px`,
-                    height: `${signaturePositionA.height}px`,
-                    border: '2px dashed red',
-                    zIndex: 5,
-                    pointerEvents: 'none'
-                  }}
-                  display="none"
-                >
-                  <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
-                    Ký vào đây
-                  </Typography>
-                </Box>
-              </Page>
-            </Document>
-          ) : null}
-        </Box>
-
-        {/* Thanh điều hướng */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-          <IconButton color="primary" onClick={goToPreviousPage} disabled={pageNumber <= 1} sx={{ fontSize: '25px' }}>
-            <ArrowBack />
-          </IconButton>
-          <Typography variant="body1" sx={{ mx: 2, fontSize: '20px' }}>
-            Page {pageNumber} of {numPages}
+        <Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    mt: 2,
+    border: '1px solid #333',
+    maxHeight: 'calc(130vh - 100px)', // Chiều cao tối đa cho phần hiển thị PDF, trừ đi không gian cho footer
+    overflowY: 'auto', // Thêm scroll nếu nội dung dài // Tạo không gian cho footer
+  }}
+>
+  {loading ? (
+    <CircularProgress />
+  ) : pdfFile ? (
+    <Document file={pdfFile} onLoadSuccess={onLoadSuccess} loading="Loading PDF..." noData="No PDF file found">
+      <Page
+        pageNumber={pageNumber}
+        width={800}
+        onRenderSuccess={() => {
+          const pageElement = document.querySelector('.react-pdf__Page')
+          if (pageElement) {
+            const others = pageElement.querySelectorAll(
+              '.react-pdf__Page__textContent, .react-pdf__Page__annotations'
+            )
+            others.forEach((el) => {
+              el.style.display = 'none'
+            })
+          }
+        }}
+      >
+        {/* Thêm vùng ký được chỉ định */}
+        <Box
+          id="signature-boxB"
+          sx={{
+            position: 'absolute',
+            top: `${signaturePositionB.y}px`,
+            left: `${signaturePositionB.x}px`,
+            width: `${signaturePositionB.width}px`,
+            height: `${signaturePositionB.height}px`,
+            border: '2px dashed red',
+            zIndex: 5,
+            pointerEvents: 'none',
+          }}
+          display="none"
+        >
+          <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
+            Ký vào đây
           </Typography>
-          <IconButton color="primary" onClick={goToNextPage} disabled={pageNumber >= numPages}>
-            <ArrowForward />
-          </IconButton>
         </Box>
-      </Box>
-
-      {/* Phần chữ ký */}
-      <div className={cx('signature')}>
-        <div>
-          <label htmlFor="image-upload" className={cx('label-upload')}>
-            Chọn chữ kí
-          </label>
-          <input type="file" id="image-upload" name="image" accept="image/*" onChange={handleImageUpload} />
-          {image && (
+        {/* Thêm vùng ký được chỉ định */}
+        <Box
+          id="signature-boxA"
+          sx={{
+            position: 'absolute',
+            top: `${signaturePositionA.y}px`,
+            left: `${signaturePositionA.x}px`,
+            width: `${signaturePositionA.width}px`,
+            height: `${signaturePositionA.height}px`,
+            border: '2px dashed red',
+            zIndex: 5,
+            pointerEvents: 'none',
+          }}
+          display="none"
+        >
+          <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
+            Ký vào đây
+          </Typography>
+        </Box>
+        {image && (
             <div
               style={{
                 position: 'absolute',
@@ -358,6 +349,34 @@ const UserPreviewContract = () => {
               </IconButton>
             </div>
           )}
+      </Page>
+    </Document>
+  ) : null}
+</Box>
+
+
+        {/* Thanh điều hướng */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+          <IconButton color="primary" onClick={goToPreviousPage} disabled={pageNumber <= 1} sx={{ fontSize: '25px' }}>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="body1" sx={{ mx: 2, fontSize: '20px', color: 'black' }}>
+            Page {pageNumber} of {numPages}
+          </Typography>
+          <IconButton color="primary" onClick={goToNextPage} disabled={pageNumber >= numPages}>
+            <ArrowForward />
+          </IconButton>
+        </Box>
+      </Box>
+
+      {/* Phần chữ ký */}
+      <div className={cx('signature')}>
+        <div>
+          <label htmlFor="image-upload" className={cx('label-upload')}>
+            Chọn chữ kí
+          </label>
+          <input type="file" id="image-upload" name="image" accept="image/*" onChange={handleImageUpload} />
+          
         </div>
         <div>
           <Button
@@ -385,6 +404,21 @@ const UserPreviewContract = () => {
         severity={alertSeverity}
         navigatePath={navigatePath}
       />
+      <IconButton
+        onClick={handleScrollToTop}
+        sx={{
+          position: 'fixed',
+          bottom: '20px', // Đặt vị trí của nút ở dưới cùng
+          right: '20px', // Đặt nút ở góc phải
+          backgroundColor: 'primary.main', // Màu nền của nút
+          color: 'white', // Màu icon
+          '&:hover': {
+            backgroundColor: 'primary.dark', // Màu khi hover
+          },
+        }}
+      >
+        <ArrowUpward />
+      </IconButton>
     </div>
   )
 }

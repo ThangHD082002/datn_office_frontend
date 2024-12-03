@@ -14,14 +14,14 @@ const CustomSnackbar = ({ open, onClose, message, severity, navigatePath }) => {
       // Đợi 3 giây trước khi chuyển hướng
       setTimeout(() => {
         navigate(navigatePath);
-      }, 1000);
+      }, 500);
     }
   };
 
   return (
     <Snackbar
       open={open}
-      autoHideDuration={3000}
+      autoHideDuration={1000}
       onClose={handleClose}
     >
       <Alert
