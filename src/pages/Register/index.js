@@ -26,8 +26,9 @@ function Register() {
   const [login, setLogin] = useState('')
   const [pass, setPass] = useState('')
   const [confirmPass, setConfirmPass] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  // const [firstName, setFirstName] = useState('')
+  // const [lastName, setLastName] = useState('')
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [cccd, setCccd] = useState('')
   const [address, setAddress] = useState('')
@@ -38,8 +39,9 @@ function Register() {
   const [isLoginEmpty, setIsLoginEmpty] = useState('')
   const [isPasswordEmpty, setIsPasswordEmpty] = useState('')
   const [isConfirmPassEmpty, setIsConfirmPassEmpty] = useState('')
-  const [isFirstNameEmpty, setIsFirstNameEmpty] = useState('')
-  const [isLastNameEmpty, setIsLastNameEmpty] = useState('')
+  // const [isFirstNameEmpty, setIsFirstNameEmpty] = useState('')
+  // const [isLastNameEmpty, setIsLastNameEmpty] = useState('')
+  const [isFullNameEmpty, setIsFullNameEmpty] = useState('')
   const [isEmailEmpty, setIsEmailEmpty] = useState('')
   const [isCccdEmpty, setIsCccdEmpty] = useState('')
   const [isAddressEmpty, setIsAddressEmpty] = useState('')
@@ -56,8 +58,9 @@ function Register() {
     e.preventDefault()
     if (
       isLoginEmpty != '' ||
-      isFirstNameEmpty != '' ||
-      isLastNameEmpty != '' ||
+      // isFirstNameEmpty != '' ||
+      // isLastNameEmpty != '' ||
+      isFullNameEmpty != '' ||
       isAddressEmpty != '' ||
       isDobEmpty != '' ||
       isCccdEmpty != '' ||
@@ -66,8 +69,9 @@ function Register() {
       isConfirmPassEmpty != '' ||
       login == '' ||
       email == '' ||
-      firstName == '' ||
-      lastName == '' ||
+      // firstName == '' ||
+      // lastName == '' ||
+      fullName == '' ||
       address == '' ||
       dob == '' ||
       cccd == '' ||
@@ -84,11 +88,14 @@ function Register() {
       if (login == '') {
         setIsLoginEmpty('Vui lòng nhập username')
       }
-      if (firstName == '') {
-        setIsFirstNameEmpty('Vui lòng nhập first name')
-      }
-      if (lastName == '') {
-        setIsLastNameEmpty('Vui lòng nhập last name')
+      // if (firstName == '') {
+      //   setIsFirstNameEmpty('Vui lòng nhập first name')
+      // }
+      // if (lastName == '') {
+      //   setIsLastNameEmpty('Vui lòng nhập last name')
+      // }
+      if (fullName == '') {
+        setIsFullNameEmpty('Vui lòng nhập full name')
       }
       if (cccd == '') {
         setIsCccdEmpty('Vui lòng nhập căn cước công dân')
@@ -106,36 +113,36 @@ function Register() {
         setIsConfirmPassEmpty('Vui lòng confirm password')
       }
     } else {
-        axiosInstance
-          .post('register', {
-           login: login,
-           password: pass,
-           firstName: firstName,
-           lastName: lastName,
-           email: email,
-           imageUrl: "aaa",
-           langKey: "abc",
-           cccd: cccd,
-           address: address,
-           dob: dob,
-          })
-          .then(function (response) {
-            console.log(response)
-            setIsCheckSuccessRegister("Đăng kí thành công")
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .finally(function () {
-            // always executed
-          });
-        // DoRegister(email, pass);
-      }
-    
+      axiosInstance
+        .post('register', {
+          login: login,
+          password: pass,
+          //  firstName: firstName,
+          //  lastName: lastName,
+          fullName: fullName,
+          email: email,
+          imageUrl: 'aaa',
+          langKey: 'abc',
+          cccd: cccd,
+          address: address,
+          dob: dob
+        })
+        .then(function (response) {
+          console.log(response)
+          setIsCheckSuccessRegister('Đăng kí thành công')
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+        .finally(function () {
+          // always executed
+        })
+      // DoRegister(email, pass);
+    }
+
     navigate(link)
   }
-
 
   const handleBlurEmail = (e) => {
     var regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
@@ -165,21 +172,30 @@ function Register() {
     }
   }
 
-  const handleBlurFirstName = (e) => {
-    e.preventDefault()
-    if (firstName === '') {
-      setIsFirstNameEmpty('Vui lòng nhập first name')
-    } else {
-      setIsFirstNameEmpty('')
-    }
-  }
+  // const handleBlurFirstName = (e) => {
+  //   e.preventDefault()
+  //   if (firstName === '') {
+  //     setIsFirstNameEmpty('Vui lòng nhập first name')
+  //   } else {
+  //     setIsFirstNameEmpty('')
+  //   }
+  // }
 
-  const handleBlurLastName = (e) => {
+  // const handleBlurLastName = (e) => {
+  //   e.preventDefault()
+  //   if (lastName === '') {
+  //     setIsLastNameEmpty('Vui lòng nhập last name')
+  //   } else {
+  //     setIsLastNameEmpty('')
+  //   }
+  // }
+
+  const handleBlurFullName = (e) => {
     e.preventDefault()
-    if (lastName === '') {
-      setIsLastNameEmpty('Vui lòng nhập last name')
+    if (fullName === '') {
+      setIsFullNameEmpty('Vui lòng nhập full name')
     } else {
-      setIsLastNameEmpty('')
+      setIsFullNameEmpty('')
     }
   }
 
@@ -242,16 +258,22 @@ function Register() {
     }
   }
 
-  const handleChangeFirstName = (e) => {
-    setFirstName(e.target.value)
-    if (isFirstNameEmpty != '') {
-      setIsFirstNameEmpty('')
-    }
-  }
-  const handleChangeLastName = (e) => {
-    setLastName(e.target.value)
-    if (isLastNameEmpty != '') {
-      setIsLastNameEmpty('')
+  // const handleChangeFirstName = (e) => {
+  //   setFirstName(e.target.value)
+  //   if (isFirstNameEmpty != '') {
+  //     setIsFirstNameEmpty('')
+  //   }
+  // }
+  // const handleChangeLastName = (e) => {
+  //   setLastName(e.target.value)
+  //   if (isLastNameEmpty != '') {
+  //     setIsLastNameEmpty('')
+  //   }
+  // }
+  const handleChangeFullName = (e) => {
+    setFullName(e.target.value)
+    if (isFullNameEmpty != '') {
+      setIsFullNameEmpty('')
     }
   }
 
@@ -360,7 +382,7 @@ function Register() {
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                 />
 
@@ -399,7 +421,7 @@ function Register() {
             </div>
 
             <div className={cx('first-body-container')}>
-              <div>
+              {/* <div>
                 <input
                   value={firstName}
                   onChange={handleChangeFirstName}
@@ -410,8 +432,8 @@ function Register() {
                   placeholder="Enter first name"
                 />
                 <span className={cx('input-empty')}>{isFirstNameEmpty}</span>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <input
                   value={lastName}
                   onChange={handleChangeLastName}
@@ -422,6 +444,35 @@ function Register() {
                   placeholder="Enter last name"
                 />
                 <span className={cx('input-empty')}>{isLastNameEmpty}</span>
+              </div> */}
+              <div>
+                <input
+                  value={fullName}
+                  onChange={handleChangeFullName}
+                  onBlur={handleBlurFullName}
+                  name="fullName"
+                  className={cx('input-password')}
+                  id="firstNameId"
+                  placeholder="Enter full name"
+                />
+                <span className={cx('input-empty')}>{isFullNameEmpty}</span>
+              </div>
+              <div className={cx('dob')}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      value={dob ? dayjs(dob) : null}
+                      onChange={handleChangeDob}
+                      label="DOB"
+                      sx={{
+                        '& .MuiInputBase-root': { fontSize: '10px' }, // Kích thước chữ của phần input
+                        '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
+                        '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+                <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
               </div>
             </div>
 
@@ -450,23 +501,6 @@ function Register() {
                 />
                 <span className={cx('input-empty')}>{isCccdEmpty}</span>
               </div>
-            </div>
-            <div className={cx('dob')}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']}>
-                  <DatePicker
-                    value={dob ? dayjs(dob) : null}
-                    onChange={handleChangeDob}
-                    label="DOB"
-                    sx={{
-                      '& .MuiInputBase-root': { fontSize: '10px' }, // Kích thước chữ của phần input
-                      '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                      '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
-                    }}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-              <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
             </div>
           </div>
           <div className={cx('sign-up-contain')}>
