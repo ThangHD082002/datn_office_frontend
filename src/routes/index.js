@@ -24,6 +24,10 @@ import BuildingManagementCreate from '~/pages/Admin/BuildingManagement/Create'
 import BuildingManagementDetail from '~/pages/Admin/BuildingManagement/Detail'
 import UserContract from '~/pages/UserContract'
 import UserPreviewContract from '~/pages/UserPreviewContract'
+import BuildingManagementEdit from '~/pages/Admin/BuildingManagement/Edit'
+import OfficeManagementDetail from '~/pages/Admin/OfficeManagement/Detail'
+import OfficeManagementCreate from '~/pages/Admin/OfficeManagement/Create'
+import RequestManagementDetail from '~/pages/Admin/RequestManagement/Detail'
 
 const publicRoutes = [
   {
@@ -90,6 +94,11 @@ const publicRoutes = [
     layout: AdminLayout
   },
   {
+    path: '/admin/edit-buildings/:bid',
+    component: BuildingManagementEdit,
+    layout: AdminLayout
+  },
+  {
     path: '/admin/buildings/:bid',
     component: BuildingManagementDetail,
     layout: AdminLayout
@@ -97,6 +106,16 @@ const publicRoutes = [
   {
     path: '/admin/offices',
     component: OfficeManagementList,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/offices/:oid',
+    component: OfficeManagementDetail,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/create-office',
+    component: OfficeManagementCreate,
     layout: AdminLayout
   },
   {
@@ -122,6 +141,11 @@ const publicRoutes = [
   {
     path: '/admin/requests',
     component: RequestManagementList,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/requests/:rid',
+    component: RequestManagementDetail,
     layout: AdminLayout
   },
   {

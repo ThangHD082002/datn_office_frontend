@@ -35,7 +35,7 @@ function RequestManagementCreate() {
         const fetchBuildings = async () => {
             try {
                 const response = await axiosInstance.get('/buildings/all');
-                setBuildings(response.data);
+                setBuildings(response.data.result);
             } catch (error) {
                 console.error('Error fetching buildings:', error);
                 setBuildings([]);
@@ -44,7 +44,7 @@ function RequestManagementCreate() {
 
         const fetchUsers = async () => {
             try {
-                const response = await axiosInstance.get('/users');
+                const response = await axiosInstance.get('/role-users');
                 const usersData = Array.isArray(response.data) ? response.data : response.data.content;
                 setUsers(usersData || []);
             } catch (error) {
@@ -140,7 +140,7 @@ function RequestManagementCreate() {
                                     <Autocomplete
                                         options={users || []}
                                         getOptionLabel={(option) =>
-                                            `${option.firstName || ''} ${option.lastName || ''}`
+                                            `${option.fullName || ''} `
                                         }
                                         onChange={(event, newValue) => {
                                             setFormData(prev => ({

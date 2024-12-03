@@ -34,7 +34,8 @@ function BuildingManagementDetail() {
         const fetchBuilding = async () => {
             try {
                 const response = await axiosInstance.get(`/buildings/${bid}`);
-                setBuilding(response.data);
+                console.log('Building:', response.data.result);
+                setBuilding(response.data.result);
             } catch (error) {
                 console.error('Error fetching building:', error);
             } finally {
@@ -155,8 +156,9 @@ function BuildingManagementDetail() {
                                         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                                             {building.images.map((image, index) => (
                                                 <img
-                                                    key={index}
+                                                    key={image.id}
                                                     src={image.url}
+                                                    onClick={() => setSelectedImage(image.url)}
                                                     alt={`Building ${index + 1}`}
                                                     style={{
                                                         width: '200px',
@@ -173,33 +175,6 @@ function BuildingManagementDetail() {
                                 </Grid>
                             )}
                         </Grid>
-                        <Grid item xs={12}>
-                            <Paper elevation={3} sx={{ p: 4 }}>
-                                <Typography variant="h6" gutterBottom sx={{ fontSize: '1.8rem', mb: 3 }}>
-                                    Hình ảnh
-                                </Typography>
-                                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                                    {building.imageUrls?.map((url, index) => (
-                                        <img
-                                            key={index}
-                                            src={url}
-                                            alt={`Building ${index + 1}`}
-                                            onClick={() => setSelectedImage(url)}
-                                            style={{
-                                                width: '200px',
-                                                height: '200px',
-                                                objectFit: 'cover',
-                                                border: '2px solid #fff',
-                                                boxShadow: '0 0 5px rgba(0,0,0,0.2)',
-                                                borderRadius: '4px',
-                                                cursor: 'pointer'
-                                            }}
-                                        />
-                                    ))}
-                                </Box>
-                            </Paper>
-                        </Grid>
-                        {/* Image Preview Modal */}
                         <Modal
                             open={!!selectedImage}
                             onClose={() => setSelectedImage(null)}
