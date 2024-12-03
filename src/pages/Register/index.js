@@ -109,36 +109,32 @@ function Register() {
         setIsConfirmPassEmpty('Vui lòng confirm password')
       }
     } else {
-      axiosInstance
-        .post('register', {
-          login: login,
-          password: pass,
-          fullName: fullName,
-          email: email,
-          imageUrl: 'aaa',
-          langKey: 'abc',
-          cccd: cccd,
-          address: address,
-          dob: dob
-        })
-        .then(function (response) {
-          console.log(response.data)
-          setAlertSeverity('success')
-          setAlertText('Bạn đã đăng kí thành công')
-          setNavigatePath('/login') // Đường dẫn chuyển hướng sau khi thành công
-        })
-        .catch(function (error) {
-          console.log(error)
-          setAlertSeverity('error')
-          setAlertText(error.response.data.fieldErrors[0].message)
-        })
-        .finally(function () {
-          // always executed
-          setSnackbarOpen(true)
-        })
-      // DoRegister(email, pass);
-    }
-
+        axiosInstance
+          .post('register', {
+           login: login,
+           password: pass,
+           fullName: fullName,
+           email: email,
+           imageUrl: "aaa",
+           langKey: "abc",
+           cccd: cccd,
+           address: address,
+           dob: dob,
+          })
+          .then(function (response) {
+            console.log(response)
+            setIsCheckSuccessRegister("Đăng kí thành công")
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .finally(function () {
+            // always executed
+          });
+        // DoRegister(email, pass);
+      }
+    
     navigate(link)
   }
 
@@ -354,7 +350,7 @@ function Register() {
                   }}
                 />
 
-                {/* <TextField
+                 {/* <TextField
                   value={confirmPass}
                   onChange={handleChangeConfirmPassword}
                   onBlur={handleBlurConfirmPassword} // Sử dụng handleBlurConfirmPassword nếu cần
@@ -389,7 +385,7 @@ function Register() {
             </div>
 
             <div className={cx('first-body-container')}>
-              <div>
+               <div>
                 <input
                   value={fullName}
                   onChange={handleChangeFullName}
@@ -414,7 +410,6 @@ function Register() {
                 <span className={cx('input-empty')}>{isAddressEmpty}</span>
               </div>
             </div>
-
             <div className={cx('first-body-container')}>
               <div>
                 <input
@@ -429,24 +424,25 @@ function Register() {
                 <span className={cx('input-empty')}>{isCccdEmpty}</span>
               </div>
               <div className={cx('dob')}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker
-                      value={dob ? dayjs(dob) : null}
-                      onChange={handleChangeDob}
-                      label="DOB"
-                      sx={{
-                        '& .MuiInputBase-root': { fontSize: '20px' }, // Kích thước chữ của phần input
-                        '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                        '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch,
-                      }}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-                <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
-              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    value={dob ? dayjs(dob) : null}
+                    onChange={handleChangeDob}
+                    label="DOB"
+                    sx={{
+                      '& .MuiInputBase-root': { fontSize: '20px' }, // Kích thước chữ của phần input
+                      '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
+                      '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
             </div>
           </div>
+            </div>
+            
           <div className={cx('sign-up-contain')}>
             <p className={cx('sign-up-note')}>Welcome to join with</p>
             <a className={cx('sign-up-link')} href="/">
@@ -581,5 +577,6 @@ function Register() {
     </div>
   )
 }
+
 
 export default Register
