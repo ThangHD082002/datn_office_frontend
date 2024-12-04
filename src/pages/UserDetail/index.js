@@ -49,7 +49,7 @@ function UserDetail() {
   }
 
   useEffect(() => {
-    console.log("11111111111111111")
+    console.log('11111111111111111')
     const fetchUserDetail = async () => {
       setLoading(true)
       try {
@@ -72,10 +72,10 @@ function UserDetail() {
         if (userData.signImage) {
           setImagePreview(userData.result.signImage)
         }
-        console.log("USER-DATA")
+        console.log('USER-DATA')
         console.log(userData)
       } catch (error) {
-        console.log("USER-ERROR")
+        console.log('USER-ERROR')
         console.error('Error fetching user details:', error)
       } finally {
         setLoading(false)
@@ -100,8 +100,8 @@ function UserDetail() {
   const handleSubmit = async () => {
     try {
       setLoading(true)
-
       const data = new FormData()
+      data.append('id', localStorage.getItem('id_user'))
       data.append('login', formData.login)
       data.append('fullName', formData.fullName)
       data.append('email', formData.email)
@@ -128,14 +128,14 @@ function UserDetail() {
     } catch (error) {
       console.error('Error updating user details:', error)
       setAlertSeverity('error')
-      setAlertText('Đã có lỗi xảy ra')
+      setAlertText(error.response.data.message)
     } finally {
       setSnackbarOpen(true)
       setLoading(false)
     }
   }
 
-  console.log("FORM DATA")
+  console.log('FORM DATA')
   console.log(formData)
 
   return (
