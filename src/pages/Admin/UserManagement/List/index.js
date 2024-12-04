@@ -60,10 +60,20 @@ function UserManagementList() {
 
   const fetchData = async (pageNumber) => {
     setLoading(true)
+    const pageSize = 5 // Số lượng bản ghi trên mỗi trang
+
     try {
-      const response = await axiosInstance.get(`/admin/managers`)
-      setUsers(response.data)
-      setTotalPages(10) // Replace with response.data.totalPages if available
+      // Giả sử API hỗ trợ phân trang qua query params ?page= và ?size=
+      const response = await axiosInstance.get(`/admin/managers`, {
+        params: {
+          page: pageNumber - 1, // Backend thường bắt đầu từ 0
+          size: pageSize
+        }
+      })
+
+      // Giả sử API trả về dữ liệu dạng { content, totalPages, totalElements }
+      setUsers(response.data.content)
+      setTotalPages(response.data.totalPages)
     } catch (error) {
       console.error('Error fetching data:', error)
     } finally {
@@ -71,13 +81,14 @@ function UserManagementList() {
     }
   }
 
-  useEffect(() => {
-    fetchData(page)
-  }, [page])
-
   const handlePageChange = (event, newPage) => {
     setPage(newPage)
   }
+
+  // Khi useEffect chạy, gọi fetchData với trang hiện tại
+  useEffect(() => {
+    fetchData(page)
+  }, [page])
 
   const handleDeleteClick = (user) => {
     setSelectedUser(user)
@@ -110,7 +121,7 @@ function UserManagementList() {
     <ThemeProvider theme={theme}>
       <div>
         <Typography variant="h2" gutterBottom>
-          User Management
+          QUẢN LÍ USER MANAGER
         </Typography>
         <Divider />
         <div>
