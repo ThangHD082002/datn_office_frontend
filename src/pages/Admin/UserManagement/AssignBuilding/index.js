@@ -49,9 +49,10 @@ const AssignBuilding = () => {
 
   // Fetch Buildings with Pagination
   const fetchBuildings = async (page) => {
-    const response = await axiosInstance.get(`/buildings`)
-    const data = await response.data
-    setBuildings(data.content)
+    const response = await axiosInstance.get(`/buildings/all`)
+    // console.log(response.data.result)
+    const data = await response.data.result
+    setBuildings(data)
   }
 
   // Fetch Users with Pagination
