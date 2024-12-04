@@ -69,6 +69,11 @@ function Header() {
     navigate('/user-contract')
   }
 
+  const showInfor = () => {
+    var uid = localStorage.getItem('id_user');
+    navigate(`/user-infor/${uid}`)
+  }
+
   return (
     <div className={cx('container')}>
       <Row className={cx('container-row')}>
@@ -206,7 +211,7 @@ function Header() {
             </ListSubheader>
           }
         >
-          <ListItemButton sx={{ color: 'black' }}>
+          <ListItemButton onClick={showInfor} sx={{ color: 'black' }}>
             <ListItemIcon>
               <PersonIcon sx={{ color: 'black' }} /> {/* Màu đen cho icon */}
             </ListItemIcon>

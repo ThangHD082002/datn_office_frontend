@@ -13,7 +13,7 @@ import about_two from '~/assets/image/about-us-img-2.jpeg'
 import about_three from '~/assets/image/about-us-img-3.jpeg'
 import about_four from '~/assets/image/about-us-img-4.jpeg'
 import { axiosInstance } from '~/utils/axiosInstance'
-import {IconButton} from '@mui/material'
+import { IconButton } from '@mui/material'
 import room_1 from '~/assets/image/room1.jpeg'
 import room_2 from '~/assets/image/room2.jpeg'
 import room_3 from '~/assets/image/room3.jpeg'
@@ -31,7 +31,7 @@ function Home() {
   const handleScrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth', // Cuộn mượt mà
+      behavior: 'smooth' // Cuộn mượt mà
     })
   }
 
@@ -62,6 +62,7 @@ function Home() {
       .get('/buildings')
       .then(function (response) {
         // handle success
+        console.log("LIST BUILDING")
         console.log(response.data.content)
         setResult(response.data.content)
       })
@@ -122,22 +123,24 @@ function Home() {
         </div>
 
         <div className={cx('rooms-cards-wrapper')}>
-          {result.map((r) => (
-            <div key={r.id} className={cx('room-card')}>
-              <a href={`/detail-room/${r.id}`} className={cx('item')}>
-                <img src={r.imageUrls[0]} className={cx('room-img')} />
-                <div className={cx('room-card-content')}>
-                  <h4 className={cx('room-card-heading')}>{r.name}</h4>
-                  <p className={cx('room-card-paragraph')}>{r.address}</p>
-                  <p className={cx('room-price')}>$99.00</p>
-                  <button className={cx('room-card-btn')}>
-                    Book Now
-                    <i className={cx('fas fa-angle-double-right btn-arrow')}></i>
-                  </button>
-                </div>
-              </a>
-            </div>
-          ))}
+          {result &&
+            Array.isArray(result) &&
+            result.map((r) => (
+              <div key={r.id} className={cx('room-card')}>
+                <a href={`/detail-room/${r.id}`} className={cx('item')}>
+                  <img src={r.imageUrls[0]} className={cx('room-img')} alt="Room" />
+                  <div className={cx('room-card-content')}>
+                    <h4 className={cx('room-card-heading')}>{r.name}</h4>
+                    <p className={cx('room-card-paragraph')}>{r.address}</p>
+                    <p className={cx('room-price')}>$99.00</p>
+                    <button className={cx('room-card-btn')}>
+                      Book Now
+                      <i className={cx('fas fa-angle-double-right btn-arrow')}></i>
+                    </button>
+                  </div>
+                </a>
+              </div>
+            ))}
         </div>
       </section>
 
@@ -153,8 +156,8 @@ function Home() {
           backgroundColor: 'primary.main', // Màu nền của nút
           color: 'white', // Màu icon
           '&:hover': {
-            backgroundColor: 'primary.dark', // Màu khi hover
-          },
+            backgroundColor: 'primary.dark' // Màu khi hover
+          }
         }}
       >
         <ArrowUpward />

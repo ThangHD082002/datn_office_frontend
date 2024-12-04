@@ -10,6 +10,7 @@ import { ArrowBack, ArrowForward, GetApp } from '@mui/icons-material'
 import FormData from 'form-data'
 import { axiosInstance } from '~/utils/axiosInstance'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
+import { ArrowUpward } from '@mui/icons-material'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 
@@ -37,6 +38,13 @@ const PdfViewer = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false)
+  }
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Cuộn mượt mà
+    })
   }
 
   // Hàm kiểm tra nếu chữ ký nằm trong vùng ký
@@ -366,6 +374,21 @@ const PdfViewer = () => {
         severity={alertSeverity}
         navigatePath={navigatePath}
       />
+       <IconButton
+        onClick={handleScrollToTop}
+        sx={{
+          position: 'fixed',
+          bottom: '20px', // Đặt vị trí của nút ở dưới cùng
+          right: '20px', // Đặt nút ở góc phải
+          backgroundColor: 'primary.main', // Màu nền của nút
+          color: 'white', // Màu icon
+          '&:hover': {
+            backgroundColor: 'primary.dark' // Màu khi hover
+          }
+        }}
+      >
+        <ArrowUpward />
+      </IconButton>
     </div>
   )
 }

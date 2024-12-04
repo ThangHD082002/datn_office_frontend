@@ -28,6 +28,7 @@ import BuildingManagementEdit from '~/pages/Admin/BuildingManagement/Edit'
 import OfficeManagementDetail from '~/pages/Admin/OfficeManagement/Detail'
 import OfficeManagementCreate from '~/pages/Admin/OfficeManagement/Create'
 import RequestManagementDetail from '~/pages/Admin/RequestManagement/Detail'
+import UserDetail from '~/pages/UserDetail'
 
 const publicRoutes = [
   {
@@ -56,6 +57,11 @@ const publicRoutes = [
   {
     path: '/detail-room/:rid',
     component: DetailRoom,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/user-infor/:uid',
+    component: UserDetail,
     layout: HeaderSearchLayout
   },
   {

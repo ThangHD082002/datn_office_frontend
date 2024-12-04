@@ -109,7 +109,7 @@ function Login() {
           // handle error
           console.log(error)
           setAlertSeverity('error')
-          setAlertText(error.response.data.fieldErrors[0].message)
+          setAlertText("Đã có lỗi xảy ra")
         })
         .finally(function () {
           // always executed
