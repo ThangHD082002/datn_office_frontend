@@ -228,7 +228,8 @@ const UserPreviewContract = () => {
       })
       .catch((error) => {
         setAlertSeverity('error')
-        setAlertText('Đã xảy ra lỗi trong quá trình kí')
+        // setAlertText('Đã xảy ra lỗi trong quá trình kí')
+        setAlertText(error.response.data.message)
       })
       .finally(function () {
         // always executed
