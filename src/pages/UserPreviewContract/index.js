@@ -116,25 +116,6 @@ const UserPreviewContract = () => {
     setNumPages(numPages) // Lưu số trang PDF
   }
 
-  // const goToPreviousPage = () => {
-  //   setPageNumber((prevPageNumber) => Math.max(prevPageNumber - 1, 1)) // Chuyển sang trang trước
-  // }
-
-  // const goToNextPage = () => {
-  //   setPageNumber((prevPageNumber) => Math.min(prevPageNumber + 1, numPages)) // Chuyển sang trang tiếp theo
-  //   if (pageNumber + 1 === numPages) {
-  //     // check role manager thì hiển thị ô kí bên A, client thì hiển thị ô kí bên B
-  //     var role = localStorage.getItem('role');
-  //     if(role.includes("ROLE_USER")){
-  //       document.getElementById('signature-boxA').style.display = 'block';
-  //     } else{
-  //       document.getElementById('signature-boxB').style.display = 'block';
-  //     }
-      
-  //     // document.getElementById('signature-boxB').style.display = 'block'
-  //   }
-  // }
-
   const goToNextPage = () => {
     setPageNumber((prevPageNumber) => {
       const newPageNumber = Math.min(prevPageNumber + 1, numPages); // Chuyển sang trang tiếp theo

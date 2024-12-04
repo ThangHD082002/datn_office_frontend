@@ -30,9 +30,17 @@ import { Link, Routes, Route, useNavigate } from 'react-router-dom'
 import { axiosInstance } from '~/utils/axiosInstance'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
-
+import RefreshIcon from '@mui/icons-material/Refresh'
 import axios from 'axios'
 import styles from './ManageContract.module.scss'
+
+import { MenuItem, Select } from '@mui/material'
+
+const options = [
+  { value: 'Draft', color: '#FFD700' }, // Vàng
+  { value: 'Pending', color: '#00BFFF' }, // Xanh dương
+  { value: 'Finished', color: '#32CD32' } // Xanh lá
+]
 
 function ManageContract() {
   let token = localStorage.getItem('authToken')
@@ -41,6 +49,16 @@ function ManageContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
+
+  const [selectedOption, setSelectedOption] = useState('')
+
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value)
+  }
+  const handleReset = () => {
+    setSelectedOption('')
+    setValueSearch('')
+  }
   useEffect(() => {
     axiosInstance
       .post('/contract', {
@@ -52,7 +70,7 @@ function ManageContract() {
         buildingIds: []
       })
       .then((response) => {
-        console.log(response);
+        console.log(response)
         const newArray = response.data.data.map((item) => ({
           id: item.id,
           code: item.code,
@@ -284,8 +302,8 @@ function ManageContract() {
 
   const visibleRows = React.useMemo(
     () => [...rows].sort(getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage, rows]  // Thêm `rows` vào dependencies để đảm bảo dữ liệu được cập nhật khi `rows` thay đổi
-);
+    [order, orderBy, page, rowsPerPage, rows] // Thêm `rows` vào dependencies để đảm bảo dữ liệu được cập nhật khi `rows` thay đổi
+  )
 
   const handleExport = () => {
     setLoading(true)
@@ -295,7 +313,7 @@ function ManageContract() {
     const progressInterval = setInterval(() => {
       setProgress((prev) => (prev < 95 ? prev + 1 : prev)) // Tăng đến 95%
     }, 100) // Mỗi 100ms tăng 1%
-   
+
     axiosInstance
       .get(`/contract/${id}/export-pdf`, {
         headers: {
@@ -334,45 +352,6 @@ function ManageContract() {
     setValueSearch(e.target.value)
   }
 
-  // const handleSubmitSearch = () => {
-  //   axiosInstance
-  //     .post(
-  //       '/contract', // Sử dụng đường dẫn tương đối
-  //       {
-  //         pageNumber: 0,
-  //         pageSize: 10,
-  //         filter: [
-  //           {
-  //             operator: 'contain',
-  //             key: 'code',
-  //             value: valueSearch,
-  //             otherValue: null,
-  //             valueSelected: null
-  //           }
-  //         ],
-  //         sortProperty: 'contract.lastModifiedDate',
-  //         sortOrder: 'DESC',
-  //         buildingIds: []
-  //       }
-  //     )
-  //     .then((response) => {
-  //       const newArray = response.data.data.map((item) => ({
-  //         id: item.id,
-  //         code: item.code,
-  //         startDate: item.startDate,
-  //         rentalPurpose: item.rentalPurpose,
-  //         status: item.status
-  //       }))
-  //       setRows(newArray)
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error:', error)
-  //     })
-  //     .finally(() => {
-  //       console.log('Request completed.')
-  //     })
-  // }
-
   const handleSubmitSearch = () => {
     axiosInstance
       .post(
@@ -401,55 +380,130 @@ function ManageContract() {
           startDate: item.startDate,
           rentalPurpose: item.rentalPurpose,
           status: item.status
-        }));
-        
+        }))
+
         // Cập nhật rows mới
-        setRows(newArray);
-        
+        setRows(newArray)
+
         // Đặt lại page về 0 khi search
-        setPage(0);
+        setPage(0)
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error:', error)
       })
       .finally(() => {
-        console.log('Request completed.');
-      });
-  };
+        console.log('Request completed.')
+      })
+  }
 
   const HandlePreviewContract = () => {
     const id = Number(selected[0])
     // navigate('/admin/create-contract')
-    navigate(`/admin/preview-contract/${id}`);
+    navigate(`/admin/preview-contract/${id}`)
   }
 
   return (
     <div className={cx('container')}>
       <h1>DANH SÁCH HỢP ĐỒNG</h1>
-
       <Box display="flex" alignItems="center" gap={2} sx={{ marginTop: 6 }}>
-        <TextField
-          onChange={handleChangeValueSearch}
-          value={valueSearch}
-          variant="outlined"
-          placeholder="Search by code"
+        <Box display="flex" alignItems="center" gap={2}>
+          <TextField
+            onChange={handleChangeValueSearch}
+            value={valueSearch}
+            variant="outlined"
+            placeholder="Search by code"
+            sx={{
+              width: '100%'
+            }}
+          />
+        </Box>
+        <Box sx={{ width: 180, marginTop: '-2px' }}>
+          <Select
+            value={selectedOption}
+            onChange={handleChange}
+            displayEmpty
+            renderValue={(selected) => {
+              if (!selected) {
+                return <span>Chọn trạng thái</span>
+              }
+
+              const option = options.find((opt) => opt.value === selected)
+              return (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    backgroundColor: option?.color,
+                    color: '#fff',
+                    padding: '4px 8px',
+                    borderRadius: '4px'
+                  }}
+                >
+                  {option?.value}
+                </Box>
+              )
+            }}
+            sx={{
+              width: '100%',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              padding: '8px',
+              height: 50
+            }}
+          >
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: option.color,
+                      borderRadius: '50%',
+                      display: 'inline-block'
+                    }}
+                  ></span>
+                  {option.value}
+                </Box>
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+        <IconButton
+          onClick={handleReset}
           sx={{
-            width: '30%'
-          }}
-        />
-        <Button
-          onClick={handleSubmitSearch}
-          variant="contained"
-          // color="primary"
-          sx={{
-            whiteSpace: 'nowrap',
-            fontSize: '15px',
-            backgroundColor: '#c781f6',
-            color: '#fff'
+            backgroundColor: '#f5f5f5',
+            border: '1px solid #ccc',
+            padding: '8px',
+            borderRadius: '4px',
+            '&:hover': {
+              backgroundColor: '#e0e0e0'
+            }
           }}
         >
-          Search
-        </Button>
+          <RefreshIcon />
+        </IconButton>
+        <Box>
+          <Button
+            onClick={handleSubmitSearch}
+            variant="contained"
+            sx={{
+              whiteSpace: 'nowrap',
+              fontSize: '15px',
+              backgroundColor: '#c781f6',
+              color: '#fff'
+            }}
+          >
+            Search
+          </Button>
+        </Box>
       </Box>
 
       <Box sx={{ width: '100%', marginTop: '30px' }}>
