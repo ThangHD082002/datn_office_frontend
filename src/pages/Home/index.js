@@ -62,9 +62,9 @@ function Home() {
       .get('/buildings')
       .then(function (response) {
         // handle success
-        console.log("LIST BUILDING")
-        console.log(response.data.content)
-        setResult(response.data.content)
+        console.log('LIST BUILDING')
+        console.log(response)
+        setResult(response.data.result.content)
       })
       .catch(function (error) {
         // handle error
@@ -128,7 +128,7 @@ function Home() {
             result.map((r) => (
               <div key={r.id} className={cx('room-card')}>
                 <a href={`/detail-room/${r.id}`} className={cx('item')}>
-                  <img src={r.imageUrls[0]} className={cx('room-img')} alt="Room" />
+                  <img src={r.images[0].url} className={cx('room-img')} alt="Room" />
                   <div className={cx('room-card-content')}>
                     <h4 className={cx('room-card-heading')}>{r.name}</h4>
                     <p className={cx('room-card-paragraph')}>{r.address}</p>

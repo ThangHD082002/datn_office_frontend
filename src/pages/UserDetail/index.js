@@ -263,7 +263,7 @@ function UserDetail() {
                     color: '#7A1A1E'
                   }
                 }}
-                onClick={() => navigate('/admin/users')}
+                onClick={() => navigate(`/user-infor/${uid}`)}
               >
                 Quay lại
               </Button>
