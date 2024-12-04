@@ -693,7 +693,7 @@ function CreateContract() {
           autoComplete="off"
         >
           <div>
-            <TextField
+            {/* <TextField
               id="outlined-required"
               onChange={handleChangeContractCodeChange}
               value={codeContract}
@@ -709,7 +709,7 @@ function CreateContract() {
                 marginTop: '50px',
                 height: '0px'
               }}
-            />
+            /> */}
             <FormControl sx={{ minWidth: 250, marginTop: '50px' }}>
               <InputLabel id="demo-simple-select-label">DS Phòng</InputLabel>
               <Select

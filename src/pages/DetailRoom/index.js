@@ -72,7 +72,7 @@ function DetailRoom() {
 
   const listFloorOrder = useState([])
 
-  const [bid, setBid] = useState();
+  const [bid, setBid] = useState()
 
   const [infor, setInfor] = useState({})
 
@@ -141,8 +141,8 @@ function DetailRoom() {
   }
 
   function handleOfficeDTOS(response) {
-    if (response.data.officeDTOS) {
-      response.data.officeDTOS.forEach((item) => {
+    if (response.data.result.officeDTOS) {
+      response.data.result.officeDTOS.forEach((item) => {
         // Tạo hoặc cập nhật giá trị trong state valueInputs dựa trên item.status
         setValueInputs((prevValues) => ({
           ...prevValues,
@@ -213,8 +213,8 @@ function DetailRoom() {
       .get(`/buildings/${rid}`)
       .then(function (response) {
         // setRoom((prev) => ({ ...prev, ...response.data }));
-        setRoom(response.data)
-        setBid(response.data.id);
+        setRoom(response.data.result)
+        setBid(response.data.result.id)
         // Tạo 2 mảng useRef để lưu theo id
         handleOfficeDTOS(response)
 
@@ -402,44 +402,42 @@ function DetailRoom() {
       //   })
       //   .finally(function () {})
       axiosInstance
-      .post('/requests', {
-        userId: user,
-        note: 'Tôi muốn xem văn phòng',
-        officeIds: selectedIds,
-        buildingId: bid
-      })
-      .then((response) => {
-        console.log('STATE REQUEST');
-        console.log(response);
-        setAlertStateBook('success');
-        setAlertText('Bạn đã đặt phòng thành công!');
-      })
-      .catch((error) => {
-        console.error('Request Error:', error);
-        setAlertStateBook('error');
-        setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang!');
-      })
-      .finally(() => {
-        console.log('Request completed');
-      });
-    
+        .post('/requests', {
+          userId: user,
+          note: 'Tôi muốn xem văn phòng',
+          officeIds: selectedIds,
+          buildingId: bid
+        })
+        .then((response) => {
+          console.log('STATE REQUEST')
+          console.log(response)
+          setAlertStateBook('success')
+          setAlertText('Bạn đã đặt phòng thành công!')
+        })
+        .catch((error) => {
+          console.error('Request Error:', error)
+          setAlertStateBook('error')
+          setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang!')
+        })
+        .finally(() => {
+          console.log('Request completed')
+        })
     }
   }
 
   useEffect(() => {
     if (alertText === 'Bạn đã đặt phòng thành công!') {
-      handleClickk();
-  
+      handleClickk()
+
       // Đặt timeout 2.3 giây trước khi reload trang
       const timer = setTimeout(() => {
-        window.location.reload();
-      }, 2300);
-  
+        window.location.reload()
+      }, 2300)
+
       // Cleanup timer nếu `alertText` thay đổi
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [alertText]);
-  
+  }, [alertText])
 
   return (
     // <div className={cx('detail-area')}>
@@ -627,13 +625,13 @@ function DetailRoom() {
               </span>
               <div className={cx('amount')}>0</div>
             </div>
-            <Button 
-  onClick={BookFloor} 
-  variant="contained"
-  sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'blue' } }} // Tùy chỉnh màu nền
->
-  Gửi yêu cầu
-</Button>
+            <Button
+              onClick={BookFloor}
+              variant="contained"
+              sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'blue' } }} // Tùy chỉnh màu nền
+            >
+              Gửi yêu cầu
+            </Button>
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
               <Alert
                 onClose={handleClose}

@@ -13,7 +13,6 @@
 // import { ArrowUpward } from '@mui/icons-material'
 // pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
-
 // const cx = classNames.bind(styles)
 
 // const PdfViewer = () => {
@@ -137,7 +136,7 @@
 //       return newPageNumber;
 //     });
 //   }
-  
+
 //   const goToPreviousPage = () => {
 //     setPageNumber((prevPageNumber) => {
 //       const newPageNumber = Math.max(prevPageNumber - 1, 1); // Chuyển sang trang trước và không nhỏ hơn 1
@@ -159,7 +158,6 @@
 //       return newPageNumber;
 //     });
 //   }
-  
 
 //   const handleDownload = () => {
 //     if (pdfFile) {
@@ -172,13 +170,12 @@
 //     }
 //   }
 
-
 //   const handleImageUpload = (e) => {
 //     const file = e.target.files[0];
 //     if (file && file.type.startsWith('image/')) {
 //       setImage(file); // Lưu đối tượng File vào state thay vì Data URL
 //       setImagePosition({
-//         x: 450, 
+//         x: 450,
 //         y: 660,
 //       });
 //     } else {
@@ -190,12 +187,11 @@
 //     setImage(null) // Xóa ảnh
 //   }
 
-
 //   const handleSave = () => {
 //     console.log(image);
 //       const formData = new FormData();
 //       formData.set('file', image); // Gửi file ảnh với key 'file'
-  
+
 //       axiosInstance
 //         .post(`/contract/${pid}/verify-signature`, formData, {
 //           headers: {
@@ -395,8 +391,6 @@
 
 // export default PdfViewer
 
-
-
 import React, { useState, useEffect, useCallback } from 'react'
 import { pdfjs, Document, Page } from 'react-pdf'
 import { useParams } from 'react-router-dom'
@@ -411,7 +405,6 @@ import { axiosInstance } from '~/utils/axiosInstance'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 import { ArrowUpward } from '@mui/icons-material'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
-
 
 const cx = classNames.bind(styles)
 
@@ -442,7 +435,7 @@ const PdfViewer = () => {
   const handleScrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth', // Cuộn mượt mà
+      behavior: 'smooth' // Cuộn mượt mà
     })
   }
 
@@ -489,7 +482,8 @@ const PdfViewer = () => {
   const fetchPdf = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/contract/${pid}/export-pdf`, {
+      // const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/contract/${pid}/export-pdf`, {
+      const response = await axios.get(`http://localhost:9999/api/contract/${pid}/export-pdf`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -517,46 +511,46 @@ const PdfViewer = () => {
 
   const goToNextPage = () => {
     setPageNumber((prevPageNumber) => {
-      const newPageNumber = Math.min(prevPageNumber + 1, numPages); // Chuyển sang trang tiếp theo
-      if (newPageNumber === numPages) {
+      const newPageNumber = prevPageNumber + 1 // Chuyển sang trang tiếp theo
+      if (newPageNumber >= numPages - 2) {
         // Khi ở trang cuối cùng, hiển thị ô ký
-        var role = localStorage.getItem('role');
-        if(role && role.includes("ROLE_USER")){
-          document.getElementById('signature-boxA').style.display = 'block';
-          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        var role = localStorage.getItem('role')
+        if (role && role.includes('ROLE_USER')) {
+          document.getElementById('signature-boxA').style.display = 'block'
+          document.getElementById('signature-boxB').style.display = 'none' // Ẩn ô ký bên B
         } else {
-          document.getElementById('signature-boxB').style.display = 'block';
-          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+          document.getElementById('signature-boxB').style.display = 'block'
+          document.getElementById('signature-boxA').style.display = 'none' // Ẩn ô ký bên A
         }
       } else {
         // Khi không phải trang cuối cùng, ẩn ô ký
-        document.getElementById('signature-boxA').style.display = 'none';
-        document.getElementById('signature-boxB').style.display = 'none';
+        document.getElementById('signature-boxA').style.display = 'none'
+        document.getElementById('signature-boxB').style.display = 'none'
       }
-      return newPageNumber;
-    });
+      return newPageNumber
+    })
   }
-  
+
   const goToPreviousPage = () => {
     setPageNumber((prevPageNumber) => {
-      const newPageNumber = Math.max(prevPageNumber - 1, 1); // Chuyển sang trang trước và không nhỏ hơn 1
+      const newPageNumber = Math.max(prevPageNumber - 1, 1) // Chuyển sang trang trước và không nhỏ hơn 1
       if (newPageNumber === numPages) {
         // Khi ở trang cuối cùng, hiển thị ô ký
-        var role = localStorage.getItem('role');
-        if(role && role.includes("ROLE_USER")){
-          document.getElementById('signature-boxA').style.display = 'block';
-          document.getElementById('signature-boxB').style.display = 'none'; // Ẩn ô ký bên B
+        var role = localStorage.getItem('role')
+        if (role && role.includes('ROLE_USER')) {
+          document.getElementById('signature-boxA').style.display = 'block'
+          document.getElementById('signature-boxB').style.display = 'none' // Ẩn ô ký bên B
         } else {
-          document.getElementById('signature-boxB').style.display = 'block';
-          document.getElementById('signature-boxA').style.display = 'none'; // Ẩn ô ký bên A
+          document.getElementById('signature-boxB').style.display = 'block'
+          document.getElementById('signature-boxA').style.display = 'none' // Ẩn ô ký bên A
         }
       } else {
         // Khi không phải trang cuối cùng, ẩn ô ký
-        document.getElementById('signature-boxA').style.display = 'none';
-        document.getElementById('signature-boxB').style.display = 'none';
+        document.getElementById('signature-boxA').style.display = 'none'
+        document.getElementById('signature-boxB').style.display = 'none'
       }
-      return newPageNumber;
-    });
+      return newPageNumber
+    })
   }
 
   const handleDownload = () => {
@@ -571,16 +565,17 @@ const PdfViewer = () => {
   }
 
   // Hàm upload file ảnh
+
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file && file.type.startsWith('image/')) {
-      setImage(file); // Lưu đối tượng File vào state thay vì Data URL
+      setImage(file) // Lưu đối tượng File vào state thay vì Data URL
       setImagePosition({
         x: 240, // Vị trí x của ảnh
-        y: 530, // Vị trí y của ảnh
-      });
+        y: 530 // Vị trí y của ảnh
+      })
     } else {
-      alert('Vui lòng chọn một tệp ảnh hợp lệ!');
+      alert('Vui lòng chọn một tệp ảnh hợp lệ!')
     }
   }
 
@@ -590,30 +585,53 @@ const PdfViewer = () => {
 
   // Hàm xử lý khi lưu chữ ký
   const handleSave = () => {
-    console.log(image);
-      const formData = new FormData();
-      formData.set('file', image); // Gửi file ảnh với key 'file'
-  
-      axiosInstance
-        .post(`/contract/${pid}/verify-signature`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data', // Đảm bảo định dạng gửi là multipart/form-data
-          }
-        })
-        .then((response) => {
-          console.log('Chữ ký đã được lưu:', response.data);
-          setAlertSeverity('success')
-          setAlertText('Hoàn tất thực hiện kí xác thực')
-          setNavigatePath('/user-contract') // Đường dẫn chuyển hướng sau khi thành công
-        })
-        .catch((error) => {
-          setAlertSeverity('error')
-          setAlertText('Đã xảy ra lỗi trong quá trình kí')
-        })
-        .finally(function () {
-          // always executed
-          setSnackbarOpen(true)
-        });
+    console.log(image)
+    const formData = new FormData()
+    formData.set('file', image) // Gửi file ảnh với key 'file'
+
+    axiosInstance
+      .post(`/contract/${pid}/verify-signature`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Đảm bảo định dạng gửi là multipart/form-data
+        }
+      })
+      .then((response) => {
+        setAlertSeverity('success')
+        setAlertText('Thực hiện kí thành công')
+        setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
+      })
+      .catch((error) => {
+        setAlertSeverity('error')
+        setAlertText('Đã xảy ra lỗi khi xác thực chữ kí')
+      })
+      .finally(function () {
+        // always executed
+        setSnackbarOpen(true)
+      })
+    console.log(image)
+    const formData = new FormData()
+    formData.set('file', image) // Gửi file ảnh với key 'file'
+
+    axiosInstance
+      .post(`/contract/${pid}/verify-signature`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Đảm bảo định dạng gửi là multipart/form-data
+        }
+      })
+      .then((response) => {
+        console.log('Chữ ký đã được lưu:', response.data)
+        setAlertSeverity('success')
+        setAlertText('Hoàn tất thực hiện kí xác thực')
+        setNavigatePath('/user-contract') // Đường dẫn chuyển hướng sau khi thành công
+      })
+      .catch((error) => {
+        setAlertSeverity('error')
+        setAlertText('Đã xảy ra lỗi trong quá trình kí')
+      })
+      .finally(function () {
+        // always executed
+        setSnackbarOpen(true)
+      })
   }
 
   return (
@@ -626,114 +644,114 @@ const PdfViewer = () => {
 
         {/* Nội dung PDF */}
         <Box
-  sx={{
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    mt: 2,
-    border: '1px solid #333',
-    maxHeight: 'calc(90vh - 100px)', // Chiều cao tối đa cho phần hiển thị PDF, trừ đi không gian cho footer
-    overflowY: 'auto', // Thêm scroll nếu nội dung dài // Tạo không gian cho footer
-  }}
->
-  {loading ? (
-    <CircularProgress />
-  ) : pdfFile ? (
-    <Document file={pdfFile} onLoadSuccess={onLoadSuccess} loading="Loading PDF..." noData="No PDF file found">
-      <Page
-        pageNumber={pageNumber}
-        width={800}
-        onRenderSuccess={() => {
-          const pageElement = document.querySelector('.react-pdf__Page')
-          if (pageElement) {
-            const others = pageElement.querySelectorAll(
-              '.react-pdf__Page__textContent, .react-pdf__Page__annotations'
-            )
-            others.forEach((el) => {
-              el.style.display = 'none'
-            })
-          }
-        }}
-      >
-        {/* Thêm vùng ký được chỉ định */}
-        <Box
-          id="signature-boxB"
           sx={{
-            position: 'absolute',
-            top: `${signaturePositionB.y}px`,
-            left: `${signaturePositionB.x}px`,
-            width: `${signaturePositionB.width}px`,
-            height: `${signaturePositionB.height}px`,
-            border: '2px dashed red',
-            zIndex: 5,
-            pointerEvents: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            mt: 2,
+            border: '1px solid #333',
+            maxHeight: 'calc(90vh - 100px)', // Chiều cao tối đa cho phần hiển thị PDF, trừ đi không gian cho footer
+            overflowY: 'auto' // Thêm scroll nếu nội dung dài // Tạo không gian cho footer
           }}
-          display="none"
         >
-          <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
-            Ký vào đây
-          </Typography>
-        </Box>
-        {/* Thêm vùng ký được chỉ định */}
-        <Box
-          id="signature-boxA"
-          sx={{
-            position: 'absolute',
-            top: `${signaturePositionA.y}px`,
-            left: `${signaturePositionA.x}px`,
-            width: `${signaturePositionA.width}px`,
-            height: `${signaturePositionA.height}px`,
-            border: '2px dashed red',
-            zIndex: 5,
-            pointerEvents: 'none',
-          }}
-          display="none"
-        >
-          <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
-            Ký vào đây
-          </Typography>
-        </Box>
-        {image && (
-            <div
-              style={{
-                position: 'absolute',
-                left: imagePosition.x,
-                top: imagePosition.y,
-                cursor: 'move',
-                zIndex: 10,
-                userSelect: 'none'
-              }}
-              onMouseDown={handleDragStart}
-            >
-              <img
-                src={image ? URL.createObjectURL(image) : ''}
-                alt="Uploaded"
-                style={{
-                  width: '300px', // Thay đổi width thành 300px
-                  height: '150px',
-                  borderRadius: '8px'
-                }}
-              />
-              <IconButton
-                onClick={handleDeleteImage}
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  color: 'red',
-                  backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                  borderRadius: '50%'
+          {loading ? (
+            <CircularProgress />
+          ) : pdfFile ? (
+            <Document file={pdfFile} onLoadSuccess={onLoadSuccess} loading="Loading PDF..." noData="No PDF file found">
+              <Page
+                pageNumber={pageNumber}
+                width={800}
+                onRenderSuccess={() => {
+                  const pageElement = document.querySelector('.react-pdf__Page')
+                  if (pageElement) {
+                    const others = pageElement.querySelectorAll(
+                      '.react-pdf__Page__textContent, .react-pdf__Page__annotations'
+                    )
+                    others.forEach((el) => {
+                      el.style.display = 'none'
+                    })
+                  }
                 }}
               >
-                <Clear />
-              </IconButton>
-            </div>
-          )}
-      </Page>
-    </Document>
-  ) : null}
-</Box>
-
+                {/* Thêm vùng ký được chỉ định */}
+                <Box
+                  id="signature-boxB"
+                  sx={{
+                    position: 'absolute',
+                    top: `${signaturePositionB.y}px`,
+                    left: `${signaturePositionB.x}px`,
+                    width: `${signaturePositionB.width}px`,
+                    height: `${signaturePositionB.height}px`,
+                    border: '2px dashed red',
+                    zIndex: 5,
+                    pointerEvents: 'none'
+                  }}
+                  display="none"
+                >
+                  <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
+                    Ký vào đây
+                  </Typography>
+                </Box>
+                {/* Thêm vùng ký được chỉ định */}
+                <Box
+                  id="signature-boxA"
+                  sx={{
+                    position: 'absolute',
+                    top: `${signaturePositionA.y}px`,
+                    left: `${signaturePositionA.x}px`,
+                    width: `${signaturePositionA.width}px`,
+                    height: `${signaturePositionA.height}px`,
+                    border: '2px dashed red',
+                    zIndex: 5,
+                    pointerEvents: 'none'
+                  }}
+                  display="none"
+                >
+                  <Typography variant="body2" style={{ color: 'red', textAlign: 'center' }}>
+                    Ký vào đây
+                  </Typography>
+                </Box>
+                {image && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: imagePosition.x,
+                      top: imagePosition.y,
+                      cursor: 'move',
+                      zIndex: 10,
+                      userSelect: 'none'
+                    }}
+                    onMouseDown={handleDragStart}
+                  >
+                    <img
+                      src={image ? URL.createObjectURL(image) : ''}
+                      src={image ? URL.createObjectURL(image) : ''}
+                      alt="Uploaded"
+                      style={{
+                        width: '300px', // Thay đổi width thành 300px
+                        height: '150px',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <IconButton
+                      onClick={handleDeleteImage}
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        color: 'red',
+                        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                        borderRadius: '50%'
+                      }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  </div>
+                )}
+              </Page>
+            </Document>
+          ) : null}
+        </Box>
 
         {/* Thanh điều hướng */}
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
@@ -756,7 +774,6 @@ const PdfViewer = () => {
             Chọn chữ kí
           </label>
           <input type="file" id="image-upload" name="image" accept="image/*" onChange={handleImageUpload} />
-          
         </div>
         <div>
           <Button
@@ -793,8 +810,8 @@ const PdfViewer = () => {
           backgroundColor: 'primary.main', // Màu nền của nút
           color: 'white', // Màu icon
           '&:hover': {
-            backgroundColor: 'primary.dark', // Màu khi hover
-          },
+            backgroundColor: 'primary.dark' // Màu khi hover
+          }
         }}
       >
         <ArrowUpward />
@@ -804,5 +821,3 @@ const PdfViewer = () => {
 }
 
 export default PdfViewer
-
-
