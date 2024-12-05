@@ -32,14 +32,14 @@ import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { MenuItem, Select } from '@mui/material'
-
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 import axios from 'axios'
 import styles from './UserContract.module.scss'
 import { ArrowUpward } from '@mui/icons-material'
 
 const options = [
-  { value: 'Draft', color: '#FFD700' }, // Vàng
-  { value: 'Pending', color: '#00BFFF' }, // Xanh dương
+  { value: 'Draft', color: '#00BFFF' }, // Vàng
+  { value: 'Pending', color: '#FFD700' }, // Xanh dương
   { value: 'Finished', color: '#32CD32' } // Xanh lá
 ]
 
@@ -50,6 +50,19 @@ function UserContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
+  let cid = localStorage.getItem('id_user')
+  const [loadingStart, setLoadingStart] = useState(true)
+  const [render, setRender] = useState(true);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+  const [show, setShow] = useState(true);
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   const handleScrollToTop = () => {
     window.scrollTo({
@@ -70,10 +83,25 @@ function UserContract() {
 
   useEffect(() => {
     axiosInstance
-      .post('/contract', {
+      .post('/contract/filter-user', {
         pageNumber: 0,
         pageSize: 10,
-        filter: [],
+        filter: [
+          {
+            operator: '=',
+            key: 'tenant',
+            value: cid,
+            otherValue: null,
+            valueSelected: null
+          }
+          // {
+          //     "operator": "=",
+          //     "key": "createdBy",
+          //     "value": "1084",
+          //     "otherValue": null,
+          //     "valueSelected": null
+          // }
+        ],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
         buildingIds: []
@@ -97,9 +125,10 @@ function UserContract() {
         }
       })
       .finally(() => {
+        setLoadingStart(false)
         console.log('Request completed.')
       })
-  }, [])
+  }, [show])
 
   // console.log(filteredArray);
 
@@ -361,17 +390,27 @@ function UserContract() {
     setValueSearch(e.target.value)
   }
   const handleSubmitSearch = () => {
+    let x;
+    if (selectedOption === 'Draft') {
+      x = '1'
+    } else if (selectedOption === 'Pending') {
+      x = '2'
+    } else if (selectedOption === 'Finished') {
+      x = '3'
+    } else {
+      x = null // Hoặc giá trị mặc định
+    }
     axiosInstance
       .post(
         '/contract', // Sử dụng đường dẫn tương đối
         {
           pageNumber: 0,
-          pageSize: 10,
+          pageSize: 0,
           filter: [
             {
-              operator: 'contain',
-              key: 'code',
-              value: valueSearch,
+              operator: '=',
+              key: 'status',
+              value: x,
               otherValue: null,
               valueSelected: null
             }
@@ -408,6 +447,29 @@ function UserContract() {
     const id = Number(selected[0])
     // navigate('/admin/create-contract')
     navigate(`/user/preview-contract/${id}`)
+  }
+
+  const HandleDeleteContract = () => {
+    
+    const did = Number(selected[0])
+    axiosInstance
+      .delete(
+        `/contract/delete/${did}`
+      )
+      .then((response) => {
+        setAlertSeverity('success')
+        setAlertText('Xóa hợp đồng thành công')
+        setNavigatePath('/user-contract') // Đường dẫn chuyển hướng sau khi thành công
+        setShow((prev) => !prev);
+      })
+      .catch((error) => {
+        setAlertSeverity('error')
+        setAlertText('Xảy ra lỗi khi thực hiện xóa')
+      })
+      .finally(() => {
+        setSnackbarOpen(true)
+        console.log('Request completed.')
+      })
   }
 
   return (
@@ -515,146 +577,192 @@ function UserContract() {
         </Box>
       </Box>
 
-      <Box sx={{ width: '100%', marginTop: '30px' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table sx={{ minWidth: 1200 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+      {loadingStart ? (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <CircularProgress />
+          <Typography sx={{ marginTop: 2 }}>Đang tải dữ liệu...</Typography>
+        </Box>
+      ) : (
+        <Box>
+          <Box sx={{ width: '100%', marginTop: '30px' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+              <EnhancedTableToolbar numSelected={selected.length} />
+              <TableContainer>
+                <Table sx={{ minWidth: 1200 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {visibleRows.map((row, index) => {
+                      const isItemSelected = selected.includes(row.id)
+                      const labelId = `enhanced-table-checkbox-${index}`
+
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              checked={isItemSelected}
+                              inputProps={{
+                                'aria-labelledby': labelId
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ fontSize: '15px' }}>
+                            {row.id}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.code}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.startDate}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.rentalPurpose}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.status === 1 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#f0f4ff', // Màu nền cho Draft
+                                  color: '#3b82f6', // Màu chữ cho Draft
+                                  borderRadius: '4px',
+                                  padding: '2px 6px', // Khoảng cách xung quanh chữ
+                                  display: 'inline-block' // Đảm bảo nền chỉ bao quanh chữ
+                                }}
+                              >
+                                Draft
+                              </Box>
+                            ) : row.status === 2 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#fff5e6', // Màu nền cho Pending
+                                  color: '#f59e0b', // Màu chữ cho Pending
+                                  borderRadius: '4px',
+                                  padding: '2px 6px',
+                                  display: 'inline-block'
+                                }}
+                              >
+                                Pending
+                              </Box>
+                            ) : row.status === 3 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#e9f5e9', // Màu nền cho Finished
+                                  color: '#65af50', // Màu chữ cho Finished
+                                  borderRadius: '4px',
+                                  padding: '2px 6px',
+                                  display: 'inline-block'
+                                }}
+                              >
+                                Finished
+                              </Box>
+                            ) : (
+                              row.status
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow
+                        style={{
+                          height: (dense ? 33 : 53) * emptyRows
+                        }}
+                      >
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = selected.includes(row.id)
-                  const labelId = `enhanced-table-checkbox-${index}`
+            </Paper>
+            <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
+          </Box>
+          <Stack
+            spacing={2}
+            direction="row"
+            sx={{
+              position: 'absolute',
+              right: '0',
+              height: '35px',
+              fontSize: '15px',
+              bottom: '10px'
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: '#b7272d'
+              }}
+              onClick={HandleDeleteContract}
+              disabled={selected.length === 0}
+            >
+              DELETE
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: '#FFD700'
+              }}
+              onClick={HandlePreviewContract}
+              disabled={selected.length === 0}
+            >
+              PREVIEW
+            </Button>
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ fontSize: '15px' }}>
-                        {row.id}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.code}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.startDate}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.rentalPurpose}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.status === 1 ? (
-                          <Box
-                            component="span"
-                            sx={{
-                              backgroundColor: '#e9f5e9',
-                              color: '#65af50',
-                              borderRadius: '4px',
-                              padding: '2px 6px', // khoảng cách xung quanh chữ
-                              display: 'inline-block' // đảm bảo nền chỉ bao quanh chữ
-                            }}
-                          >
-                            đã hoàn thành
-                          </Box>
-                        ) : (
-                          row.status
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
-      </Box>
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{
-          position: 'absolute',
-          right: '0',
-          height: '35px',
-          fontSize: '15px',
-          bottom: '10px'
-        }}
-      >
-        <Button
-          variant="contained"
-          sx={{
-            fontSize: '15px',
-            backgroundColor: '#b7272d'
-          }}
-          onClick={HandlePreviewContract}
-          disabled={selected.length === 0}
-        >
-          PREVIEW
-        </Button>
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: 'green'
+              }}
+              disabled={selected.length === 0}
+            >
+              EDIT
+            </Button>
 
-        <Button
-          variant="contained"
-          sx={{
-            fontSize: '15px',
-            backgroundColor: 'green'
-          }}
-          disabled={selected.length === 0}
-        >
-          EDIT
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleExport}
-          sx={{
-            fontSize: '15px'
-          }}
-          disabled={selected.length === 0}
-        >
-          Export
-        </Button>
-      </Stack>
+            <Button
+              variant="contained"
+              onClick={handleExport}
+              sx={{
+                fontSize: '15px'
+              }}
+              disabled={selected.length === 0}
+            >
+              Export
+            </Button>
+          </Stack>
+        </Box>
+      )}
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress variant="determinate" value={progress} size={60} thickness={4} />
         <Typography variant="h6" sx={{ marginLeft: 2 }}>
@@ -676,6 +784,13 @@ function UserContract() {
       >
         <ArrowUpward />
       </IconButton>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }

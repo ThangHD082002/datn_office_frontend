@@ -29,16 +29,17 @@ import TextField from '@mui/material/TextField'
 import { Link, Routes, Route, useNavigate } from 'react-router-dom'
 import { axiosInstance } from '~/utils/axiosInstance'
 import Backdrop from '@mui/material/Backdrop'
-import CircularProgress from '@mui/material/CircularProgress'
+import { CircularProgress } from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh'
 import axios from 'axios'
 import styles from './ManageContract.module.scss'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 import { MenuItem, Select } from '@mui/material'
 
 const options = [
-  { value: 'Draft', color: '#FFD700' }, // Vàng
-  { value: 'Pending', color: '#00BFFF' }, // Xanh dương
+  { value: 'Draft', color: '#00BFFF' }, // Vàng
+  { value: 'Pending', color: '#FFD700' }, // Xanh dương
   { value: 'Finished', color: '#32CD32' } // Xanh lá
 ]
 
@@ -49,7 +50,17 @@ function ManageContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
+  const [loadingStart, setLoadingStart] = useState(true); 
+  const [show, setShow] = useState(true);
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
   const [selectedOption, setSelectedOption] = useState('')
 
   const handleChange = (event) => {
@@ -63,7 +74,7 @@ function ManageContract() {
     axiosInstance
       .post('/contract', {
         pageNumber: 0,
-        pageSize: 10,
+        pageSize: 0,
         filter: [],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
@@ -73,6 +84,7 @@ function ManageContract() {
         console.log(response)
         const newArray = response.data.data.map((item) => ({
           id: item.id,
+          tenant: item.tenant.fullName,
           code: item.code,
           startDate: item.startDate,
           rentalPurpose: item.rentalPurpose,
@@ -88,9 +100,10 @@ function ManageContract() {
         }
       })
       .finally(() => {
+        setLoadingStart(false);
         console.log('Request completed.')
       })
-  }, [])
+  }, [show])
 
   // console.log(filteredArray);
 
@@ -117,7 +130,13 @@ function ManageContract() {
       id: 'name',
       numeric: false,
       disablePadding: true,
-      label: 'Id'
+      label: 'ID'
+    },
+    {
+      id: 'account',
+      numeric: false,
+      disablePadding: true,
+      label: 'NGƯỜI THUÊ'
     },
     {
       id: 'calories',
@@ -353,29 +372,40 @@ function ManageContract() {
   }
 
   const handleSubmitSearch = () => {
+    let x;
+    if (selectedOption === "Draft") {
+      x = "1";
+    } else if (selectedOption === "Pending") {
+      x = "2";
+    } else if (selectedOption === "Finished") {
+      x = "3";
+    } else {
+      x = null; // Hoặc giá trị mặc định
+    }
     axiosInstance
       .post(
         '/contract', // Sử dụng đường dẫn tương đối
         {
-          pageNumber: 0,
-          pageSize: 10,
-          filter: [
-            {
-              operator: 'contain',
-              key: 'code',
-              value: valueSearch,
-              otherValue: null,
-              valueSelected: null
-            }
+          "pageNumber": 0,
+          "pageSize": 0,
+          "filter": [
+              {
+                  "operator": "=",
+                  "key": "status",
+                  "value": x,
+                  "otherValue": null,
+                  "valueSelected": null
+              }
           ],
-          sortProperty: 'contract.lastModifiedDate',
-          sortOrder: 'DESC',
-          buildingIds: []
-        }
+          "sortProperty": "contract.lastModifiedDate",
+          "sortOrder": "DESC",
+          "buildingIds": []
+      }
       )
       .then((response) => {
         const newArray = response.data.data.map((item) => ({
           id: item.id,
+          tenant: item.tenant.fullName,
           code: item.code,
           startDate: item.startDate,
           rentalPurpose: item.rentalPurpose,
@@ -400,6 +430,28 @@ function ManageContract() {
     const id = Number(selected[0])
     // navigate('/admin/create-contract')
     navigate(`/admin/preview-contract/${id}`)
+  }
+
+  const HandleDeleteContract = () => {
+    const did = Number(selected[0])
+    axiosInstance
+      .delete(
+        `/contract/delete/${did}`
+      )
+      .then((response) => {
+        setAlertSeverity('success')
+        setAlertText('Xóa hợp đồng thành công')
+        setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
+        setShow((prev) => !prev);
+      })
+      .catch((error) => {
+        setAlertSeverity('error')
+        setAlertText('Xảy ra lỗi khi thực hiện xóa')
+      })
+      .finally(() => {
+        setSnackbarOpen(true)
+        console.log('Request completed.')
+      })
   }
 
   return (
@@ -505,8 +557,14 @@ function ManageContract() {
           </Button>
         </Box>
       </Box>
-
-      <Box sx={{ width: '100%', marginTop: '30px' }}>
+      {loadingStart ? (
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <CircularProgress />
+        <Typography sx={{ marginTop: 2 }}>Đang tải dữ liệu...</Typography>
+      </Box>
+      ) : (
+        <Box>
+                <Box sx={{ width: '100%', marginTop: '30px' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
@@ -548,6 +606,9 @@ function ManageContract() {
                         {row.id}
                       </TableCell>
                       <TableCell sx={{ fontSize: '15px' }} align="right">
+                        {row.tenant}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '15px' }} align="right">
                         {row.code}
                       </TableCell>
                       <TableCell sx={{ fontSize: '15px' }} align="right">
@@ -561,14 +622,40 @@ function ManageContract() {
                           <Box
                             component="span"
                             sx={{
-                              backgroundColor: '#e9f5e9',
-                              color: '#65af50',
+                              backgroundColor: '#f0f4ff', // Màu nền cho Draft
+                              color: '#3b82f6', // Màu chữ cho Draft
                               borderRadius: '4px',
-                              padding: '2px 6px', // khoảng cách xung quanh chữ
-                              display: 'inline-block' // đảm bảo nền chỉ bao quanh chữ
+                              padding: '2px 6px', // Khoảng cách xung quanh chữ
+                              display: 'inline-block' // Đảm bảo nền chỉ bao quanh chữ
                             }}
                           >
-                            đã hoàn thành
+                            Draft
+                          </Box>
+                        ) : row.status === 2 ? (
+                          <Box
+                            component="span"
+                            sx={{
+                              backgroundColor: '#fff5e6', // Màu nền cho Pending
+                              color: '#f59e0b', // Màu chữ cho Pending
+                              borderRadius: '4px',
+                              padding: '2px 6px',
+                              display: 'inline-block'
+                            }}
+                          >
+                            Pending
+                          </Box>
+                        ) : row.status === 3 ? (
+                          <Box
+                            component="span"
+                            sx={{
+                              backgroundColor: '#e9f5e9', // Màu nền cho Finished
+                              color: '#65af50', // Màu chữ cho Finished
+                              borderRadius: '4px',
+                              padding: '2px 6px',
+                              display: 'inline-block'
+                            }}
+                          >
+                            Finished
                           </Box>
                         ) : (
                           row.status
@@ -612,11 +699,22 @@ function ManageContract() {
           bottom: '10px'
         }}
       >
-        <Button
+         <Button
           variant="contained"
           sx={{
             fontSize: '15px',
             backgroundColor: '#b7272d'
+          }}
+          onClick={HandleDeleteContract}
+          disabled={selected.length === 0}
+        >
+          DELETE
+        </Button>
+        <Button
+          variant="contained"
+          sx={{
+            fontSize: '15px',
+            backgroundColor: '#FFD700'
           }}
           onClick={HandlePreviewContract}
           disabled={selected.length === 0}
@@ -646,12 +744,21 @@ function ManageContract() {
           Export
         </Button>
       </Stack>
+        </Box>
+      )}
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress variant="determinate" value={progress} size={60} thickness={4} />
         <Typography variant="h6" sx={{ marginLeft: 2 }}>
           {progress}%
         </Typography>
       </Backdrop>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </div>
   )
 }
