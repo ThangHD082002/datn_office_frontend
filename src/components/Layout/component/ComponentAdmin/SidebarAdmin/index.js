@@ -26,8 +26,9 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
-import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout'
+import { useNavigate } from 'react-router-dom'
+import StatisticsMenu from '~/pages/Admin/StatisticsManagement/StatisticsMenu'
 
 const cx = classNames.bind(styles)
 const drawerWidth = 240
@@ -112,7 +113,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function SidebarAdmin({ onToggle }) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -127,18 +128,17 @@ function SidebarAdmin({ onToggle }) {
   const clickLogout = () => {
     // Kiểm tra và xóa 'authToken'
     if (localStorage.getItem('authToken')) {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('authToken')
     }
 
     // Kiểm tra và xóa 'role'
     if (localStorage.getItem('role')) {
-      localStorage.removeItem('role');
+      localStorage.removeItem('role')
     }
 
     // Chuyển hướng đến '/login'
-    navigate('/login');
-  };
-
+    navigate('/login')
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -403,6 +403,8 @@ function SidebarAdmin({ onToggle }) {
               />
             </ListItemButton>
           </ListItem>
+          {/* Thống kê */}
+          <StatisticsMenu open={open} />
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={[
@@ -412,7 +414,7 @@ function SidebarAdmin({ onToggle }) {
                 },
                 open ? { justifyContent: 'initial' } : { justifyContent: 'center' }
               ]}
-              onClick={clickLogout} 
+              onClick={clickLogout}
             >
               <ListItemIcon
                 sx={[
