@@ -29,7 +29,8 @@ import OfficeManagementDetail from '~/pages/Admin/OfficeManagement/Detail'
 import OfficeManagementCreate from '~/pages/Admin/OfficeManagement/Create'
 import RequestManagementDetail from '~/pages/Admin/RequestManagement/Detail'
 import UserDetail from '~/pages/UserDetail'
-
+import SignedContract from '~/pages/Admin/StatisticsManagement/SignedContract'
+import Revenue from '~/pages/Admin/StatisticsManagement/Revenue'
 const publicRoutes = [
   {
     path: '/',
@@ -142,6 +143,16 @@ const publicRoutes = [
   {
     path: '/admin/assign-building',
     component: AssignBuilding,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/statistics/contracts',
+    component: SignedContract,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/statistics/revenue',
+    component: Revenue,
     layout: AdminLayout
   },
   {
