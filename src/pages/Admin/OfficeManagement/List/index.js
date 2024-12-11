@@ -155,7 +155,7 @@ function OfficeManagementList() {
     const getData = async (pageNumber) => {
         setLoading(true);
         try {
-            let url = `/offices?page=${pageNumber - 1}`;
+            let url = `/offices/manage-list?page=${pageNumber - 1}`;
             if (selectedBuilding !== null)
                 url += `&buildingId=${selectedBuilding.id}`;
             if (selectedStatus !== null)
