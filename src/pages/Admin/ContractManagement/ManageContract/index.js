@@ -71,11 +71,18 @@ function ManageContract() {
     setValueSearch('')
   }
   useEffect(() => {
+    let mid = localStorage.getItem('id_user')
     axiosInstance
-      .post('/contract', {
+      .post('/contract/filter-user', {
         pageNumber: 0,
         pageSize: 0,
-        filter: [],
+        filter: [{
+          "operator": "=",
+          "key": "createdBy",
+          "value": mid,
+          "otherValue": null,
+          "valueSelected": null
+      }],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
         buildingIds: []
@@ -148,7 +155,7 @@ function ManageContract() {
       id: 'fat',
       numeric: true,
       disablePadding: false,
-      label: 'NGÀY KÍ'
+      label: 'NGÀY TẠO'
     },
     {
       id: 'carbs',
@@ -384,7 +391,7 @@ function ManageContract() {
     }
     axiosInstance
       .post(
-        '/contract', // Sử dụng đường dẫn tương đối
+        '/contract/filter-user', // Sử dụng đường dẫn tương đối
         {
           "pageNumber": 0,
           "pageSize": 0,

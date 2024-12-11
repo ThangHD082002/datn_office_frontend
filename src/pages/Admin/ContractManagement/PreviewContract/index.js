@@ -206,7 +206,7 @@ const PdfViewer = () => {
           setAlertSeverity('success')
           setAlertText('Hoàn tất thực hiện kí xác thực')
           setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
-        })
+        })  
         .catch((error) => {
           setAlertSeverity('error')
           setAlertText('Đã xảy ra lỗi trong quá trình kí')
