@@ -31,6 +31,8 @@ import RequestManagementDetail from '~/pages/Admin/RequestManagement/Detail'
 import UserDetail from '~/pages/UserDetail'
 import SignedContract from '~/pages/Admin/StatisticsManagement/SignedContract'
 import Revenue from '~/pages/Admin/StatisticsManagement/Revenue'
+import HistoryList from '~/pages/History/list'
+import HistoryDetail from '~/pages/History/Detail'
 const publicRoutes = [
   {
     path: '/',
@@ -68,6 +70,16 @@ const publicRoutes = [
   {
     path: '/user-contract',
     component: UserContract,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/user-history',
+    component: HistoryList,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/user/history-detail/:rid',
+    component: HistoryDetail,
     layout: HeaderSearchLayout
   },
   {

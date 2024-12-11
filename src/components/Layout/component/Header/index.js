@@ -16,6 +16,8 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
+import HistoryIcon from '@mui/icons-material/History'
+
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import ListItemText from '@mui/material/ListItemText'
 import Collapse from '@mui/material/Collapse'
@@ -43,6 +45,7 @@ function Header() {
     .then((response) => {
       console.log('INFOR')
       console.log(response)
+      localStorage.setItem('full_name', response.data.result.fullName);
       setName(response.data.result.login)
       setIdUser(response.data.result.id);
     })
@@ -67,6 +70,10 @@ function Header() {
 
   const showContract = () =>{
     navigate('/user-contract')
+  }
+
+  const showHistory = () =>{
+    navigate('/user-history')
   }
 
   const showInfor = () => {
@@ -222,6 +229,12 @@ function Header() {
               <PictureAsPdfIcon sx={{ color: 'black' }} />
             </ListItemIcon>
             <ListItemText primary="Contract" />
+          </ListItemButton>
+          <ListItemButton onClick={showHistory} sx={{ color: 'black' }}>
+            <ListItemIcon>
+              <HistoryIcon sx={{ color: 'black' }} />
+            </ListItemIcon>
+            <ListItemText primary="History" />
           </ListItemButton>
           <ListItemButton onClick={handleLogout} sx={{ color: 'black' }}>
             <ListItemIcon>

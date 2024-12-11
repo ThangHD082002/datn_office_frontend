@@ -474,7 +474,7 @@ function UserContract() {
 
   return (
     <div className={cx('container')}>
-      <h1>DANH SÁCH HỢP ĐỒNG</h1>
+      <h1 className={cx('title-contract')}>DANH SÁCH HỢP ĐỒNG</h1>
 
       <Box display="flex" alignItems="center" gap={2} sx={{ marginTop: 6 }}>
         <Box display="flex" alignItems="center" gap={2}>
