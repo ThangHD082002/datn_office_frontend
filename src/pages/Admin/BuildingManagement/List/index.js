@@ -146,7 +146,7 @@ function BuildingManagementList() {
     const getData = async (pageNumber) => {
         setLoading(true)
         try {
-            let url = `/buildings?page=${pageNumber - 1}`;
+            let url = `/buildings/manage-list?page=${pageNumber - 1}`;
             // Add query params
             if (keyword !== null && keyword.trim() !== '')
                 url += `&keyword=${keyword}`;
@@ -234,6 +234,13 @@ function BuildingManagementList() {
                                     setWards([]);
                                 }
                             }}
+                            renderOption={(props, option) => (
+                                <li {...props}>
+                                    <span style={{ fontSize: '1.3rem' }}>
+                                        {option.name}
+                                    </span>
+                                </li>
+                            )}
                             sx={autocompleteStyle}
                             renderInput={(params) => (
                                 <TextField {...params} placeholder="Tỉnh/Thành phố" sx={inputStyle} />
@@ -254,6 +261,13 @@ function BuildingManagementList() {
                                     setWards([]);
                                 }
                             }}
+                            renderOption={(props, option) => (
+                                <li {...props}>
+                                    <span style={{ fontSize: '1.3rem' }}>
+                                        {option.name}
+                                    </span>
+                                </li>
+                            )}
                             sx={autocompleteStyle}
                             renderInput={(params) => (
                                 <TextField {...params} placeholder="Quận/Huyện" sx={inputStyle} />
@@ -269,6 +283,13 @@ function BuildingManagementList() {
                             onChange={(event, newValue) => {
                                 setSearchWard(newValue);
                             }}
+                            renderOption={(props, option) => (
+                                <li {...props}>
+                                    <span style={{ fontSize: '1.3rem' }}>
+                                        {option.name}
+                                    </span>
+                                </li>
+                            )}
                             sx={autocompleteStyle}
                             renderInput={(params) => (
                                 <TextField {...params} placeholder="Phường/Xã" sx={inputStyle} />

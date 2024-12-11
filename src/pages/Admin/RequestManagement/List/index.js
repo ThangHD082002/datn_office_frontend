@@ -53,7 +53,7 @@ function RequestManagementList() {
   const [totalPages, setTotalPages] = useState(0)
 
   const columns = [
-    { id: 'id', name: 'ID', width: 170 },
+    { id: 'id', name: 'STT', width: 170 },
     { id: 'user', name: 'Họ tên', width: 300 },
     { id: 'building', name: 'Tòa nhà', width: 300 },
     { id: 'note', name: 'Ghi chú', width: 300 },
@@ -66,7 +66,7 @@ function RequestManagementList() {
   const getData = async (pageNumber) => {
     setLoading(true)
     try {
-      const response = await axiosInstance.get(`/requests?page=${pageNumber - 1}`)
+      const response = await axiosInstance.get(`/requests/manage-list?page=${pageNumber - 1}`)
       setData(response.data.content)
       setTotalPages(response.data.totalPages)
       console.log(response)
@@ -142,9 +142,9 @@ function RequestManagementList() {
                 ))}
               </TableHead>
               <TableBody>
-                {data.map((row) => (
+                {data.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell className={cx('td')}>{row.id}</TableCell>
+                    <TableCell className={cx('td')}>{index}</TableCell>
                     <TableCell className={cx('td')}>{getUserName(row.userDTO)}</TableCell>
                     <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
                     <TableCell className={cx('td')}>{row.note}</TableCell>
