@@ -33,7 +33,12 @@ import SignedContract from '~/pages/Admin/StatisticsManagement/SignedContract'
 import Revenue from '~/pages/Admin/StatisticsManagement/Revenue'
 import HistoryList from '~/pages/History/list'
 import HistoryDetail from '~/pages/History/Detail'
+import PaymentResult from '~/utils/PaymentResult'
 const publicRoutes = [
+  {
+    path: '/payment-result',
+    component: PaymentResult
+  },
   {
     path: '/',
     component: Home
