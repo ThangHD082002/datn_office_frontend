@@ -1,10 +1,13 @@
 import {
+  Avatar,
   Box,
   CircularProgress,
   Divider,
   IconButton,
+  Modal,
   Pagination,
   Paper,
+  Popper,
   Table,
   TableBody,
   TableCell,
@@ -45,16 +48,19 @@ const getStatusInfo = (status) => {
 }
 
 function RequestManagementList() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [userLoading, setUserLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const columns = [
     { id: 'id', name: 'STT', width: 170 },
-    { id: 'user', name: 'Họ tên', width: 300 },
+    { id: 'user', name: 'Khách hàng', width: 300 },
     { id: 'building', name: 'Tòa nhà', width: 300 },
     { id: 'note', name: 'Ghi chú', width: 300 },
     { id: 'date', name: 'Ngày yêu cầu', width: 200 },
@@ -84,6 +90,23 @@ function RequestManagementList() {
     return 'Không xác định'
   }
 
+  const open = Boolean(anchorEl);
+  const id = open ? 'user-popper' : undefined;
+
+  const handleUserHover = async (event, userId) => {
+    setUserData(null);
+    setAnchorEl(event.currentTarget);
+    setUserLoading(true);
+    try {
+      const response = await axiosInstance.get(`/admin/customer/${userId}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setUserLoading(false);
+    }
+  }
+
   const getBuildingName = (building) => {
     if (building) {
       return building.name;
@@ -99,6 +122,13 @@ function RequestManagementList() {
     console.log('New page' + newPage)
     setPage(newPage)
   }
+
+  const handleUserLeave = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setAnchorEl(null);
+      // setUserData(null);
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -135,17 +165,27 @@ function RequestManagementList() {
           <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align} width={column.width} className={cx('th')}>
-                    {column.name}
-                  </TableCell>
-                ))}
+                <tr>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} align={column.align} width={column.width} className={cx('th')}>
+                      {column.name}
+                    </TableCell>
+                  ))}
+                </tr>
               </TableHead>
               <TableBody>
                 {data.map((row, index) => (
                   <TableRow key={row.id}>
                     <TableCell className={cx('td')}>{index}</TableCell>
-                    <TableCell className={cx('td')}>{getUserName(row.userDTO)}</TableCell>
+                    <TableCell className={cx('td')}>
+                      <span
+                        onMouseEnter={(event) => handleUserHover(event, row.userId)}
+                        onMouseLeave={handleUserLeave}
+                        style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        {getUserName(row.userDTO)}
+                      </span>
+                    </TableCell>
                     <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
                     <TableCell className={cx('td')}>{row.note}</TableCell>
                     <TableCell className={cx('td')}>{row.date}</TableCell>
@@ -197,7 +237,54 @@ function RequestManagementList() {
           </div>
         </Paper>
       </div>
+
+      <Popper
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        placement="right-start"
+        disablePortal
+        onMouseEnter={() => setAnchorEl(anchorEl)}
+        onMouseLeave={handleUserLeave}
+      >
+        <Box sx={{
+          p: 2,
+          bgcolor: 'background.paper',
+          boxShadow: 3,
+          borderRadius: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          width: 300
+        }}>
+          {userLoading ? (
+            <CircularProgress />
+          ) : (
+            userData && (
+              <>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Avatar
+                    src={userData.imageAvatar}
+                    alt={userData.fullName}
+                    sx={{ width: 80, height: 80, mr: 2 }}
+                  />
+                  <Typography id="user-modal-title" variant="h6" component="h2">
+                    {userData.fullName}
+                  </Typography>
+                </Box>
+                <Typography id="user-modal-description" sx={{ mt: 2 }}>
+                  <strong>Email:</strong> {userData.email}
+                </Typography>
+                <Typography id="user-modal-description" sx={{ mt: 2 }}>
+                  <strong>Phone:</strong> {userData.phoneNumber}
+                </Typography>
+                {/* Add more user info as needed */}
+              </>
+            )
+          )}
+        </Box>
+      </Popper>
     </ThemeProvider>
+
   )
 }
 

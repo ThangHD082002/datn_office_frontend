@@ -26,6 +26,7 @@ import styles from '../OfficeManagement.module.scss';
 import classNames from 'classnames/bind';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { RefreshRounded } from '@mui/icons-material';
 
@@ -66,7 +67,7 @@ function OfficeManagementList() {
         { id: 'price', name: 'Giá ($/m²)', width: 120 },
         { id: 'note', name: 'Ghi chú', width: 200 },
         { id: 'status', name: 'Trạng thái', width: 150 },
-        { id: 'action', name: 'Hành động', width: 120 }
+        { id: 'action', name: 'Hành động', width: 150 }
     ];
 
     const statusOptions = [
@@ -391,6 +392,13 @@ function OfficeManagementList() {
                                             >
                                                 <VisibilityIcon />
                                             </IconButton>
+                                            <IconButton
+                                                color="success"
+                                                title='Sửa'
+                                                onClick={() => navigate(`/admin/edit-offices/${row.id}`)}>
+                                                <EditIcon />
+                                            </IconButton>
+
                                             <IconButton
                                                 color="error"
                                                 title="Xoá"

@@ -28,9 +28,8 @@ import AddIcon from '@mui/icons-material/Add'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { RefreshRounded } from '@mui/icons-material';
-import AssignmentIcon from '@mui/icons-material/Assignment'
+import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom'
-import { get } from 'jquery'
 
 const cx = classNames.bind(styles)
 
@@ -376,9 +375,9 @@ function BuildingManagementList() {
                                             </IconButton>
 
 
-                                            <IconButton color="success" title="Chỉnh sửa toà nhà" onClick={() =>
+                                            <IconButton color="success" title="Sửa" onClick={() =>
                                                 navigate(`/admin/edit-buildings/${row.id}`)}>
-                                                <AssignmentIcon />
+                                                <EditIcon />
                                             </IconButton>
 
 
