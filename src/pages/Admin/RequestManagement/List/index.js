@@ -62,9 +62,8 @@ function RequestManagementList() {
     { id: 'id', name: 'STT', width: 170 },
     { id: 'user', name: 'Khách hàng', width: 300 },
     { id: 'building', name: 'Tòa nhà', width: 300 },
-    { id: 'note', name: 'Ghi chú', width: 300 },
-    { id: 'date', name: 'Ngày yêu cầu', width: 200 },
-    { id: 'time', name: 'Thời gian yêu cầu', width: 170 },
+    { id: 'createdDate', name: 'Thời gian tạo', width: 240 },
+    { id: 'actionDate', name: 'Thời gian thực hiện', width: 240 },
     { id: 'status', name: 'Trạng thái', width: 170 },
     { id: 'action', name: 'Hành động', width: 170 }
   ]
@@ -187,9 +186,12 @@ function RequestManagementList() {
                       </span>
                     </TableCell>
                     <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
-                    <TableCell className={cx('td')}>{row.note}</TableCell>
-                    <TableCell className={cx('td')}>{row.date}</TableCell>
-                    <TableCell className={cx('td')}>{row.time}</TableCell>
+                    <TableCell className={cx('td')}>
+                      {/* {row.createdDate}&nbsp;{row.createdTime} */}
+                    </TableCell>
+                    <TableCell className={cx('td')}>
+                      {row.date}&nbsp;{row.time}
+                    </TableCell>
                     <TableCell className={cx('td')}>
                       <span
                         style={{
