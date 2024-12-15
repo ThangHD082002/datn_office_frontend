@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode'
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
+import ModalOrderRoom from './ModalOrderRoom'
 import {
   faAngleLeft,
   faAngleRight,
@@ -40,7 +41,29 @@ import { faAirbnb, faLine } from '@fortawesome/free-brands-svg-icons'
 import Button from '@mui/material/Button'
 import { axiosInstance } from '~/utils/axiosInstance'
 
+import Box from '@mui/material/Box'
+import Stepper from '@mui/material/Stepper'
+import Step from '@mui/material/Step'
+import StepLabel from '@mui/material/StepLabel'
+import Typography from '@mui/material/Typography'
+import CloseIcon from '@mui/icons-material/Close'
+import {
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  FormControl,
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Pagination,
+  IconButton,
+  Modal
+} from '@mui/material'
 const cx = classNames.bind(styles)
+
+const steps = ['Chọn phòng yêu cầu', 'Chọn quản lí tòa nhà', 'Xác nhận yêu cầu']
 
 function DetailRoom() {
   const navigate = useNavigate()
@@ -63,6 +86,7 @@ function DetailRoom() {
   const [valueInputs, setValueInputs] = useState({})
 
   const [selectedIds, setSelectedIds] = useState([])
+  const [response, setResponse] = useState()
 
   const seatRef = useRef(null)
   const labelRef = useRef(null)
@@ -71,6 +95,7 @@ function DetailRoom() {
   const showListFloorMain = useRef(null)
 
   const listFloorOrder = useState([])
+  const [managers, setManagers] = useState([])
 
   const [bid, setBid] = useState()
 
@@ -92,6 +117,28 @@ function DetailRoom() {
     }
   }
 
+  const fetchData = async () => {
+    try {
+      // Giả sử API hỗ trợ phân trang qua query params ?page= và ?size=
+      const response = await axiosInstance.get(`/admin/managers`, {
+        params: {
+          page: 0, // Backend thường bắt đầu từ 0
+          size: 1000
+        }
+      })
+      setManagers(response.data.content)
+      console.log('MANAGERS')
+      console.log(response.data.content)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    } finally {
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   const handleToggleActiveLeftTab = () => {
     if (leftTabRef.current) {
       // Kiểm tra nếu có class "active" thì xóa, nếu chưa có thì thêm vào
@@ -111,13 +158,6 @@ function DetailRoom() {
       }
     }
   }
-
-  // const checkBookedOffice = () => {
-  //   if (seatRef.current.classList.value == false) {
-  //     labelRef.current.classList.add(styles["booked"]);
-  //   }
-
-  // };
 
   const handleToggleActiveRightTab = () => {
     if (rightTabRef.current) {
@@ -141,6 +181,7 @@ function DetailRoom() {
   }
 
   function handleOfficeDTOS(response) {
+    console.log(response.data.result.officeDTOS)
     if (response.data.result.officeDTOS) {
       response.data.result.officeDTOS.forEach((item) => {
         // Tạo hoặc cập nhật giá trị trong state valueInputs dựa trên item.status
@@ -180,35 +221,7 @@ function DetailRoom() {
   }
 
   useEffect(() => {
-    // Thay thế YOUR_BEARER_TOKEN_HERE bằng token của bạn
-
     decodeToken(token)
-
-    // axios
-    //   .get(`https://office-nest-ohcid.ondigitalocean.app/api/buildings/${rid}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   })
-    //   .then(function (response) {
-    //     // setRoom((prev) => ({ ...prev, ...response.data }));
-    //     setRoom(response.data);
-
-    //     // Tạo 2 mảng useRef để lưu theo id
-
-    //     handleOfficeDTOS(response);
-    //     // kiểm tra nếu inputRef tại id nào bằng false thì add class booked
-    //   })
-    //   .catch(function (error) {
-    //     if (error.response && error.response.status === 401) {
-    //       // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
-    //       window.location.href = '/error-token';
-    //     }
-    //   })
-    //   .finally(function () {
-    //     // always executed
-    //   });
-
     axiosInstance
       .get(`/buildings/${rid}`)
       .then(function (response) {
@@ -216,6 +229,7 @@ function DetailRoom() {
         setRoom(response.data.result)
         setBid(response.data.result.id)
         // Tạo 2 mảng useRef để lưu theo id
+        setResponse(response)
         handleOfficeDTOS(response)
 
         // kiểm tra nếu inputRef tại id nào bằng false thì add class booked
@@ -375,38 +389,48 @@ function DetailRoom() {
       setAlertText('Bạn cần chọn tối thiếu một phòng !')
       handleClickk()
     } else {
-      // axios
-      //   .post(
-      //     'https://office-nest-ohcid.ondigitalocean.app/api/requests',
-      //     {
-      //       userId: user,
-      //       note: 'Tôi muốn xem văn phòng',
-      //       officeIds: selectedIds
-      //     },
-      //     {
-      //       headers: {
-      //         Authorization: `Bearer ${token}`
-      //       }
-      //     }
-      //   )
-      //   .then(function (response) {
-      //     console.log('STATE REQUEST')
-      //     console.log(response)
-      //     setAlertStateBook('success')
-      //     setAlertText('Bạn đã đặt phòng thành công !')
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error)
-      //     setAlertStateBook('error')
-      //     setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang !')
-      //   })
-      //   .finally(function () {})
       axiosInstance
         .post('/requests', {
           userId: user,
           note: 'Tôi muốn xem văn phòng',
           officeIds: selectedIds,
           buildingId: bid
+        })
+        .then((response) => {
+          console.log('STATE REQUEST')
+          console.log(response)
+          setAlertStateBook('success')
+          setAlertText('Bạn đã đặt phòng thành công!')
+        })
+        .catch((error) => {
+          console.error('Request Error:', error)
+          setAlertStateBook('error')
+          setAlertText('Hệ thống đang gặp lỗi, vui lòng load lại trang!')
+        })
+        .finally(() => {
+          console.log('Request completed')
+        })
+    }
+  }
+
+  const handleFinish = () => {
+    const user = parseInt(infor.sub)
+    console.log('user')
+    console.log(user)
+    console.log(selectedIds)
+
+    if (selectedIds.length == 0) {
+      setAlertStateBook('warning')
+      setAlertText('Bạn cần chọn tối thiếu một phòng !')
+      handleClickk()
+    } else {
+      axiosInstance
+        .post('/requests', {
+          userId: user,
+          note: 'Tôi muốn xem văn phòng',
+          officeIds: selectedIds,
+          buildingId: bid,
+          managerId: confirmManager
         })
         .then((response) => {
           console.log('STATE REQUEST')
@@ -439,17 +463,100 @@ function DetailRoom() {
     }
   }, [alertText])
 
-  return (
-    // <div className={cx('detail-area')}>
-    //     <div className={cx('contain-title')}>
-    //         <h3 className={cx('text-left')}>Khu vực</h3>
-    //         <div className={cx('contain-reset')}>
-    //             <FontAwesomeIcon icon={faXmark} className={cx('icon')}/>
-    //             <h3 className={cx('text-right')}>Đặt lại</h3>
-    //         </div>
-    //     </div>
-    // </div>
+  const [activeStep, setActiveStep] = React.useState(0)
+  const [skipped, setSkipped] = React.useState(new Set())
 
+  const isStepOptional = (step) => {
+    return step === 1
+  }
+
+  const isStepSkipped = (step) => {
+    return skipped.has(step)
+  }
+
+  const handleNext = () => {
+    console.log(activeStep)
+    if (selectedIds.length == 0) {
+      setAlertStateBook('warning')
+      setAlertText('Bạn cần chọn tối thiếu một phòng !')
+      handleClickk()
+    } else {
+      if (activeStep + 1 == 3) {
+      }
+      let newSkipped = skipped
+      if (isStepSkipped(activeStep)) {
+        newSkipped = new Set(newSkipped.values())
+        newSkipped.delete(activeStep)
+      }
+      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      setSkipped(newSkipped)
+    }
+  }
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.")
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values())
+      newSkipped.add(activeStep)
+      return newSkipped
+    })
+  }
+
+  const handleReset = () => {
+    setActiveStep(0)
+  }
+
+  const [page, setPage] = useState(1) // Trang hiện tại
+  const itemsPerPage = 4 // Số phần tử mỗi trang
+
+  // Tính toán danh sách managers cần hiển thị cho trang hiện tại
+  const startIndex = (page - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentManagers = managers.slice(startIndex, endIndex)
+
+  // Hàm thay đổi trang
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
+
+  const [selectedManager, setSelectedManager] = useState(null) // Manager đang được chọn
+  const [isModalOpen, setModalOpen] = useState(false) // Trạng thái modal
+
+  // Hàm mở modal với manager được chọn
+  const handleOpenModal = (manager) => {
+    setSelectedManager(manager)
+    setModalOpen(true)
+  }
+
+  // Hàm đóng modal
+  const handleCloseModal = () => {
+    setSelectedManager(null)
+    setModalOpen(false)
+  }
+
+  const [confirmManager, setConfirmManager] = useState(null) // Trạng thái lưu radio được chọn
+  const [confirmManagerItem, setConfirmManagerItem] = useState(null) // Trạng thái lưu radio được chọn
+
+  const handleRadioChange = (id) => {
+    setConfirmManager(id) // Cập nhật trạng thái với ID của radio được chọn
+    managers.forEach((manager) => {
+      if (manager.id === id) {
+        setConfirmManagerItem(manager) // Gán confirm cho phần tử có id === id1
+      }
+    })
+  }
+
+  return (
     <div className={cx('container')}>
       <div className={cx('main-content')}>
         <Row className={cx('row-main')}>
@@ -579,76 +686,395 @@ function DetailRoom() {
           </Col>
         </Row>
       </div>
-
-      <div className={cx('center')} ref={showListFloor}>
-        <div className={cx('tickets')} ref={showListFloorMain}>
-          <div className={cx('ticket-selector')}>
-            <div className={cx('head')}>
-              <div className={cx('title')}>
-                DANH SÁCH CÁC PHÒNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
-              </div>
-            </div>
-            <div className={cx('seats')}>
-              <div className={cx('status')}>
-                <div className={cx('item')}>Available</div>
-                <div className={cx('item')}>Booked</div>
-                <div className={cx('item')}>Selected</div>
-              </div>
-              <div className={cx('all-seats')}>
-                {room.officeDTOS &&
-                  room.officeDTOS.map((f) => (
-                    <div key={f.id}>
-                      <input
-                        ref={inputRefs.current[`inputRef${f.id}`]}
-                        type="checkbox"
-                        name="tickets"
-                        id={f.id}
-                        value={valueInputs[`valueInput${f.id}`]}
-                        onChange={() => changeInput(f.id)}
-                      />
-                      <label ref={labelRefs.current[`labelRef${f.id}`]} htmlFor={f.id} className={cx('seat')}>
-                        <span className={cx('value-label')}>{f.id}</span>
-                      </label>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-          <div className={cx('price')}>
-            <div className={cx('total')}>
-              <span className={cx('title-count')}>
-                {' '}
-                <span className={cx('count')}>{selectedIds.length}</span> Floors selected{' '}
-              </span>
-              <div className={cx('amount')}>0</div>
-            </div>
-            <Button
-              onClick={BookFloor}
-              variant="contained"
-              sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'blue' } }} // Tùy chỉnh màu nền
-            >
-              Gửi yêu cầu
-            </Button>
-            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-              <Alert
-                onClose={handleClose}
-                severity={alertStateBook}
-                variant="filled"
-                sx={{
-                  width: '100%',
-                  fontSize: '1.5rem', // Tăng kích thước chữ
-                  padding: '20px'
-                }}
+      <div>
+        <div className={cx('center')} ref={showListFloor}>
+          <div className={cx('tickets')} ref={showListFloorMain}>
+            <Box sx={{ width: '100%' }}>
+              <Stepper
+                activeStep={activeStep}
+                sx={{ height: '50px', padding: '10px 0' }} // Tăng chiều cao và padding của Stepper
               >
-                {alertText}
-              </Alert>
-            </Snackbar>
+                {steps.map((label, index) => {
+                  const stepProps = {}
+                  const labelProps = {}
+                  if (isStepOptional(index)) {
+                    labelProps.optional = (
+                      <Typography variant="caption" sx={{ fontSize: '0.9rem' }}>
+                        Optional
+                      </Typography>
+                    ) // Tăng kích thước chữ cho phần "Optional"
+                  }
+                  if (isStepSkipped(index)) {
+                    stepProps.completed = false
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps} sx={{ fontSize: '1.2rem', padding: '8px' }}>
+                        {label}
+                      </StepLabel>
+                    </Step>
+                  )
+                })}
+              </Stepper>
+              {activeStep === steps.length ? (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1, fontSize: '1.1rem' }}>
+                    All steps completed - you&apos;re finished
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    <Button onClick={handleReset} sx={{ fontSize: '1rem' }}>
+                      Reset
+                    </Button>
+                  </Box>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1, fontSize: '1.1rem' }}>Step {activeStep + 1}</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{
+                        mr: 1,
+                        fontSize: '1rem',
+                        padding: '8px 16px',
+                        color: 'black' // Màu chữ trắng
+                      }}
+                    >
+                      Trở lại
+                    </Button>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    {isStepOptional(activeStep) && (
+                      <Button
+                        color="inherit"
+                        onClick={handleSkip}
+                        sx={{ mr: 1, fontSize: '1rem', padding: '8px 16px' }} // Tăng kích thước nút Skip
+                      >
+                        Skip
+                      </Button>
+                    )}
+                    {activeStep < steps.length - 1 ? (
+                      <Button
+                        onClick={handleNext}
+                        sx={{ fontSize: '1rem', padding: '8px 16px' }} // Tăng kích thước nút Next
+                      >
+                        Tiếp tục
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleFinish}
+                        sx={{ fontSize: '1rem', padding: '8px 16px', marginLeft: '10px' }} // Tăng kích thước nút Finish
+                      >
+                        Hoàn thành
+                      </Button>
+                    )}
+                  </Box>
+                </React.Fragment>
+              )}
+            </Box>
+            {
+              <div className={cx('ticket-selector', { hidden: activeStep !== 0 })}>
+                <div className={cx('head')}>
+                  <div className={cx('title')}>
+                    DANH SÁCH CÁC PHÒNG THUỘC TÒA {room && room.name ? room.name.toUpperCase() : ''}
+                  </div>
+                  <div>
+                    <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
+                  </div>
+                </div>
+                <div className={cx('seats')}>
+                  <div className={cx('status')}>
+                    <div className={cx('item')}>Available</div>
+                    <div className={cx('item')}>Booked</div>
+                    <div className={cx('item')}>Selected</div>
+                  </div>
+                  <div className={cx('all-seats')}>
+                    {room.officeDTOS &&
+                      room.officeDTOS.map((f) => (
+                        <div key={f.id}>
+                          <input
+                            ref={inputRefs.current[`inputRef${f.id}`]}
+                            type="checkbox"
+                            name="tickets"
+                            id={f.id}
+                            value={valueInputs[`valueInput${f.id}`]}
+                            onChange={() => changeInput(f.id)}
+                          />
+                          <label ref={labelRefs.current[`labelRef${f.id}`]} htmlFor={f.id} className={cx('seat')}>
+                            <span className={cx('value-label')}>{f.id}</span>
+                          </label>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+                <div className={cx('total')}>
+                  <span className={cx('title-count')}>
+                    {' '}
+                    <span className={cx('count')}>{selectedIds.length}</span> Floors selected{' '}
+                  </span>
+                  <div className={cx('amount')}>0</div>
+                </div>
+              </div>
+            }
+            {
+              <div className={cx('ticket-selector-manager', { hidden: activeStep !== 1 })}>
+                <div className={cx('title-manager')}>
+                  DANH SÁCH QUẢN LÍ TÒA NHÀ {room && room.name ? room.name.toUpperCase() : ''}
+                </div>
+                <div className={cx('head')}>
+                  <div>
+                    <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
+                  </div>
+                  <div>
+                    <Grid container spacing={2}>
+                      {currentManagers.map((item) => (
+                        <Grid item xs={12} sm={6} md={3} key={item.id}>
+                          <Card>
+                            {/* Hàng 1: Hình ảnh */}
+                            <CardMedia
+                              component="img"
+                              height="150"
+                              image={item.imageAvatar}
+                              alt={item.text}
+                              sx={{
+                                height: 100,
+                                width: 100,
+                                borderRadius: '50%',
+                                margin: '16px auto'
+                              }}
+                            />
+
+                            {/* Hàng 2: Văn bản */}
+                            <CardContent>
+                              <Typography variant="h6" gutterBottom>
+                                {item.fullName}
+                              </Typography>
+
+                              {/* Hàng 3: Radio */}
+                              <FormControl component="fieldset">
+                                <RadioGroup
+                                  name="managerSelection"
+                                  value={confirmManager} // Liên kết giá trị đã chọn với trạng thái
+                                  onChange={() => handleRadioChange(item.id)} // Cập nhật trạng thái khi radio thay đổi
+                                >
+                                  <FormControlLabel value={item.id} control={<Radio color="primary" />} label="Chọn" />
+                                </RadioGroup>
+                              </FormControl>
+
+                              {/* Hàng 4: Nút */}
+                              <Button
+                                variant="contained"
+                                fullWidth
+                                onClick={() => handleOpenModal(item)}
+                                sx={{
+                                  backgroundColor: 'red',
+                                  '&:hover': { backgroundColor: 'darkred' },
+                                  color: 'white'
+                                }}
+                              >
+                                Xem chi tiết
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+
+                    {/* Pagination */}
+                    <Pagination
+                      count={Math.ceil(managers.length / itemsPerPage)} // Tổng số trang
+                      page={page} // Trang hiện tại
+                      onChange={handlePageChange} // Hàm thay đổi trang
+                      sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }} // Căn giữa
+                    />
+                  </div>
+                </div>
+                <Modal open={isModalOpen} onClose={handleCloseModal}>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: 400,
+                      bgcolor: 'background.paper',
+                      boxShadow: 24,
+                      p: 4,
+                      borderRadius: 2
+                    }}
+                  >
+                    {/* Tiêu đề modal */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2
+                      }}
+                    >
+                      <Typography variant="h6" component="h2">
+                        Chi tiết Manager
+                      </Typography>
+                      <IconButton onClick={handleCloseModal}>
+                        <CloseIcon />
+                      </IconButton>
+                    </Box>
+
+                    {/* Nội dung chi tiết */}
+                    {selectedManager && (
+                      <Grid container spacing={2}>
+                        {/* Hình ảnh bên trái */}
+                        <Grid item xs={4}>
+                          <CardMedia
+                            component="img"
+                            image={selectedManager.imageAvatar}
+                            alt={selectedManager.fullName}
+                            sx={{
+                              height: 100,
+                              width: 100,
+                              borderRadius: '50%',
+                              margin: 'auto'
+                            }}
+                          />
+                        </Grid>
+
+                        {/* Thông tin bên phải */}
+                        <Grid item xs={8}>
+                          <Typography variant="subtitle1">
+                            <strong>Tên:</strong> {selectedManager.fullName}
+                          </Typography>
+                          <Typography variant="subtitle1">
+                            <strong>Email:</strong> {selectedManager.email}
+                          </Typography>
+                          <Typography variant="subtitle1">
+                            <strong>Ngày sinh:</strong> {selectedManager.dob || 'Chưa cập nhật'}
+                          </Typography>
+                          <Typography variant="subtitle1">
+                            <strong>Số điện thoại:</strong> {selectedManager.phoneNumber || 'Chưa cập nhật'}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    )}
+                  </Box>
+                </Modal>
+              </div>
+            }
+            {
+              <div className={cx('ticket-selector-manager', { hidden: activeStep !== 2 })}>
+                <div className={cx('title-manager')}>
+                  XÁC NHẬN YÊU CẦU ĐẶT PHÒNG TẠI {room && room.name ? room.name.toUpperCase() : ''}
+                </div>
+                <div className={cx('head')}>
+                  <div>
+                    <FontAwesomeIcon icon={faXmark} className={cx('icon-hide-popup')} onClick={hanleHidePopup} />
+                  </div>
+                </div>
+                <div>
+                  <Box>
+                    {/* Tiêu đề Modal */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mb: 2
+                      }}
+                    ></Box>
+
+                    {/* Nội dung Modal */}
+                    <Grid container spacing={3}>
+                      {/* Phần bên trái: Thông tin Manager */}
+                      <Grid item xs={6}>
+                        <Typography variant="h6" component="h2" sx={{ color: 'black' }}>
+                          Quản lí tòa nhà bạn đã chọn
+                        </Typography>
+                        {confirmManagerItem && (
+                          <Grid container spacing={2}>
+                            {/* Hình ảnh bên trái */}
+                            <Grid item xs={4}>
+                              <CardMedia
+                                component="img"
+                                image={confirmManagerItem.imageAvatar}
+                                alt={confirmManagerItem.fullName}
+                                sx={{
+                                  height: 100,
+                                  width: 100,
+                                  borderRadius: '50%',
+                                  margin: 'auto'
+                                }}
+                              />
+                            </Grid>
+
+                            {/* Thông tin bên phải */}
+                            <Grid item xs={8}>
+                              <Typography variant="subtitle1" sx={{ color: 'black' }}>
+                                <strong>Tên:</strong> {confirmManagerItem.fullName}
+                              </Typography>
+                              <Typography variant="subtitle1" sx={{ color: 'black' }}>
+                                <strong>Email:</strong> {confirmManagerItem.email}
+                              </Typography>
+                              <Typography variant="subtitle1" sx={{ color: 'black' }}>
+                                <strong>Ngày sinh:</strong> {confirmManagerItem.dob || 'Chưa cập nhật'}
+                              </Typography>
+                              <Typography variant="subtitle1" sx={{ color: 'black' }}>
+                                <strong>Số điện thoại:</strong> {confirmManagerItem.phoneNumber || 'Chưa cập nhật'}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        )}
+                      </Grid>
+
+                      {/* Phần bên phải: Danh sách các phòng đã đặt */}
+                      <Grid item xs={6}>
+                        <Typography variant="h6" sx={{ mb: 2, color: 'black' }}>
+                          Danh sách phòng
+                        </Typography>
+                        <Box
+                          sx={{
+                            maxHeight: 200,
+                            overflowY: 'auto',
+                            border: '1px solid #ddd',
+                            borderRadius: 2,
+                            p: 2
+                          }}
+                        >
+                          {selectedIds && selectedIds.length > 0 ? (
+                            selectedIds.map((room, index) => (
+                              <Typography key={index} variant="body1" sx={{ color: 'black' }}>
+                                Phòng: {room}
+                              </Typography>
+                            ))
+                          ) : (
+                            <Typography variant="body1" sx={{ color: 'black' }}>
+                              Chưa có phòng nào được đặt.
+                            </Typography>
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={alertStateBook}
+          variant="filled"
+          sx={{
+            width: '100%',
+            fontSize: '1.5rem', // Tăng kích thước chữ
+            padding: '20px'
+          }}
+        >
+          {alertText}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
