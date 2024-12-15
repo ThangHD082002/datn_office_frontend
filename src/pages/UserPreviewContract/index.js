@@ -89,8 +89,8 @@ const UserPreviewContract = () => {
   const fetchPdf = useCallback(async () => {
     setLoading(true)
     try {
-      // const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/contract/${pid}/export-pdf`, {
-      const response = await axios.get(`http://localhost:9999/api/contract/${pid}/export-pdf`, {
+      const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/contract/${pid}/export-pdf`, {
+        // const response = await axios.get(`http://localhost:9999/api/contract/${pid}/export-pdf`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
