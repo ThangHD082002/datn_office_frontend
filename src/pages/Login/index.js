@@ -57,9 +57,9 @@ function Login() {
 
   const handleSubmit = (e) => {
     // Remove all localStorage when login
-    localStorage.removeItem('role');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('id_user');
+    localStorage.removeItem('role')
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('id_user')
 
     let link = ''
     e.preventDefault()
@@ -109,7 +109,7 @@ function Login() {
           // handle error
           console.log(error)
           setAlertSeverity('error')
-          setAlertText("Đã có lỗi xảy ra")
+          setAlertText('Đã có lỗi xảy ra')
         })
         .finally(function () {
           // always executed
@@ -150,7 +150,19 @@ function Login() {
       setIsPasswordEmpty('')
     }
   }
-
+  const handleVNPayPayment = async (amount = 100000, bankCode = 'NCB') => {
+    try {
+      localStorage.setItem('previousPage', window.location.href)
+      const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/v1/payment/vn-pay?amount=100000&bankCode=${bankCode}`)
+      console.log('VNPay payment response:', response.data)
+      window.location.href = response.data.result.paymentUrl
+    } catch (error) {
+      console.error('Error creating VNPay payment:', error)
+      setAlertSeverity('error')
+      setAlertText('Đã xảy ra lỗi khi tạo thanh toán VNPay')
+      setSnackbarOpen(true)
+    }
+  }
   return (
     <div className={cx('modal')}>
       <div className={cx('login-container')}>
@@ -203,6 +215,14 @@ function Login() {
           <ButtonL submit>SIGN IN</ButtonL>
         </form>
       </div>
+      <Button
+        variant="contained"
+        color="primary"
+        className={cx('vnpay-button')} // Thêm class để style riêng
+        onClick={handleVNPayPayment} // Xử lý khi click
+      >
+        Thanh toán bằng VNPay
+      </Button>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

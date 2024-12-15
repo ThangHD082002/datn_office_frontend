@@ -64,7 +64,7 @@ const SignedContract = () => {
       const formattedStartDate = startDate.toISOString().split('T')[0]
       const formattedEndDate = endDate.toISOString().split('T')[0]
 
-      const response = await axiosInstance.post('/contract/stat-building-contracts', {
+      const response = await axiosInstance.post('/contract/stat/building-contracts', {
         buildingId: building,
         startDate: formattedStartDate,
         endDate: formattedEndDate
