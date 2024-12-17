@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   CircularProgress,
   Divider,
   IconButton,
@@ -13,12 +14,12 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip
 } from '@mui/material'
 import styles from '../RequestManagement.module.scss'
 import classNames from 'classnames/bind'
 import { createTheme, responsiveFontSizes, ThemeProvider, Typography } from '@mui/material'
-import { Button } from 'react-bootstrap'
 import { axiosInstance } from '~/utils/axiosInstance'
 import { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
@@ -26,6 +27,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useNavigate } from 'react-router-dom'
+import { set } from 'date-fns'
+import dayjs from 'dayjs'
 
 const cx = classNames.bind(styles)
 
@@ -53,10 +56,13 @@ function RequestManagementList() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const [userLoading, setUserLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
 
   const columns = [
     { id: 'id', name: 'STT', width: 170 },
@@ -73,6 +79,7 @@ function RequestManagementList() {
     try {
       const response = await axiosInstance.get(`/requests/manage-list?page=${pageNumber - 1}`)
       setData(response.data.content)
+      setTotalElements(response.data.totalElements)
       setTotalPages(response.data.totalPages)
       console.log(response)
     } catch (error) {
@@ -88,6 +95,10 @@ function RequestManagementList() {
     }
     return 'Không xác định'
   }
+
+  const formatDateTime = (dateString) => {
+    return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'user-popper' : undefined;
@@ -128,6 +139,24 @@ function RequestManagementList() {
       // setUserData(null);
     }
   };
+
+  const handleDelete = (id) => {
+    setSelectedRequestId(id);
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await axiosInstance.delete(`/requests/${selectedRequestId}`);
+      // Handle success (e.g., update UI, show notification)
+    } catch (error) {
+      console.error('Error deleting request:', error);
+      // Handle error (e.g., show error notification)
+    } finally {
+      setConfirmModalOpen(false);
+      window.location.reload();
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -175,7 +204,7 @@ function RequestManagementList() {
               <TableBody>
                 {data.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell className={cx('td')}>{index}</TableCell>
+                    <TableCell className={cx('td')}>{(page - 1) * totalElements + index + 1}</TableCell>
                     <TableCell className={cx('td')}>
                       <span
                         onMouseEnter={(event) => handleUserHover(event, row.userId)}
@@ -187,7 +216,7 @@ function RequestManagementList() {
                     </TableCell>
                     <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
                     <TableCell className={cx('td')}>
-                      {/* {row.createdDate}&nbsp;{row.createdTime} */}
+                      {formatDateTime(row.createdDate)}
                     </TableCell>
                     <TableCell className={cx('td')}>
                       {row.date}&nbsp;{row.time}
@@ -210,16 +239,28 @@ function RequestManagementList() {
                         onClick={() => navigate(`/admin/requests/${row.id}`)}>
                         <VisibilityIcon />
                       </IconButton>
-                      {1 === 1 && (
-                        <IconButton
-                          color="success"
-                          title="Tạo hợp đồng"
-                          onClick={() => navigate(`/admin/create-contract/${row.id}`)}
-                        >
-                          <AssignmentIcon />
-                        </IconButton>
-                      )}
-                      <IconButton color="error" title="Xoá">
+                      <IconButton
+                        color="success"
+                        title={row.status === 2 ? "Tạo hợp đồng" :
+                          "Yêu cầu phải được hoàn thành trước khi tạo hợp đồng"}
+                        disabled={row.status !== 2}
+                        style={{
+                          pointerEvents: 'auto'
+                        }}
+                        onClick={() => navigate(`/admin/create-contract/${row.id}`)}
+                      >
+                        <AssignmentIcon />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        style={{
+                          pointerEvents: 'auto'
+                        }}
+                        title={(row.status === 3 || row.status === 4) ? "Xoá" :
+                          "Chỉ có thể xoá hợp đồng bị Từ chối hoặc Huỷ bỏ"
+                        }
+                        disabled={row.status !== 3 && row.status !== 4}
+                        onClick={() => handleDelete(row.id)} >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -285,6 +326,43 @@ function RequestManagementList() {
           )}
         </Box>
       </Popper>
+
+      {/* Delete confirmation modal */}
+      <Modal
+        open={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        aria-labelledby="confirm-modal-title"
+        aria-describedby="confirm-modal-description"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2
+        }}>
+          <Typography id="confirm-modal-title" variant="h6" component="h2">
+            Xác nhận
+          </Typography>
+          <Typography id="confirm-modal-description">
+            Bạn có chắc chắn muốn xoá yêu cầu này không?
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Button variant="outlined" onClick={() => setConfirmModalOpen(false)}>
+              Huỷ bỏ
+            </Button>
+            <Button variant="contained" color="error" onClick={handleConfirmDelete}>
+              Xác nhận
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </ThemeProvider>
 
   )

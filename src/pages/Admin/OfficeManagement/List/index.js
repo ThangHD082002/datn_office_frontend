@@ -56,6 +56,7 @@ function OfficeManagementList() {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
     const columns = [
@@ -163,6 +164,7 @@ function OfficeManagementList() {
                 url += `&status=${selectedStatus.id}`;
             const response = await axiosInstance.get(url);
             setData(response.data.content);
+            setTotalElements(response.data.totalElements);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error(error);
@@ -352,7 +354,7 @@ function OfficeManagementList() {
                             <TableBody>
                                 {data.map((row, index) => (
                                     <TableRow key={row.id}>
-                                        <TableCell align="center" className={cx('td')}>{index + 1}</TableCell>
+                                        <TableCell align="center" className={cx('td')}>{(page - 1) * totalElements + index + 1}</TableCell>
                                         <TableCell align="center" className={cx('td')}>{row.name}</TableCell>
                                         <TableCell align="center" className={cx('td')}
                                         >
