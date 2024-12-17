@@ -153,7 +153,9 @@ function Login() {
   const handleVNPayPayment = async (amount = 100000, bankCode = 'NCB') => {
     try {
       localStorage.setItem('previousPage', window.location.href)
-      const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/v1/payment/vn-pay?amount=100000&bankCode=${bankCode}`)
+      const response = await axios.get(
+        `https://office-nest-ohcid.ondigitalocean.app/api/v1/payment/vn-pay?amount=100000&bankCode=${bankCode}`
+      )
       console.log('VNPay payment response:', response.data)
       window.location.href = response.data.result.paymentUrl
     } catch (error) {
