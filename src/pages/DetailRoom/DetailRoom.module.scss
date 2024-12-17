@@ -290,8 +290,8 @@
 .icon-hide-popup{
 color: #000;
 position: absolute;
-right: 30px;
-top: 20px;
+right: 10px;
+top: 1px;
 font-size:25px;
 cursor: pointer;
 }
@@ -308,18 +308,18 @@ cursor: pointer;
 }
 
 .center {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
-backdrop-filter: blur(5px); /* Làm mờ toàn bộ nền */
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000; /* Đưa lớp nền lên trên các phần tử khác */
-visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+  backdrop-filter: blur(5px); /* Làm mờ toàn bộ nền */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Đưa lớp nền lên trên các phần tử khác */
+  visibility: hidden;
 }
 .tickets {
   position: relative;
@@ -357,6 +357,15 @@ visibility: hidden;
   font-weight: 600;
   color: #000;
 }
+
+.title-manager{
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin-left: 100px;
+  margin-bottom: 20px;
+}
+
 .seats {
   width: 100%;
   display: flex;
@@ -420,8 +429,12 @@ visibility: hidden;
   cursor: pointer;
 }
 .all-seats input:checked + label {
-  background: rgb(28, 185, 120);
+  background: rgb(28, 185, 120) !important;
   outline: none;
+}
+
+.hidden {
+  display: none; /* Hoặc visibility: hidden; */
 }
 .seat.booked {
   background: rgb(180, 180, 180);
@@ -518,8 +531,6 @@ color: black;
 }
 
 .value-label{
-// margin-top: 2px;
-// margin-left: 7px;
 display: block;
 }
 

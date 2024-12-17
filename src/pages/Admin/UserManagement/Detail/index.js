@@ -45,6 +45,8 @@ function UserDetail() {
       try {
         const response = await axiosInstance.get(`admin/users/${uid}`)
         const userData = response.data
+        console.log("DETAIL-USER")
+        console.log(response.data)
         setFormData({
           login: userData.login,
           fullName: userData.fullName,
