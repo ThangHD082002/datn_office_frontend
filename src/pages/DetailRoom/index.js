@@ -120,10 +120,10 @@ function DetailRoom() {
   const fetchData = async () => {
     try {
       // Giả sử API hỗ trợ phân trang qua query params ?page= và ?size=
-      const response = await axiosInstance.get(`/admin/managers`, {
+      const response = await axiosInstance.get(`/admin/managers/by-building/${rid}`, {
         params: {
           page: 0, // Backend thường bắt đầu từ 0
-          size: 1000
+          size: 100
         }
       })
       setManagers(response.data.content)
