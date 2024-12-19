@@ -3,13 +3,8 @@ import styles from './CreateContract.module.scss'
 
 import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import { Link, Routes, Route, useNavigate } from 'react-router-dom'
@@ -21,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import { axiosInstance } from '~/utils/axiosInstance'
+import { Grid,Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material'
 
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
@@ -46,6 +42,7 @@ function CreateContract() {
   const [navigatePath, setNavigatePath] = useState('')
 
   const [typeContract, setTypeContract] = useState('')
+  const [orderRooms, setOrderRooms] = useState([])
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false)
@@ -53,7 +50,6 @@ function CreateContract() {
 
   let token = localStorage.getItem('authToken')
   useEffect(() => {
-
     axiosInstance
       .get(`/requests/${cid}`)
       .then((response) => {
@@ -77,9 +73,9 @@ function CreateContract() {
 
   const [age, setAge] = useState('')
 
-  const handleChange = (event) => {
-    setAge(event.target.value)
-  }
+  // const handleChange = (event) => {
+  //   setAge(event.target.value)
+  // }
 
   const handleChangeContractCodeChange = (event) => {
     setCodeContract(event.target.value)
@@ -112,13 +108,13 @@ function CreateContract() {
   }
 
   const SubmitCreateContract = () => {
-    const typeContractInt = parseInt(typeContract, 10);
-    console.log("TypeINT")
+    const typeContractInt = parseInt(typeContract, 10)
+    console.log('TypeINT')
     console.log(typeContractInt)
     axiosInstance
       .post('/contract/save', {
         request: {
-          offices: listOffice,
+          offices: orderRooms,
           tenantId: tenantId
         },
         startDate: startDate, // ngày bắt đầu thuê
@@ -149,230 +145,159 @@ function CreateContract() {
       })
   }
 
+  console.log('orderRooms')
+  console.log(orderRooms)
   return (
-    <div className={cx('container-create')}>
-      <div className={cx('header')}>
-        <h1 className={cx('j')}>Create Contract</h1>
-      </div>
-      <div className={cx('body')}>
-        <Box
-          component="form"
-          sx={{ '& .MuiTextField-root': { m: 6, ml: 7, width: '50ch' } }}
-          noValidate
-          autoComplete="off"
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 2, // Khoảng cách giữa các FormControl
-              marginTop: '50px',
-              marginLeft: "60px"
-            }}
-          >
-            <FormControl sx={{ minWidth: 250 }}>
-              <InputLabel id="demo-simple-select-label">DS Phòng</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={age}
-                label="DS Phòng"
-                onChange={handleChange}
-              >
-                {listOffice.map((id) => (
-                  <MenuItem key={id} value={id}>
-                    {id}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ minWidth: 250 }}>
-              <InputLabel id="duration-select-label">Chọn thời hạn</InputLabel>
-              <Select
-                labelId="duration-select-label"
-                id="duration-select"
-                value={typeContract}
-                onChange={handleChangeTypeContract}
-                label="Chọn thời hạn"
-              >
-                <MenuItem value="2">Ngắn hạn</MenuItem>
-                <MenuItem value="1">Dài hạn</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
-        <Box
-          component="form"
-          sx={{
-            marginLeft: '60px',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            '& .MuiTextField-root': { mt: 2 , width: '30ch' }
-          }}
-          noValidate
-          autoComplete="off"
-        >
+<div className={cx('container-create')}>
+  <div className={cx('header')}>
+    <h1 className={cx('j')}>Create Contract</h1>
+  </div>
+  <div className={cx('body')}>
+    <Box
+      component="form"
+      sx={{
+        marginTop: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        padding: 3, // Khoảng cách giữa nội dung và viền
+        borderRadius: 2, // Bo góc cho box
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Shadow cho box
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
+        {/* Phần Chọn Phòng */}
+        <Grid item xs={12} sm={6} md={4}>
+          <Autocomplete
+            multiple
+            options={listOffice}
+            value={orderRooms}
+            onChange={(event, newValue) => setOrderRooms(newValue)}
+            renderInput={(params) => <TextField {...params} label="Chọn phòng" sx={{ width: '100%' }} />}
+          />
+        </Grid>
+        
+        {/* Phần Chọn Thời Hạn */}
+        <Grid item xs={12} sm={6} md={4}>
+          <FormControl fullWidth>
+            <InputLabel id="duration-select-label">Chọn thời hạn</InputLabel>
+            <Select
+              labelId="duration-select-label"
+              id="duration-select"
+              value={typeContract}
+              onChange={handleChangeTypeContract}
+              label="Chọn thời hạn"
+              sx={{ width: '100%' }}
+            >
+              <MenuItem value="2">Ngắn hạn</MenuItem>
+              <MenuItem value="1">Dài hạn</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      {/* Phần Chọn Ngày */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                value={startDate ? dayjs(startDate) : null}
-                onChange={handleChangeStartDate}
-                label="Thời gian bắt đầu"
-                sx={{
-                  '& .MuiInputBase-root': { fontSize: '16px' }, // Kích thước chữ của phần input
-                  '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                  '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
+            <DatePicker
+              value={startDate ? dayjs(startDate) : null}
+              onChange={handleChangeStartDate}
+              label="Thời gian bắt đầu"
+              sx={{ width: '100%' }}
+            />
           </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                value={endDate ? dayjs(endDate) : null}
-                onChange={handleChangeEndDate}
-                label="Thời gian kết thúc"
-                sx={{
-                  '& .MuiInputBase-root': { fontSize: '16px' }, // Kích thước chữ của phần input
-                  '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                  '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
+            <DatePicker
+              value={endDate ? dayjs(endDate) : null}
+              onChange={handleChangeEndDate}
+              label="Thời gian kết thúc"
+              sx={{ width: '100%' }}
+            />
           </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                value={handoverDate ? dayjs(handoverDate) : null}
-                onChange={handleChangeHandOverDate}
-                label="Thời gian bàn giao"
-                sx={{
-                  '& .MuiInputBase-root': { fontSize: '16px' }, // Kích thước chữ của phần input
-                  '& .MuiInputLabel-root': { fontSize: '16px' }, // Kích thước chữ của label
-                  '& .MuiSvgIcon-root': { fontSize: '20px' } // Kích thước biểu tượng lịch
-                }}
-              />
-            </DemoContainer>
+            <DatePicker
+              value={handoverDate ? dayjs(handoverDate) : null}
+              onChange={handleChangeHandOverDate}
+              label="Thời gian bàn giao"
+              sx={{ width: '100%' }}
+            />
           </LocalizationProvider>
-        </Box>
-        <Box
-          component="form"
-          sx={{
-            '& .MuiTextField-root': { mt: 6, ml: 7, width: 'calc(50% - 12px)' }, // Đảm bảo cả 2 TextField chiếm 50% chiều rộng
-            display: 'flex', // Sử dụng flex để căn chỉnh các phần tử theo hàng ngang
-            justifyContent: 'space-between', // Giữa các TextField có khoảng cách
-            gap: 2 // Khoảng cách giữa các TextField
-          }}
-          noValidate
-          autoComplete="off"
-        >
+        </Grid>
+      </Grid>
+
+      {/* Phần Nhập Thông Tin Hợp Đồng */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={4}>
           <TextField
-            id="outlined-required"
             label="Thời hạn"
             onChange={handleChangeDuration}
             value={duration}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: 'calc(50% - 12px)', // Đảm bảo thẻ chiếm 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              '& .MuiInputLabel-root': { fontSize: '18px' },
-              // Điều chỉnh kích thước của value
-              '& .MuiInputBase-input': { fontSize: '16px' },
-              height: '0px'
-            }}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
           />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
           <TextField
-            id="outlined-required"
             label="Tiền đặt cọc"
             onChange={handleChangeDepositAmount}
             value={depositAmount}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: 'calc(50% - 12px)', // Đảm bảo thẻ chiếm 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              '& .MuiInputLabel-root': { fontSize: '18px' },
-              // Điều chỉnh kích thước của value
-              '& .MuiInputBase-input': { fontSize: '16px' },
-              height: '0px'
-            }}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
           />
-        </Box>
-        <Box
-          component="form"
-          sx={{
-            display: 'flex', // Để các thẻ TextField nằm ngang
-            justifyContent: 'space-between', // Khoảng cách đều giữa các thẻ TextField
-            gap: 2, // Khoảng cách giữa các thẻ
-            '& .MuiTextField-root': {
-              mt: 10,
-              ml: 7,
-              width: 'calc(50% - 12px)'
-            } // Mỗi TextField chiếm 50% chiều rộng của Box
-          }}
-          noValidate
-          autoComplete="off"
-        >
+        </Grid>
+      </Grid>
+
+      {/* Phần Mục Đích và Chu Kỳ */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={4}>
           <TextField
-            id="outlined-required"
             label="Mục đích thuê"
             onChange={handleChangeRentalPurpose}
             value={rentalPurpose}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: '100%', // Đảm bảo chiếm hết 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              '& .MuiInputLabel-root': { fontSize: '18px' },
-              // Điều chỉnh kích thước của value
-              '& .MuiInputBase-input': { fontSize: '16px' },
-              marginTop: '50px',
-              height: '0px'
-            }}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
           />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
           <TextField
-            id="outlined-required"
             label="Chu kì đóng tiền"
             onChange={handleChangePaymentFrequency}
             value={paymentFrequency}
-            defaultValue=""
-            sx={{
-              // Điều chỉnh kích thước của thẻ TextField
-              width: '100%', // Đảm bảo chiếm hết 50% chiều rộng của Box
-              // Điều chỉnh kích thước của label
-              '& .MuiInputLabel-root': { fontSize: '18px' },
-              // Điều chỉnh kích thước của value
-              '& .MuiInputBase-input': { fontSize: '16px' }
-            }}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
           />
-        </Box>
+        </Grid>
+      </Grid>
 
-        <Button
-          onClick={SubmitCreateContract}
-          variant="contained"
-          sx={{
-            fontSize: '16px', // Kích thước chữ
-            padding: '10px 20px', // Padding cho nút
-            width: '170px', // Chiều rộng của nút (tuỳ chọn)
-            height: '40px',
-            position: 'absolute',
-            right: '20px', // Chiều cao của nút (tuỳ chọn)
-            bottom: '-50px'
-          }}
-        >
-          TẠO HỢP ĐỒNG
-        </Button>
-        <CustomSnackbar
-          open={snackbarOpen}
-          onClose={handleSnackbarClose}
-          message={alertText}
-          severity={alertSeverity}
-          navigatePath={navigatePath}
-        />
-      </div>
-    </div>
+      {/* Nút Submit */}
+      <Button
+        onClick={SubmitCreateContract}
+        variant="contained"
+        sx={{
+          fontSize: '16px',
+          padding: '10px 20px',
+          width: '170px',
+          height: '40px',
+          marginTop: 4
+        }}
+      >
+        TẠO HỢP ĐỒNG
+      </Button>
+    </Box>
+
+    <CustomSnackbar
+      open={snackbarOpen}
+      onClose={handleSnackbarClose}
+      message={alertText}
+      severity={alertSeverity}
+      navigatePath={navigatePath}
+    />
+  </div>
+</div>
   )
 }
 

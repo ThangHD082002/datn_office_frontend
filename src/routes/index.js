@@ -35,6 +35,7 @@ import HistoryList from '~/pages/History/list'
 import HistoryDetail from '~/pages/History/Detail'
 import PaymentResult from '~/utils/PaymentResult'
 import OfficeManagementEdit from '~/pages/Admin/OfficeManagement/Edit'
+import Payment from '~/pages/Payment'
 const publicRoutes = [
   {
     path: '/payment-result',
@@ -66,6 +67,11 @@ const publicRoutes = [
   {
     path: '/detail-room/:rid',
     component: DetailRoom,
+    layout: HeaderSearchLayout
+  },
+  {
+    path: '/payment',
+    component: Payment,
     layout: HeaderSearchLayout
   },
   {

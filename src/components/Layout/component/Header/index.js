@@ -27,6 +27,8 @@ import SendIcon from '@mui/icons-material/Send'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import StarBorder from '@mui/icons-material/StarBorder'
+import PaymentIcon from '@mui/icons-material/Payment';
+
 import { useNavigate } from 'react-router-dom'
 const cx = classNames.bind(styles)
 
@@ -34,7 +36,7 @@ function Header() {
   const [name, setName] = useState('')
   const navigate = useNavigate()
   const [isListVisible, setIsListVisible] = useState(false)
-  const [idUser, setIdUser] = useState('');
+  const [idUser, setIdUser] = useState('')
 
   const showSetting = () => {
     setIsListVisible(!isListVisible) // Chuyển đổi trạng thái ẩn/hiện
@@ -45,9 +47,9 @@ function Header() {
     .then((response) => {
       console.log('INFOR')
       console.log(response)
-      localStorage.setItem('full_name', response.data.result.fullName);
+      localStorage.setItem('full_name', response.data.result.fullName)
       setName(response.data.result.login)
-      setIdUser(response.data.result.id);
+      setIdUser(response.data.result.id)
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -57,6 +59,18 @@ function Header() {
     })
 
   const handleLogout = () => {
+    
+    axiosInstance
+    .get('/logout')
+    .then((response) => {
+      console.log(response)
+    })
+    .catch((error) => {
+      console.error('Error logout:', error)
+    })
+    .finally(() => {
+      console.log('Request completed.')
+    })
     // Xóa dữ liệu người dùng khỏi localStorage/sessionStorage
     localStorage.removeItem('userToken')
     localStorage.removeItem('userInfo')
@@ -68,18 +82,22 @@ function Header() {
     navigate('/login')
   }
 
-  const showContract = () =>{
+  const showContract = () => {
     navigate('/user-contract')
   }
 
-  const showHistory = () =>{
+  const showHistory = () => {
     navigate('/user-history')
   }
 
   const showInfor = () => {
-    var uid = localStorage.getItem('id_user');
+    var uid = localStorage.getItem('id_user')
     navigate(`/user-infor/${uid}`)
   }
+
+  const showPayment = () => {
+    navigate('/payment')
+  };
 
   return (
     <div className={cx('container')}>
@@ -235,6 +253,12 @@ function Header() {
               <HistoryIcon sx={{ color: 'black' }} />
             </ListItemIcon>
             <ListItemText primary="History" />
+          </ListItemButton>
+          <ListItemButton onClick={showPayment} sx={{ color: 'black' }}>
+            <ListItemIcon>
+              <PaymentIcon sx={{ color: 'black' }} /> {/* Icon cho Payment */}
+            </ListItemIcon>
+            <ListItemText primary="Payment" />
           </ListItemButton>
           <ListItemButton onClick={handleLogout} sx={{ color: 'black' }}>
             <ListItemIcon>

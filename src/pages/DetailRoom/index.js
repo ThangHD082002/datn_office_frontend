@@ -130,7 +130,7 @@ function DetailRoom() {
       console.log('MANAGERS')
       console.log(response.data.content)
     } catch (error) {
-      console.error('Error fetching data:', error)
+      console.error('Error fetching data Managers:', error)
     } finally {
     }
   }
