@@ -829,57 +829,72 @@ function DetailRoom() {
                   </div>
                   <div>
                     <Grid container spacing={2}>
-                      {currentManagers.map((item) => (
-                        <Grid item xs={12} sm={6} md={3} key={item.id}>
-                          <Card>
-                            {/* Hàng 1: Hình ảnh */}
-                            <CardMedia
-                              component="img"
-                              height="150"
-                              image={item.imageAvatar}
-                              alt={item.text}
-                              sx={{
-                                height: 100,
-                                width: 100,
-                                borderRadius: '50%',
-                                margin: '16px auto'
-                              }}
-                            />
+                      {currentManagers.map((item) => {
+                        const mdValue =
+                          currentManagers.length === 4
+                            ? 3
+                            : currentManagers.length === 3
+                            ? 4
+                            : currentManagers.length === 2
+                            ? 6
+                            : 12
 
-                            {/* Hàng 2: Văn bản */}
-                            <CardContent>
-                              <Typography variant="h6" gutterBottom>
-                                {item.fullName}
-                              </Typography>
-
-                              {/* Hàng 3: Radio */}
-                              <FormControl component="fieldset">
-                                <RadioGroup
-                                  name="managerSelection"
-                                  value={confirmManager} // Liên kết giá trị đã chọn với trạng thái
-                                  onChange={() => handleRadioChange(item.id)} // Cập nhật trạng thái khi radio thay đổi
-                                >
-                                  <FormControlLabel value={item.id} control={<Radio color="primary" />} label="Chọn" />
-                                </RadioGroup>
-                              </FormControl>
-
-                              {/* Hàng 4: Nút */}
-                              <Button
-                                variant="contained"
-                                fullWidth
-                                onClick={() => handleOpenModal(item)}
+                        return (
+                          <Grid item xs={12} sm={6} md={mdValue} key={item.id}>
+                            <Card sx={{ height: '100%' }}>
+                              {/* Hàng 1: Hình ảnh */}
+                              <CardMedia
+                                component="img"
+                                height="150"
+                                image={item.imageAvatar}
+                                alt={item.text}
                                 sx={{
-                                  backgroundColor: 'red',
-                                  '&:hover': { backgroundColor: 'darkred' },
-                                  color: 'white'
+                                  height: 100,
+                                  width: 100,
+                                  borderRadius: '50%',
+                                  margin: '16px auto'
                                 }}
-                              >
-                                Xem chi tiết
-                              </Button>
-                            </CardContent>
-                          </Card>
-                        </Grid>
-                      ))}
+                              />
+
+                              {/* Hàng 2: Văn bản */}
+                              <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                  {item.fullName}
+                                </Typography>
+
+                                {/* Hàng 3: Radio */}
+                                <FormControl component="fieldset">
+                                  <RadioGroup
+                                    name="managerSelection"
+                                    value={confirmManager} // Liên kết giá trị đã chọn với trạng thái
+                                    onChange={() => handleRadioChange(item.id)} // Cập nhật trạng thái khi radio thay đổi
+                                  >
+                                    <FormControlLabel
+                                      value={item.id}
+                                      control={<Radio color="primary" />}
+                                      label="Chọn"
+                                    />
+                                  </RadioGroup>
+                                </FormControl>
+
+                                {/* Hàng 4: Nút */}
+                                <Button
+                                  variant="contained"
+                                  fullWidth
+                                  onClick={() => handleOpenModal(item)}
+                                  sx={{
+                                    backgroundColor: 'red',
+                                    '&:hover': { backgroundColor: 'darkred' },
+                                    color: 'white'
+                                  }}
+                                >
+                                  Xem chi tiết
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        )
+                      })}
                     </Grid>
 
                     {/* Pagination */}
