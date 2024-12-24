@@ -167,7 +167,6 @@ import room_1 from '~/assets/image/room1.jpeg';
 import room_2 from '~/assets/image/room2.jpeg';
 import room_3 from '~/assets/image/room3.jpeg';
 import room_4 from '~/assets/image/room4.jpeg';
-import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowUpward } from '@mui/icons-material';
 

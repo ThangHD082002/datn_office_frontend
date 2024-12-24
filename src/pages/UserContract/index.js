@@ -33,7 +33,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { MenuItem, Select } from '@mui/material'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
-import axios from 'axios'
 import styles from './UserContract.module.scss'
 import { ArrowUpward } from '@mui/icons-material'
 
@@ -450,7 +449,7 @@ function UserContract() {
   }
 
   const HandleDeleteContract = () => {
-    
+
     const did = Number(selected[0])
     axiosInstance
       .delete(
