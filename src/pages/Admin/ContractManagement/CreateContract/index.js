@@ -170,7 +170,7 @@ function CreateContract() {
     >
       <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
         {/* Phần Chọn Phòng */}
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={6}>
           <Autocomplete
             multiple
             options={listOffice}
@@ -181,7 +181,7 @@ function CreateContract() {
         </Grid>
         
         {/* Phần Chọn Thời Hạn */}
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={6}>
           <FormControl fullWidth>
             <InputLabel id="duration-select-label">Chọn thời hạn</InputLabel>
             <Select
@@ -200,6 +200,47 @@ function CreateContract() {
       </Grid>
 
       {/* Phần Chọn Ngày */}
+
+      {/* Phần Nhập Thông Tin Hợp Đồng */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Thời hạn"
+            onChange={handleChangeDuration}
+            value={duration}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Tiền đặt cọc"
+            onChange={handleChangeDepositAmount}
+            value={depositAmount}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+      </Grid>
+
+      {/* Phần Mục Đích và Chu Kỳ */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Mục đích thuê"
+            onChange={handleChangeRentalPurpose}
+            value={rentalPurpose}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Chu kì đóng tiền"
+            onChange={handleChangePaymentFrequency}
+            value={paymentFrequency}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+      </Grid>
+
       <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
         <Grid item xs={12} sm={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -230,46 +271,6 @@ function CreateContract() {
               sx={{ width: '100%' }}
             />
           </LocalizationProvider>
-        </Grid>
-      </Grid>
-
-      {/* Phần Nhập Thông Tin Hợp Đồng */}
-      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            label="Thời hạn"
-            onChange={handleChangeDuration}
-            value={duration}
-            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            label="Tiền đặt cọc"
-            onChange={handleChangeDepositAmount}
-            value={depositAmount}
-            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-          />
-        </Grid>
-      </Grid>
-
-      {/* Phần Mục Đích và Chu Kỳ */}
-      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            label="Mục đích thuê"
-            onChange={handleChangeRentalPurpose}
-            value={rentalPurpose}
-            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <TextField
-            label="Chu kì đóng tiền"
-            onChange={handleChangePaymentFrequency}
-            value={paymentFrequency}
-            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-          />
         </Grid>
       </Grid>
 

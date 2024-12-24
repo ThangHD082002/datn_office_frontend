@@ -215,14 +215,6 @@ function Login() {
           <ButtonL submit>SIGN IN</ButtonL>
         </form>
       </div>
-      <Button
-        variant="contained"
-        color="primary"
-        className={cx('vnpay-button')} // Thêm class để style riêng
-        onClick={handleVNPayPayment} // Xử lý khi click
-      >
-        Thanh toán bằng VNPay
-      </Button>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

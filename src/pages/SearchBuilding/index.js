@@ -1,8 +1,15 @@
 import classNames from 'classnames/bind'
-import styles from './Home.module.scss'
+import styles from './SearchBuilding.module.scss'
 import SearchHome from '~/components/Layout/component/SearchHome'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faSearch, faThumbsDown, faUpDown } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAngleDown,
+  faArrowLeft,
+  faLeftLong,
+  faSearch,
+  faThumbsDown,
+  faUpDown
+} from '@fortawesome/free-solid-svg-icons'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
@@ -14,11 +21,6 @@ import about_three from '~/assets/image/about-us-img-3.jpeg'
 import about_four from '~/assets/image/about-us-img-4.jpeg'
 import { axiosInstance } from '~/utils/axiosInstance'
 import { IconButton, Pagination } from '@mui/material'
-import room_1 from '~/assets/image/room1.jpeg'
-import room_2 from '~/assets/image/room2.jpeg'
-import room_3 from '~/assets/image/room3.jpeg'
-import room_4 from '~/assets/image/room4.jpeg'
-import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { ArrowUpward } from '@mui/icons-material'
 
@@ -26,10 +28,14 @@ import { Autocomplete, Box, TextField } from '@mui/material'
 import ButtonSH from '~/components/Layout/component/ButtonSH'
 import { useNavigate } from 'react-router-dom'
 import { RefreshRounded } from '@mui/icons-material'
+import { useLocation } from 'react-router-dom'
 
 const cx = classNames.bind(styles)
 
-function Home() {
+function SearchBuilding() {
+  const location = useLocation()
+  const searchData = location.state
+
   const [result, setResult] = useState([])
   const [page, setPage] = useState(1)
   const itemsPerPage = 4
@@ -45,6 +51,9 @@ function Home() {
   const [districts, setDistricts] = useState([])
   const [wards, setWards] = useState([])
 
+  console.log('SEARCH DATA')
+  console.log(searchData)
+
   let token = localStorage.getItem('authToken')
 
   const handleScrollToTop = () => {
@@ -55,22 +64,26 @@ function Home() {
   }
 
   useEffect(() => {
-    axiosInstance
-      .get('/buildings')
-      .then(function (response) {
-        // handle success
-        console.log('LIST BUILDING')
-        console.log(response)
-        setResult(response.data.result.content)
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error)
-        if (error.response && error.response.status === 401) {
-          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
-          window.location.href = '/error-token'
-        }
-      })
+    if (searchData === undefined) {
+      axiosInstance
+        .get('/buildings')
+        .then(function (response) {
+          // handle success
+          console.log('LIST BUILDING')
+          console.log(response)
+          setResult(response.data.result.content)
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+          if (error.response && error.response.status === 401) {
+            // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
+            window.location.href = '/error-token'
+          }
+        })
+    } else {
+      setResult(searchData)
+    }
   }, [])
 
   const handleChangePage = (event, value) => {
@@ -129,7 +142,6 @@ function Home() {
 
   useEffect(() => {
     fetchProvinces() // Fetch provinces when the component mounts
-    getData() // Fetch data when the component mounts
   }, [])
 
   const fetchDistricts = async (provinceId) => {
@@ -150,6 +162,10 @@ function Home() {
     } catch (error) {
       console.error('Error fetching wards:', error)
     }
+  }
+
+  const handleBackHome = () => {
+    navigate('/')
   }
 
   const getData = async () => {
@@ -341,7 +357,7 @@ function Home() {
       </section>
 
       <section className={cx('rooms')}>
-        <div className={cx('common-header')}> 
+        <div className={cx('common-header')}>
           <h1 className={cx('common-heading')}>
             {searchProvince !== null ? 'Các tòa nhà tại ' + searchProvince.name : 'Danh sách tất cả các tòa nhà'}
           </h1>
@@ -383,8 +399,16 @@ function Home() {
         sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
       />
 
-      <div className={cx('rooms-btn-wrapper')}>
-      </div>
+      {result.length > 0 ? (
+         <div className={cx('rooms-element')}></div> // Thẻ div rỗng nếu mảng a không có phần tử
+      ) : (
+        <div className={cx('rooms-btn-wrapper')}>
+          <button className={cx('rooms-btn')} onClick={handleBackHome}>
+            <FontAwesomeIcon icon={faArrowLeft} className={cx('icon-back')} />
+            Trở về trang chủ
+          </button>
+        </div>
+      )}
 
       <IconButton
         onClick={handleScrollToTop}
@@ -405,4 +429,4 @@ function Home() {
   )
 }
 
-export default Home
+export default SearchBuilding

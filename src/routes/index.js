@@ -35,6 +35,7 @@ import HistoryList from '~/pages/History/list'
 import HistoryDetail from '~/pages/History/Detail'
 import PaymentResult from '~/utils/PaymentResult'
 import OfficeManagementEdit from '~/pages/Admin/OfficeManagement/Edit'
+import SearchBuilding from '~/pages/SearchBuilding'
 import Payment from '~/pages/Payment'
 const publicRoutes = [
   {
@@ -49,6 +50,10 @@ const publicRoutes = [
     path: '/hanoi',
     component: HaNoi,
     layout: HeaderSearchLayout
+  },
+  {
+    path: '/search-building',
+    component: SearchBuilding,
   },
   {
     path: '/login',
