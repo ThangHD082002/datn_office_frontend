@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ButtonFloor from '~/components/Layout/component/ButtonFloor'
 import { useParams } from 'react-router-dom'
 import { Link, Route, useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
@@ -337,7 +336,7 @@ function DetailRoom() {
     }
   }
 
-  const handleChosseFloor = () => {}
+  const handleChosseFloor = () => { }
 
   function changeInput(id) {
     setValueInputs((prev) => {
@@ -834,10 +833,10 @@ function DetailRoom() {
                           currentManagers.length === 4
                             ? 3
                             : currentManagers.length === 3
-                            ? 4
-                            : currentManagers.length === 2
-                            ? 6
-                            : 12
+                              ? 4
+                              : currentManagers.length === 2
+                                ? 6
+                                : 12
 
                         return (
                           <Grid item xs={12} sm={6} md={mdValue} key={item.id}>
