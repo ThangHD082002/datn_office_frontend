@@ -225,6 +225,8 @@ function DetailRoom() {
       .get(`/buildings/${rid}`)
       .then(function (response) {
         // setRoom((prev) => ({ ...prev, ...response.data }));
+        console.log("DETAIL ROOM")
+        console.log(response.data.result)
         setRoom(response.data.result)
         setBid(response.data.result.id)
         // Tạo 2 mảng useRef để lưu theo id
@@ -278,7 +280,7 @@ function DetailRoom() {
       }
       let handleEventChangeSilde = setInterval(handleChangeSlide, 4000)
 
-      
+
     }
   }, []) // Mảng rỗng để chỉ chạy một lần sau khi component mount
   const handleClick = () => {
@@ -562,10 +564,19 @@ function DetailRoom() {
               </div>
             </div>
             <div className={cx('contain-sub-images')}>
-              <img src={about_one} className={cx('sub-image')} />
+              {/* <img src={about_one} className={cx('sub-image')} />
               <img src={about_two} alt="Logo2" className={cx('sub-image')} />
               <img src={about_three} alt="Logo3" className={cx('sub-image')} />
-              <img src={about_four} alt="Logo4" className={cx('sub-image')} />
+              <img src={about_four} alt="Logo4" className={cx('sub-image')} /> */}
+
+              {room.images && room.images.map((x, index) => (
+                 <img 
+                 key={index} 
+                 src={x.url} 
+                 alt={`Image ${index + 1}`} 
+                 className={cx('sub-image')}
+               />
+              ))}
             </div>
           </Col>
           <Col sm={5} className={cx('col-right-main')}>

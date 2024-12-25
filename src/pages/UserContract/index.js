@@ -82,7 +82,7 @@ function UserContract() {
 
   useEffect(() => {
     axiosInstance
-      .post('/contract/filter-user', {
+      .post('/contract', {
         pageNumber: 0,
         pageSize: 10,
         filter: [
@@ -93,13 +93,6 @@ function UserContract() {
             otherValue: null,
             valueSelected: null
           }
-          // {
-          //     "operator": "=",
-          //     "key": "createdBy",
-          //     "value": "1084",
-          //     "otherValue": null,
-          //     "valueSelected": null
-          // }
         ],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
@@ -410,6 +403,13 @@ function UserContract() {
               operator: '=',
               key: 'status',
               value: x,
+              otherValue: null,
+              valueSelected: null
+            },
+            {
+              operator: '=',
+              key: 'tenant',
+              value: cid,
               otherValue: null,
               valueSelected: null
             }
