@@ -31,7 +31,6 @@ import { axiosInstance } from '~/utils/axiosInstance'
 import Backdrop from '@mui/material/Backdrop'
 import { CircularProgress } from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh'
-import axios from 'axios'
 import styles from './ManageContract.module.scss'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
@@ -50,7 +49,7 @@ function ManageContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
-  const [loadingStart, setLoadingStart] = useState(true); 
+  const [loadingStart, setLoadingStart] = useState(true);
   const [show, setShow] = useState(true);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -82,7 +81,7 @@ function ManageContract() {
           "value": mid,
           "otherValue": null,
           "valueSelected": null
-      }],
+        }],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
         buildingIds: []
@@ -389,6 +388,7 @@ function ManageContract() {
     } else {
       x = null; // Hoặc giá trị mặc định
     }
+    let mid = localStorage.getItem('id_user')
     axiosInstance
       .post(
         '/contract/filter-user', // Sử dụng đường dẫn tương đối
@@ -396,18 +396,25 @@ function ManageContract() {
           "pageNumber": 0,
           "pageSize": 0,
           "filter": [
-              {
-                  "operator": "=",
-                  "key": "status",
-                  "value": x,
-                  "otherValue": null,
-                  "valueSelected": null
-              }
+            {
+              "operator": "=",
+              "key": "status",
+              "value": x,
+              "otherValue": null,
+              "valueSelected": null
+            },
+            {
+              "operator": "=",
+              "key": "createdBy",
+              "value": mid,
+              "otherValue": null,
+              "valueSelected": null
+            }
           ],
           "sortProperty": "contract.lastModifiedDate",
           "sortOrder": "DESC",
           "buildingIds": []
-      }
+        }
       )
       .then((response) => {
         const newArray = response.data.data.map((item) => ({
@@ -566,191 +573,191 @@ function ManageContract() {
       </Box>
       {loadingStart ? (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <CircularProgress />
-        <Typography sx={{ marginTop: 2 }}>Đang tải dữ liệu...</Typography>
-      </Box>
+          <CircularProgress />
+          <Typography sx={{ marginTop: 2 }}>Đang tải dữ liệu...</Typography>
+        </Box>
       ) : (
         <Box>
-                <Box sx={{ width: '100%', marginTop: '30px' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table sx={{ minWidth: 1200 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+          <Box sx={{ width: '100%', marginTop: '30px' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+              <EnhancedTableToolbar numSelected={selected.length} />
+              <TableContainer>
+                <Table sx={{ minWidth: 1200 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {visibleRows.map((row, index) => {
+                      const isItemSelected = selected.includes(row.id)
+                      const labelId = `enhanced-table-checkbox-${index}`
+
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              checked={isItemSelected}
+                              inputProps={{
+                                'aria-labelledby': labelId
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ fontSize: '15px' }}>
+                            {row.id}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.tenant}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.code}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.startDate}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.rentalPurpose}
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '15px' }} align="right">
+                            {row.status === 1 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#f0f4ff', // Màu nền cho Draft
+                                  color: '#3b82f6', // Màu chữ cho Draft
+                                  borderRadius: '4px',
+                                  padding: '2px 6px', // Khoảng cách xung quanh chữ
+                                  display: 'inline-block' // Đảm bảo nền chỉ bao quanh chữ
+                                }}
+                              >
+                                Draft
+                              </Box>
+                            ) : row.status === 2 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#fff5e6', // Màu nền cho Pending
+                                  color: '#f59e0b', // Màu chữ cho Pending
+                                  borderRadius: '4px',
+                                  padding: '2px 6px',
+                                  display: 'inline-block'
+                                }}
+                              >
+                                Pending
+                              </Box>
+                            ) : row.status === 3 ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  backgroundColor: '#e9f5e9', // Màu nền cho Finished
+                                  color: '#65af50', // Màu chữ cho Finished
+                                  borderRadius: '4px',
+                                  padding: '2px 6px',
+                                  display: 'inline-block'
+                                }}
+                              >
+                                Finished
+                              </Box>
+                            ) : (
+                              row.status
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                    {emptyRows > 0 && (
+                      <TableRow
+                        style={{
+                          height: (dense ? 33 : 53) * emptyRows
+                        }}
+                      >
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = selected.includes(row.id)
-                  const labelId = `enhanced-table-checkbox-${index}`
+            </Paper>
+            <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
+          </Box>
+          <Stack
+            spacing={2}
+            direction="row"
+            sx={{
+              position: 'absolute',
+              right: '0',
+              height: '35px',
+              fontSize: '15px',
+              bottom: '10px'
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: '#b7272d'
+              }}
+              onClick={HandleDeleteContract}
+              disabled={selected.length === 0}
+            >
+              DELETE
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: '#FFD700'
+              }}
+              onClick={HandlePreviewContract}
+              disabled={selected.length === 0}
+            >
+              PREVIEW
+            </Button>
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none" sx={{ fontSize: '15px' }}>
-                        {row.id}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.tenant}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.code}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.startDate}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.rentalPurpose}
-                      </TableCell>
-                      <TableCell sx={{ fontSize: '15px' }} align="right">
-                        {row.status === 1 ? (
-                          <Box
-                            component="span"
-                            sx={{
-                              backgroundColor: '#f0f4ff', // Màu nền cho Draft
-                              color: '#3b82f6', // Màu chữ cho Draft
-                              borderRadius: '4px',
-                              padding: '2px 6px', // Khoảng cách xung quanh chữ
-                              display: 'inline-block' // Đảm bảo nền chỉ bao quanh chữ
-                            }}
-                          >
-                            Draft
-                          </Box>
-                        ) : row.status === 2 ? (
-                          <Box
-                            component="span"
-                            sx={{
-                              backgroundColor: '#fff5e6', // Màu nền cho Pending
-                              color: '#f59e0b', // Màu chữ cho Pending
-                              borderRadius: '4px',
-                              padding: '2px 6px',
-                              display: 'inline-block'
-                            }}
-                          >
-                            Pending
-                          </Box>
-                        ) : row.status === 3 ? (
-                          <Box
-                            component="span"
-                            sx={{
-                              backgroundColor: '#e9f5e9', // Màu nền cho Finished
-                              color: '#65af50', // Màu chữ cho Finished
-                              borderRadius: '4px',
-                              padding: '2px 6px',
-                              display: 'inline-block'
-                            }}
-                          >
-                            Finished
-                          </Box>
-                        ) : (
-                          row.status
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
-      </Box>
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{
-          position: 'absolute',
-          right: '0',
-          height: '35px',
-          fontSize: '15px',
-          bottom: '10px'
-        }}
-      >
-         <Button
-          variant="contained"
-          sx={{
-            fontSize: '15px',
-            backgroundColor: '#b7272d'
-          }}
-          onClick={HandleDeleteContract}
-          disabled={selected.length === 0}
-        >
-          DELETE
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            fontSize: '15px',
-            backgroundColor: '#FFD700'
-          }}
-          onClick={HandlePreviewContract}
-          disabled={selected.length === 0}
-        >
-          PREVIEW
-        </Button>
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: '15px',
+                backgroundColor: 'green'
+              }}
+              disabled={selected.length === 0}
+            >
+              EDIT
+            </Button>
 
-        <Button
-          variant="contained"
-          sx={{
-            fontSize: '15px',
-            backgroundColor: 'green'
-          }}
-          disabled={selected.length === 0}
-        >
-          EDIT
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleExport}
-          sx={{
-            fontSize: '15px'
-          }}
-          disabled={selected.length === 0}
-        >
-          Export
-        </Button>
-      </Stack>
+            <Button
+              variant="contained"
+              onClick={handleExport}
+              sx={{
+                fontSize: '15px'
+              }}
+              disabled={selected.length === 0}
+            >
+              Export
+            </Button>
+          </Stack>
         </Box>
       )}
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>

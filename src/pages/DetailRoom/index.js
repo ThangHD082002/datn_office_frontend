@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ButtonFloor from '~/components/Layout/component/ButtonFloor'
 import { useParams } from 'react-router-dom'
 import { Link, Route, useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack'
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar'
@@ -279,28 +278,7 @@ function DetailRoom() {
       }
       let handleEventChangeSilde = setInterval(handleChangeSlide, 4000)
 
-      btnRight.addEventListener('click', () => {
-        clearInterval(handleEventChangeSilde)
-        handleChangeSlide()
-        handleEventChangeSilde = setInterval(handleChangeSlide, 4000)
-      })
-      btnLeft.addEventListener('click', () => {
-        clearInterval(handleEventChangeSilde)
-        if (current == 0) {
-          current = length - 1
-          let width = imgs[0].offsetWidth
-          listImageElement.style.transform = `translateX(${width * -1 * current}px)`
-          //     document.querySelector(`.${styles['active']}`).classList.remove('active');
-          //     document.querySelector(`.${styles['index-item-' + current]}`).classList.add('active');
-        } else {
-          current--
-          let width = imgs[0].offsetWidth
-          listImageElement.style.transform = `translateX(${width * -1 * current}px)`
-          // document.querySelector(`.${styles['active']}`).classList.remove('active');
-          // document.querySelector(`.${styles['index-item-' + current]}`).classList.add('active');
-        }
-        handleEventChangeSilde = setInterval(handleChangeSlide, 4000)
-      })
+      
     }
   }, []) // Mảng rỗng để chỉ chạy một lần sau khi component mount
   const handleClick = () => {
@@ -337,7 +315,7 @@ function DetailRoom() {
     }
   }
 
-  const handleChosseFloor = () => {}
+  const handleChosseFloor = () => { }
 
   function changeInput(id) {
     setValueInputs((prev) => {
@@ -834,10 +812,10 @@ function DetailRoom() {
                           currentManagers.length === 4
                             ? 3
                             : currentManagers.length === 3
-                            ? 4
-                            : currentManagers.length === 2
-                            ? 6
-                            : 12
+                              ? 4
+                              : currentManagers.length === 2
+                                ? 6
+                                : 12
 
                         return (
                           <Grid item xs={12} sm={6} md={mdValue} key={item.id}>

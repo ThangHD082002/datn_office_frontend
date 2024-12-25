@@ -4,7 +4,6 @@ import { Line } from 'react-chartjs-2'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers'
-import axios from 'axios'
 import { axiosInstance } from '~/utils/axiosInstance'
 import {
   Chart as ChartJS,
@@ -97,19 +96,19 @@ const SignedContract = () => {
 
   const lineData = chartData
     ? {
-        labels: chartData.labels,
-        datasets: [
-          {
-            label: 'Số hợp đồng đã ký',
-            data: chartData.values,
-            borderColor: 'rgba(54, 162, 235, 1)',
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            tension: 0.4,
-            pointRadius: 5,
-            pointBackgroundColor: 'rgba(54, 162, 235, 1)'
-          }
-        ]
-      }
+      labels: chartData.labels,
+      datasets: [
+        {
+          label: 'Số hợp đồng đã ký',
+          data: chartData.values,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          tension: 0.4,
+          pointRadius: 5,
+          pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+        }
+      ]
+    }
     : null
 
   return (

@@ -1,7 +1,5 @@
 import classNames from 'classnames/bind'
 import styles from './CreateContract.module.scss'
-
-import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -16,7 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import { axiosInstance } from '~/utils/axiosInstance'
-import { Grid,Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material'
+import { Grid, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material'
 
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
@@ -274,31 +272,31 @@ function CreateContract() {
         </Grid>
       </Grid>
 
-      {/* Nút Submit */}
-      <Button
-        onClick={SubmitCreateContract}
-        variant="contained"
-        sx={{
-          fontSize: '16px',
-          padding: '10px 20px',
-          width: '170px',
-          height: '40px',
-          marginTop: 4
-        }}
-      >
-        TẠO HỢP ĐỒNG
-      </Button>
-    </Box>
+          {/* Nút Submit */}
+          <Button
+            onClick={SubmitCreateContract}
+            variant="contained"
+            sx={{
+              fontSize: '16px',
+              padding: '10px 20px',
+              width: '170px',
+              height: '40px',
+              marginTop: 4
+            }}
+          >
+            TẠO HỢP ĐỒNG
+          </Button>
+        </Box>
 
-    <CustomSnackbar
-      open={snackbarOpen}
-      onClose={handleSnackbarClose}
-      message={alertText}
-      severity={alertSeverity}
-      navigatePath={navigatePath}
-    />
-  </div>
-</div>
+        <CustomSnackbar
+          open={snackbarOpen}
+          onClose={handleSnackbarClose}
+          message={alertText}
+          severity={alertSeverity}
+          navigatePath={navigatePath}
+        />
+      </div>
+    </div>
   )
 }
 

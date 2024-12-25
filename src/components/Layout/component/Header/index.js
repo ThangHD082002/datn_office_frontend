@@ -7,7 +7,6 @@ import Col from 'react-bootstrap/Col'
 import ButtonU from '~/components/Layout/component/ButtonU'
 import * as React from 'react'
 import { useCallback, useEffect, useState } from 'react'
-import axios from 'axios'
 import { axiosInstance } from '~/utils/axiosInstance'
 
 import ListSubheader from '@mui/material/ListSubheader'
@@ -59,18 +58,18 @@ function Header() {
     })
 
   const handleLogout = () => {
-    
+
     axiosInstance
-    .get('/logout')
-    .then((response) => {
-      console.log(response)
-    })
-    .catch((error) => {
-      console.error('Error logout:', error)
-    })
-    .finally(() => {
-      console.log('Request completed.')
-    })
+      .get('/logout')
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.error('Error logout:', error)
+      })
+      .finally(() => {
+        console.log('Request completed.')
+      })
     // Xóa dữ liệu người dùng khỏi localStorage/sessionStorage
     localStorage.removeItem('userToken')
     localStorage.removeItem('userInfo')
