@@ -99,6 +99,7 @@ function UserContract() {
         buildingIds: []
       })
       .then((response) => {
+        console.log('USER CONTRACT')
         console.log(response)
         const newArray = response.data.data.map((item) => ({
           id: item.id,
