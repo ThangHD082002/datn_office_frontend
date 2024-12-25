@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Avatar,
   Box,
   Button,
@@ -15,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip
 } from '@mui/material'
 import styles from '../RequestManagement.module.scss'
@@ -29,6 +31,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useNavigate } from 'react-router-dom'
 import { set } from 'date-fns'
 import dayjs from 'dayjs'
+import { RefreshRounded } from '@mui/icons-material'
 
 const cx = classNames.bind(styles)
 
@@ -50,6 +53,14 @@ const getStatusInfo = (status) => {
   }
 }
 
+const statusOptions = [
+  { id: 0, name: 'Đang chờ xử lý', color: '#FF9800' },
+  { id: 1, name: 'Đã chấp thuận', color: '#4CAF50' },
+  { id: 2, name: 'Đã hoàn thành', color: '#2196F3' },
+  { id: 3, name: 'Đã từ chối', color: '#F44336' },
+  { id: 4, name: 'Huỷ bỏ', color: '#9E9E9E' }
+];
+
 function RequestManagementList() {
   const navigate = useNavigate();
 
@@ -63,6 +74,7 @@ function RequestManagementList() {
   const [userData, setUserData] = useState(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const columns = [
     { id: 'id', name: 'STT', width: 170 },
@@ -74,20 +86,57 @@ function RequestManagementList() {
     { id: 'action', name: 'Hành động', width: 170 }
   ]
 
+  const inputStyle = {
+    width: '200px',
+    '& .MuiInputBase-input': {
+      fontSize: '1.3rem'
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: '1.3rem'
+    },
+    '& .MuiAutocomplete-input': {
+      fontSize: '1.3rem'
+    }
+  };
+
+  const autocompleteStyle = {
+    ...inputStyle,
+    '& .MuiAutocomplete-listbox': {
+      '& .MuiAutocomplete-option': {
+        fontSize: '1.3rem !important'
+      }
+    }
+  };
+
+  const buttonStyle = {
+    textTransform: 'none',
+    fontSize: '1.3rem'
+  };
+
+
   const getData = async (pageNumber) => {
     setLoading(true)
     try {
-      const response = await axiosInstance.get(`/requests/manage-list?page=${pageNumber - 1}`)
-      setData(response.data.content)
-      setTotalElements(response.data.totalElements)
-      setTotalPages(response.data.totalPages)
-      console.log(response)
+      let url = `/requests/manage-list?page=${pageNumber - 1}`;
+      if (selectedStatus !== null)
+        url += `&status=${selectedStatus.id}`;
+      const response = await axiosInstance.get(url);
+      setData(response.data.content);
+      setTotalElements(response.data.totalElements);
+      setTotalPages(response.data.totalPages);
+      console.log(response);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
+
+  const handleReset = () => {
+    setSelectedStatus(null);
+    setPage(1);
+    getData(1);
+  };
 
   const getUserName = (user) => {
     if (user && user.fullName) {
@@ -165,9 +214,73 @@ function RequestManagementList() {
           Danh sách yêu cầu
         </Typography>
         <Divider />
-        <div>
-          <Button variant="primary" className={cx('btn-create')} href="/admin/create-request">
-            Tạo mới &nbsp; <AddIcon />
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <Autocomplete
+              size="small"
+              options={statusOptions}
+              getOptionLabel={(option) => option.name}
+              value={selectedStatus}
+              onChange={(event, newValue) => {
+                setSelectedStatus(newValue);
+              }}
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <span style={{
+                    color: option.color,
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    backgroundColor: `${option.color}20`,
+                    fontSize: '1.3rem'
+                  }}>
+                    {option.name}
+                  </span>
+                </li>
+              )}
+              sx={autocompleteStyle}
+              renderInput={(params) => (
+                <TextField {...params} placeholder="Trạng thái" sx={inputStyle} />
+              )}
+            />
+
+            <Button
+              variant="contained"
+              onClick={() => getData(1)}
+              sx={buttonStyle}
+              className={cx('btn-search')}
+            >
+              Tìm kiếm
+            </Button>
+
+            <IconButton
+              onClick={handleReset}
+              title="Làm mới"
+              sx={{
+                '& .MuiSvgIcon-root': {
+                  fontSize: '2rem'
+                }
+              }}
+            >
+              <RefreshRounded />
+            </IconButton>
+          </div>
+
+          <Button
+            variant="primary"
+            sx={buttonStyle}
+            className={cx('btn-create')}
+            href="/admin/create-request"
+          >
+            Tạo mới&nbsp; <AddIcon />
           </Button>
         </div>
 
@@ -204,7 +317,7 @@ function RequestManagementList() {
               <TableBody>
                 {data.map((row, index) => (
                   <TableRow key={row.id}>
-                    <TableCell className={cx('td')}>{(page - 1) * totalElements + index + 1}</TableCell>
+                    <TableCell className={cx('td')}>{(page - 1) * 10 + index + 1}</TableCell>
                     <TableCell className={cx('td')}>
                       <span
                         onMouseEnter={(event) => handleUserHover(event, row.userId)}
