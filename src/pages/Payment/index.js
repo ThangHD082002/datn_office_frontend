@@ -179,6 +179,8 @@
 // export default Payment;
 
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 import {
   Box,
   Typography,
@@ -250,6 +252,15 @@ const Payment = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
+
   useEffect(() => {
     fetchPayments()
   }, [page])
@@ -279,6 +290,21 @@ const Payment = () => {
     setOpenModal(false)
     setModalData(null)
   }
+
+  const handleVNPayPayment = async (amount = 100000, bankCode = 'NCB') => {
+    try {
+      localStorage.setItem('previousPage', window.location.href)
+      const response = await axios.get(`https://office-nest-ohcid.ondigitalocean.app/api/v1/payment/vn-pay?amount=100000&bankCode=${bankCode}`)
+      console.log('VNPay payment response:', response.data)
+      window.location.href = response.data.result.paymentUrl
+    } catch (error) {
+      console.error('Error creating VNPay payment:', error)
+      setAlertSeverity('error')
+      setAlertText('Đã xảy ra lỗi khi tạo thanh toán VNPay')
+      setSnackbarOpen(true)
+    }
+  }
+
   return (
     <Box p={3}>
       <Typography variant="h3" gutterBottom sx={{color: 'black'}}>
@@ -301,13 +327,13 @@ const Payment = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Mã Hợp đồng</TableCell>
-              <TableCell>Khoản thu</TableCell>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>Số tiền phải nộp</TableCell>
-              <TableCell>Số tiền đã nộp</TableCell>
-              <TableCell>Thao tác</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>ID</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Mã Hợp đồng</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Khoản thu</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Trạng thái</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Số tiền phải nộp</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Số tiền đã nộp</TableCell>
+              <TableCell style={{ fontSize: '12px' }}>Thao tác</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -380,7 +406,7 @@ const Payment = () => {
               <Typography style={{ fontSize: '18px' }}>Số tiền đã nộp: {modalData.amountPaid} VND</Typography>
 
               <Box mt={2} display="flex" justifyContent="space-between">
-                <Button variant="contained" color="primary" disabled={modalData.state === 'Đã thanh toán'}>
+                <Button variant="contained" color="primary" disabled={modalData.state === 'Đã thanh toán'} onClick={handleVNPayPayment}>
                   Thanh toán
                 </Button>
                 <Button variant="outlined" onClick={handleCloseModal}>
@@ -391,6 +417,13 @@ const Payment = () => {
           )}
         </Box>
       </Modal>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </Box>
   )
 }

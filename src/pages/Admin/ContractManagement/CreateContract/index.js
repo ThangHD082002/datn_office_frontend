@@ -146,130 +146,131 @@ function CreateContract() {
   console.log('orderRooms')
   console.log(orderRooms)
   return (
-    <div className={cx('container-create')}>
-      <div className={cx('header')}>
-        <h1 className={cx('j')}>Create Contract</h1>
-      </div>
-      <div className={cx('body')}>
-        <Box
-          component="form"
-          sx={{
-            marginTop: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            padding: 3, // Khoảng cách giữa nội dung và viền
-            borderRadius: 2, // Bo góc cho box
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Shadow cho box
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
-            {/* Phần Chọn Phòng */}
-            <Grid item xs={12} sm={6} md={4}>
-              <Autocomplete
-                multiple
-                options={listOffice}
-                value={orderRooms}
-                onChange={(event, newValue) => setOrderRooms(newValue)}
-                renderInput={(params) => <TextField {...params} label="Chọn phòng" sx={{ width: '100%' }} />}
-              />
-            </Grid>
+<div className={cx('container-create')}>
+  <div className={cx('header')}>
+    <h1 className={cx('j')}>Create Contract</h1>
+  </div>
+  <div className={cx('body')}>
+    <Box
+      component="form"
+      sx={{
+        marginTop: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        padding: 3, // Khoảng cách giữa nội dung và viền
+        borderRadius: 2, // Bo góc cho box
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Shadow cho box
+      }}
+      noValidate
+      autoComplete="off"
+    >
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%' }}>
+        {/* Phần Chọn Phòng */}
+        <Grid item xs={12} sm={6} md={6}>
+          <Autocomplete
+            multiple
+            options={listOffice}
+            value={orderRooms}
+            onChange={(event, newValue) => setOrderRooms(newValue)}
+            renderInput={(params) => <TextField {...params} label="Chọn phòng" sx={{ width: '100%' }} />}
+          />
+        </Grid>
+        
+        {/* Phần Chọn Thời Hạn */}
+        <Grid item xs={12} sm={6} md={6}>
+          <FormControl fullWidth>
+            <InputLabel id="duration-select-label">Chọn thời hạn</InputLabel>
+            <Select
+              labelId="duration-select-label"
+              id="duration-select"
+              value={typeContract}
+              onChange={handleChangeTypeContract}
+              label="Chọn thời hạn"
+              sx={{ width: '100%' }}
+            >
+              <MenuItem value="2">Ngắn hạn</MenuItem>
+              <MenuItem value="1">Dài hạn</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
 
-            {/* Phần Chọn Thời Hạn */}
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl fullWidth>
-                <InputLabel id="duration-select-label">Chọn thời hạn</InputLabel>
-                <Select
-                  labelId="duration-select-label"
-                  id="duration-select"
-                  value={typeContract}
-                  onChange={handleChangeTypeContract}
-                  label="Chọn thời hạn"
-                  sx={{ width: '100%' }}
-                >
-                  <MenuItem value="2">Ngắn hạn</MenuItem>
-                  <MenuItem value="1">Dài hạn</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
+      {/* Phần Chọn Ngày */}
 
-          {/* Phần Chọn Ngày */}
-          <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
-            <Grid item xs={12} sm={4}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={startDate ? dayjs(startDate) : null}
-                  onChange={handleChangeStartDate}
-                  label="Thời gian bắt đầu"
-                  sx={{ width: '100%' }}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={endDate ? dayjs(endDate) : null}
-                  onChange={handleChangeEndDate}
-                  label="Thời gian kết thúc"
-                  sx={{ width: '100%' }}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={handoverDate ? dayjs(handoverDate) : null}
-                  onChange={handleChangeHandOverDate}
-                  label="Thời gian bàn giao"
-                  sx={{ width: '100%' }}
-                />
-              </LocalizationProvider>
-            </Grid>
-          </Grid>
+      {/* Phần Nhập Thông Tin Hợp Đồng */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Thời hạn"
+            onChange={handleChangeDuration}
+            value={duration}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Tiền đặt cọc"
+            onChange={handleChangeDepositAmount}
+            value={depositAmount}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+      </Grid>
 
-          {/* Phần Nhập Thông Tin Hợp Đồng */}
-          <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                label="Thời hạn"
-                onChange={handleChangeDuration}
-                value={duration}
-                sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                label="Tiền đặt cọc"
-                onChange={handleChangeDepositAmount}
-                value={depositAmount}
-                sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-              />
-            </Grid>
-          </Grid>
+      {/* Phần Mục Đích và Chu Kỳ */}
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Mục đích thuê"
+            onChange={handleChangeRentalPurpose}
+            value={rentalPurpose}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <TextField
+            label="Chu kì đóng tiền"
+            onChange={handleChangePaymentFrequency}
+            value={paymentFrequency}
+            sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
+          />
+        </Grid>
+      </Grid>
 
-          {/* Phần Mục Đích và Chu Kỳ */}
-          <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                label="Mục đích thuê"
-                onChange={handleChangeRentalPurpose}
-                value={rentalPurpose}
-                sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                label="Chu kì đóng tiền"
-                onChange={handleChangePaymentFrequency}
-                value={paymentFrequency}
-                sx={{ width: '100%' }} // Điều chỉnh chiều rộng của ô input
-              />
-            </Grid>
-          </Grid>
+      <Grid container spacing={2} sx={{ justifyContent: 'center', width: '100%', marginTop: 4 }}>
+        <Grid item xs={12} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={startDate ? dayjs(startDate) : null}
+              onChange={handleChangeStartDate}
+              label="Thời gian bắt đầu"
+              sx={{ width: '100%' }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={endDate ? dayjs(endDate) : null}
+              onChange={handleChangeEndDate}
+              label="Thời gian kết thúc"
+              sx={{ width: '100%' }}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={handoverDate ? dayjs(handoverDate) : null}
+              onChange={handleChangeHandOverDate}
+              label="Thời gian bàn giao"
+              sx={{ width: '100%' }}
+            />
+          </LocalizationProvider>
+        </Grid>
+      </Grid>
 
           {/* Nút Submit */}
           <Button

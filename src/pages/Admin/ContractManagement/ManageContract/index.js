@@ -72,7 +72,7 @@ function ManageContract() {
   useEffect(() => {
     let mid = localStorage.getItem('id_user')
     axiosInstance
-      .post('/contract/filter-user', {
+      .post('/contract', {
         pageNumber: 0,
         pageSize: 0,
         filter: [{
@@ -388,25 +388,33 @@ function ManageContract() {
     } else {
       x = null; // Hoặc giá trị mặc định
     }
+    let mid = localStorage.getItem('id_user')
     axiosInstance
       .post(
-        '/contract/filter-user', // Sử dụng đường dẫn tương đối
+        '/contract', // Sử dụng đường dẫn tương đối
         {
           "pageNumber": 0,
           "pageSize": 0,
           "filter": [
-            {
-              "operator": "=",
-              "key": "status",
-              "value": x,
-              "otherValue": null,
-              "valueSelected": null
-            }
+              {
+                  "operator": "=",
+                  "key": "createdBy",
+                  "value": mid,
+                  "otherValue": null,
+                  "valueSelected": null
+              },
+              {
+                  "operator": "=",
+                  "key": "status",
+                  "value": x,
+                  "otherValue": null,
+                  "valueSelected": null
+              }
           ],
           "sortProperty": "contract.lastModifiedDate",
           "sortOrder": "DESC",
           "buildingIds": []
-        }
+      }
       )
       .then((response) => {
         const newArray = response.data.data.map((item) => ({
