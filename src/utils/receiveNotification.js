@@ -5,7 +5,7 @@ import { Client } from '@stomp/stompjs'
 const NotificationComponent = () => {
   useEffect(() => {
     const token = localStorage.getItem('authToken') // Token lấy từ hệ thống xác thực của bạn
-    const socketUrl = `http://localhost:9999/ws?token=${token}`
+    const socketUrl = `https://office-nest-ohcid.ondigitalocean.app/ws?token=${token}`
     const socket = new SockJS(socketUrl)
 
     const stompClient = new Client({
