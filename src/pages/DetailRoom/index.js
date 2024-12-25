@@ -129,7 +129,7 @@ function DetailRoom() {
       console.log('MANAGERS')
       console.log(response.data.content)
     } catch (error) {
-      console.error('Error fetching data Managers:', error)
+      console.error('Error fetching data:', error)
     } finally {
     }
   }
@@ -315,7 +315,7 @@ function DetailRoom() {
     }
   }
 
-  const handleChosseFloor = () => { }
+  const handleChosseFloor = () => {}
 
   function changeInput(id) {
     setValueInputs((prev) => {
@@ -821,10 +821,10 @@ function DetailRoom() {
                           currentManagers.length === 4
                             ? 3
                             : currentManagers.length === 3
-                              ? 4
-                              : currentManagers.length === 2
-                                ? 6
-                                : 12
+                            ? 4
+                            : currentManagers.length === 2
+                            ? 6
+                            : 12
 
                         return (
                           <Grid item xs={12} sm={6} md={mdValue} key={item.id}>
