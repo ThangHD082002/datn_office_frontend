@@ -9,8 +9,7 @@ import {
   Stack,
   TextField,
   ThemeProvider,
-  Typography,
-  Autocomplete
+  Typography
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -32,30 +31,26 @@ function UserDetail() {
     address: '',
     dob: '',
     phoneNumber: '',
-    authorities: [],
-    imageDigitalSignature: null
+    imageSign: null,
+    imageAvatar: null
   })
-  const [imagePreview, setImagePreview] = useState(null)
+  const [imageSignPreview, setImageSignPreview] = useState(null)
+  const [imageAvatarPreview, setImageAvatarPreview] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [isEditing, setIsEditing] = useState(false) // Trạng thái chỉnh sửa
-  const rolesOptions = ['ROLE_MANAGER', 'ROLE_USER']
+  const [isEditing, setIsEditing] = useState(false)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [alertText, setAlertText] = useState('')
   const [alertSeverity, setAlertSeverity] = useState('success')
   const [navigatePath, setNavigatePath] = useState('')
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false)
-  }
+  const handleSnackbarClose = () => setSnackbarOpen(false)
 
   useEffect(() => {
-    console.log('11111111111111111')
     const fetchUserDetail = async () => {
       setLoading(true)
       try {
-        const response = await axiosInstance.get('/account')
+        const response = await axiosInstance.get(`/account`)
         const userData = response.data
-        console.log(userData)
         setFormData({
           login: userData.result.login,
           fullName: userData.result.fullName,
@@ -65,37 +60,34 @@ function UserDetail() {
           address: userData.result.address || '',
           dob: userData.result.dob || '',
           phoneNumber: userData.result.phoneNumber || '',
-          authorities: userData.result.authorities || [],
-          signImage: userData.result.signImage || null
+          imageSign: userData.result.signImage || null,
+          imageAvatar: userData.result.imageAvatar || null
         })
-        // Nếu user có ảnh chữ ký (URL), hiển thị preview
-        if (userData.signImage) {
-          setImagePreview(userData.result.signImage)
-        }
-        console.log('USER-DATA')
-        console.log(userData)
+        if (userData.result.signImage) setImageSignPreview(userData.result.signImage)
+        if (userData.result.imageAvatar) setImageAvatarPreview(userData.result.imageAvatar)
       } catch (error) {
-        console.log('USER-ERROR')
         console.error('Error fetching user details:', error)
       } finally {
         setLoading(false)
       }
     }
-
     fetchUserDetail()
   }, [uid])
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = (event, type) => {
     const file = event.target.files[0]
     if (file) {
-      setImagePreview(URL.createObjectURL(file))
-      setFormData({ ...formData, imageDigitalSignature: file })
+      if (type === 'imageSign') {
+        setImageSignPreview(URL.createObjectURL(file))
+        setFormData({ ...formData, imageSign: file })
+      } else if (type === 'imageAvatar') {
+        setImageAvatarPreview(URL.createObjectURL(file))
+        setFormData({ ...formData, imageAvatar: file })
+      }
     }
   }
 
-  const handleEdit = () => {
-    setIsEditing(true)
-  }
+  const handleEdit = () => setIsEditing(true)
 
   const handleSubmit = async () => {
     try {
@@ -110,42 +102,34 @@ function UserDetail() {
       data.append('address', formData.address)
       data.append('dob', formData.dob)
       data.append('phoneNumber', formData.phoneNumber)
-      formData.authorities.forEach((role) => data.append('authorities', role))
-      if (formData.imageDigitalSignature) {
-        data.append('imageDigitalSignature', formData.imageDigitalSignature)
-      }
+      if (formData.imageSign) data.append('imageSign', formData.imageSign)
+      if (formData.imageAvatar) data.append('imageAvatar', formData.imageAvatar)
 
-      await axiosInstance.put('/account/update', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      await axiosInstance.put(`/account/update`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       })
 
       setAlertSeverity('success')
-      setAlertText('Thay đổi thông tin thành công')
-      setNavigatePath(`/user-infor/${uid}`) // Đường dẫn chuyển hướng sau khi thành công
+      setAlertText('Cập nhật thông tin thành công')
+      setNavigatePath(`/user-infor/${uid}`)
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating user details:', error)
       setAlertSeverity('error')
-      setAlertText(error.response.data.message)
+      setAlertText(error.response?.data?.message || 'Cập nhật thông tin thất bại')
     } finally {
       setSnackbarOpen(true)
       setLoading(false)
     }
   }
 
-  console.log('FORM DATA')
-  console.log(formData)
-
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
         <Typography variant="h2" gutterBottom>
-          {isEditing ? 'Edit User Details' : 'User Details'}
+          {isEditing ? 'Chỉnh sửa thông tin' : 'Thông tin người dùng'}
         </Typography>
         <Divider sx={{ mb: 3 }} />
-
         <Paper elevation={3} sx={{ p: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -163,9 +147,7 @@ function UserDetail() {
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Số điện thoại"
-                type="tel"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
                 value={formData.phoneNumber}
                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                 disabled={!isEditing}
@@ -191,6 +173,16 @@ function UserDetail() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                label="Ngày sinh"
+                type="date"
+                fullWidth
+                value={formData.dob}
+                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 label="Địa chỉ"
                 fullWidth
                 value={formData.address}
@@ -198,107 +190,122 @@ function UserDetail() {
                 disabled={!isEditing}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Ngày sinh"
-                type="date"
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                value={formData.dob}
-                onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                multiple
-                options={rolesOptions}
-                getOptionLabel={(option) => option}
-                value={formData.authorities}
-                onChange={(event, newValue) => setFormData({ ...formData, authorities: newValue })}
-                renderInput={(params) => <TextField {...params} label="Chọn quyền" />}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} container justifyContent="center">
-              <Stack direction="row" spacing={2} alignItems="center">
-                <label htmlFor="raised-button-file">
-                  <input
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    id="raised-button-file"
-                    type="file"
-                    onChange={handleImageUpload}
-                    disabled={!isEditing}
-                  />
-                  <Button variant="contained" component="span" disabled={!isEditing}>
-                    Chọn chữ kí
-                  </Button>
-                </label>
-                {imagePreview && (
-                  <Box
-                    component="img"
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      objectFit: 'cover'
-                    }}
-                    src={imagePreview}
-                    alt="Chữ kí"
-                  />
-                )}
+            <Grid item xs={12}>
+              <Stack
+                direction="row"
+                spacing={3}
+                alignItems="center"
+                justifyContent="center"
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                  bgcolor: '#f9f9f9'
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Chữ ký điện tử
+                  </Typography>
+                  <label htmlFor="sign-upload">
+                    <input
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      id="sign-upload"
+                      type="file"
+                      onChange={(e) => handleImageUpload(e, 'imageSign')}
+                      disabled={!isEditing}
+                    />
+                    <Button variant="contained" component="span" disabled={!isEditing}>
+                      Chọn chữ ký
+                    </Button>
+                  </label>
+                  {imageSignPreview && (
+                    <Box
+                      component="img"
+                      src={imageSignPreview}
+                      alt="Chữ ký"
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        borderRadius: '8px',
+                        objectFit: 'cover',
+                        mt: 1,
+                        border: '1px solid #e0e0e0'
+                      }}
+                    />
+                  )}
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Ảnh đại diện
+                  </Typography>
+                  <label htmlFor="avatar-upload">
+                    <input
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      id="avatar-upload"
+                      type="file"
+                      onChange={(e) => handleImageUpload(e, 'imageAvatar')}
+                      disabled={!isEditing}
+                    />
+                    <Button variant="contained" component="span" disabled={!isEditing}>
+                      Thay đổi ảnh
+                    </Button>
+                  </label>
+                  {imageAvatarPreview && (
+                    <Box
+                      component="img"
+                      src={imageAvatarPreview}
+                      alt="Ảnh đại diện"
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        mt: 1,
+                        border: '1px solid #e0e0e0'
+                      }}
+                    />
+                  )}
+                </Box>
               </Stack>
             </Grid>
           </Grid>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} justifyContent="center" mt={3}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate(`/user-infor/${uid}`)}
+              sx={{
+                color: '#B7272D',
+                borderColor: '#B7272D',
+                '&:hover': { color: '#7A1A1E', borderColor: '#7A1A1E' }
+              }}
+            >
+              Quay lại
+            </Button>
+            {isEditing ? (
               <Button
-                variant="outlined"
-                sx={{
-                  width: '150px',
-                  color: '#B7272D',
-                  borderColor: '#B7272D',
-                  '&:hover': {
-                    borderColor: '#7A1A1E',
-                    color: '#7A1A1E'
-                  }
-                }}
-                onClick={() => navigate(`/user-infor/${uid}`)}
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={loading}
+                sx={{ bgcolor: '#B7272D', '&:hover': { bgcolor: '#7A1A1E' } }}
               >
-                Quay lại
+                Lưu
               </Button>
-              {isEditing ? (
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: '150px',
-                    bgcolor: '#B7272D',
-                    '&:hover': {
-                      bgcolor: '#7A1A1E'
-                    }
-                  }}
-                  onClick={handleSubmit}
-                  disabled={loading}
-                >
-                  Lưu
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: '150px',
-                    bgcolor: '#B7272D',
-                    '&:hover': {
-                      bgcolor: '#7A1A1E'
-                    }
-                  }}
-                  onClick={handleEdit}
-                >
-                  Chỉnh sửa
-                </Button>
-              )}
-            </Stack>
-          </Box>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={handleEdit}
+                sx={{ bgcolor: '#B7272D', '&:hover': { bgcolor: '#7A1A1E' } }}
+              >
+                Chỉnh sửa
+              </Button>
+            )}
+          </Stack>
         </Paper>
       </Box>
       <CustomSnackbar
