@@ -279,8 +279,6 @@ function DetailRoom() {
         }
       }
       let handleEventChangeSilde = setInterval(handleChangeSlide, 4000)
-
-
     }
   }, []) // Mảng rỗng để chỉ chạy một lần sau khi component mount
   const handleClick = () => {
