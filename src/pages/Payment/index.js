@@ -329,7 +329,7 @@ const Payment = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={modalData.state === 'Đã thanh toán'}
+                  disabled={modalData.paymentStatus === 1}
                   onClick={() => handleVNPayPayment(modalData.id)}
                 >
                   Thanh toán
