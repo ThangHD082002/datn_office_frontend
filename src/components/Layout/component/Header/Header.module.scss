@@ -58,3 +58,23 @@
     color: white;
     text-decoration: none;
 }
+
+
+.info {
+    display: flex;
+    align-items: center; /* Canh giữa theo chiều dọc */
+    justify-content: space-between; /* Tạo khoảng cách đều giữa các phần tử */
+  }
+  
+  .user {
+    margin-left: -8px; /* Khoảng cách giữa nút user và icon/avatar */
+  }
+  
+  .link-login {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .user-name {
+    cursor: pointer;
+  }

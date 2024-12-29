@@ -31,11 +31,12 @@ import { useNavigate } from 'react-router-dom'
 import StatisticsMenu from '~/pages/Admin/StatisticsManagement/StatisticsMenu'
 
 
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { Avatar } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { axiosInstance } from '~/utils/axiosInstance'
 
 const cx = classNames.bind(styles)
 const drawerWidth = 240
@@ -121,6 +122,23 @@ function SidebarAdmin({ onToggle }) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
   const navigate = useNavigate()
+  const [avatar, setAvatar] = useState();
+
+  useEffect(() => {
+      axiosInstance
+        .get('/account')
+        .then((response) => {
+          console.log('INFOR')
+          console.log(response)
+          setAvatar(response.data.result.imageAvatar)
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+        .finally(() => {
+          console.log('Request completed.')
+        })
+  })
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -183,7 +201,7 @@ function SidebarAdmin({ onToggle }) {
           <Box sx={{ position: 'absolute', right: '40px' }}>
             <Box sx={{ position: 'relative' }}>
               <IconButton onClick={handleToggle} sx={{ display: 'flex', alignItems: 'center', color: 'white'}}>
-                <Avatar alt="User Avatar" src="/path-to-avatar.jpg" /> {/* Thay ảnh đại diện theo ý bạn */}
+                <Avatar alt="User Avatar" src={avatar} /> {/* Thay ảnh đại diện theo ý bạn */}
                 {openu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
               {openu && (

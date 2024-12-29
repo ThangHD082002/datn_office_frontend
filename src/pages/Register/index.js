@@ -32,6 +32,7 @@ function Register() {
   const [cccd, setCccd] = useState('')
   const [address, setAddress] = useState('')
   const [dob, setDob] = useState('')
+  const [sdt, setSdt] = useState('')
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -42,6 +43,7 @@ function Register() {
   const [isEmailEmpty, setIsEmailEmpty] = useState('')
   const [isCccdEmpty, setIsCccdEmpty] = useState('')
   const [isAddressEmpty, setIsAddressEmpty] = useState('')
+  const [isSdtEmpty, setIsSdtEmpty] = useState('')
   const [isDobEmpty, setIsDobEmpty] = useState('')
   const [isCheckSuccessRegister, setIsCheckSuccessRegister] = useState('')
   const [checkRegister, setCheckRegister] = useState(false)
@@ -87,6 +89,9 @@ function Register() {
       if (email == '') {
         setIsEmailEmpty('Vui lòng nhập email')
       }
+      if (sdt == '') {
+        setIsSdtEmpty('Vui lòng nhập số điện thoại')
+      }
       if (login == '') {
         setIsLoginEmpty('Vui lòng nhập username')
       }
@@ -119,7 +124,8 @@ function Register() {
           langKey: 'abc',
           cccd: cccd,
           address: address,
-          dob: dob
+          dob: dob,
+          phoneNumber: sdt
         })
         .then(function (response) {
           console.log(response)
@@ -130,7 +136,7 @@ function Register() {
         .catch(function (error) {
           // handle error
           setAlertSeverity('error')
-          setAlertText(error.response.data.detail)
+          setAlertText(error.response.data.message)
           setNavigatePath('/admin/requests') // Đường dẫn chuyển hướng sau khi thành công
           console.log(error)
         })
@@ -223,6 +229,21 @@ function Register() {
     setAddress(e.target.value)
     if (isAddressEmpty != '') {
       setIsAddressEmpty('')
+    }
+  }
+
+  const handleChangeSdt = (e) => {
+    setSdt(e.target.value)
+    if (isSdtEmpty != '') {
+      setIsSdtEmpty('')
+    }
+  }
+  const handleBlurSdt = (e) => {
+    e.preventDefault()
+    if (sdt === '') {
+      setIsSdtEmpty('Vui lòng nhập số điện thoại')
+    } else {
+      setIsSdtEmpty('')
     }
   }
 
@@ -429,7 +450,20 @@ function Register() {
                 />
                 <span className={cx('input-empty')}>{isCccdEmpty}</span>
               </div>
-              <div className={cx('dob')}>
+              <div>
+                <input
+                  value={sdt}
+                  onChange={handleChangeSdt}
+                  onBlur={handleBlurSdt}
+                  name="sdt"
+                  className={cx('input-password')}
+                  id="sdt"
+                  placeholder="Enter phone"
+                />
+                <span className={cx('input-empty')}>{isSdtEmpty}</span>
+              </div>
+            </div>
+            <div className={cx('dob')}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
@@ -446,7 +480,6 @@ function Register() {
                 </LocalizationProvider>
                 <span className={cx('input-empty-dob')}>{isDobEmpty}</span>
               </div>
-            </div>
           </div>
 
           <div className={cx('sign-up-contain')}>

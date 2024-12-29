@@ -28,6 +28,9 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import StarBorder from '@mui/icons-material/StarBorder'
 import PaymentIcon from '@mui/icons-material/Payment';
 
+import { Avatar } from '@mui/material';
+import { IconButton } from '@mui/material';
+
 import { useNavigate } from 'react-router-dom'
 const cx = classNames.bind(styles)
 
@@ -36,6 +39,7 @@ function Header() {
   const navigate = useNavigate()
   const [isListVisible, setIsListVisible] = useState(false)
   const [idUser, setIdUser] = useState('')
+  const [avatar, setAvatar] = useState()
 
   const showSetting = () => {
     setIsListVisible(!isListVisible) // Chuyển đổi trạng thái ẩn/hiện
@@ -49,6 +53,7 @@ function Header() {
       localStorage.setItem('full_name', response.data.result.fullName)
       setName(response.data.result.login)
       setIdUser(response.data.result.id)
+      setAvatar(response.data.result.imageAvatar)
     })
     .catch((error) => {
       console.error('Error:', error)
@@ -197,18 +202,21 @@ function Header() {
           </ul>
         </Col>
         <Col sm={2} className={cx('info')}>
-          <ButtonU className={cx('user')}>
-            {name === '' ? (
-              <a href={`/login`} className={cx('link-login')}>
-                ĐĂNG NHẬP
-              </a>
-            ) : (
-              <span className={cx('user-name')} onClick={showSetting}>
-                {name}
-              </span>
-            )}
-          </ButtonU>
-        </Col>
+  <IconButton sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
+    <Avatar alt="User Avatar" src={avatar} />
+  </IconButton>
+  <ButtonU className={cx('user')}>
+    {name === '' ? (
+      <a href={`/login`} className={cx('link-login')}>
+        ĐĂNG NHẬP
+      </a>
+    ) : (
+      <span className={cx('user-name')} onClick={showSetting}>
+        {name}
+      </span>
+    )}
+  </ButtonU>
+</Col>
       </Row>
       {isListVisible && ( // Kiểm tra trạng thái để hiển thị <List />
         <List
