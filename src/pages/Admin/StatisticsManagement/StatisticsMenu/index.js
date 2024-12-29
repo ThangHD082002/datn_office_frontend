@@ -1,7 +1,20 @@
 import React, { useState } from 'react'
-import { ListItem, ListItemButton, ListItemIcon, ListItemText, Collapse, List } from '@mui/material'
+import { ListItem, ListItemButton, ListItemIcon, ListItemText, Collapse, List, Tooltip } from '@mui/material'
 import BarChartIcon from '@mui/icons-material/BarChart'
+import DescriptionIcon from '@mui/icons-material/Description' // Icon for contracts
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { styled } from '@mui/material/styles'
+
+const LargeTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .MuiTooltip-tooltip`]: {
+      fontSize: theme.typography.pxToRem(16), // Set tooltip font size
+      backgroundColor: theme.palette.background.paper, // Optional: customize background
+      color: theme.palette.text.primary, // Optional: customize text color
+      border: '1px solid #dadde9' // Optional: add a border
+    }
+  })
+)
 
 const StatisticsMenu = ({ open }) => {
   const [expanded, setExpanded] = useState(false)
@@ -36,7 +49,7 @@ const StatisticsMenu = ({ open }) => {
               open ? { mr: 3 } : { mr: 'auto' }
             ]}
           >
-            <BarChartIcon fontSize="large" /> {/* Updated icon */}
+            <BarChartIcon fontSize="large" />
           </ListItemIcon>
           <ListItemText
             primary="Thống kê"
@@ -49,12 +62,14 @@ const StatisticsMenu = ({ open }) => {
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }} href="/admin/statistics/contracts">
-            <ListItemText primary="Hợp đồng" primaryTypographyProps={{ fontSize: '14px' }} />
-          </ListItemButton>
-          <ListItemButton sx={{ pl: 4 }} href="/admin/statistics/revenue">
-            <ListItemText primary="Doanh thu" primaryTypographyProps={{ fontSize: '14px' }} />
-          </ListItemButton>
+          <LargeTooltip title="Thống kê hợp đồng" placement="right">
+            <ListItemButton sx={{ pl: 4 }} href="/admin/statistics/contracts">
+              <ListItemIcon>
+                <DescriptionIcon fontSize="medium" />
+              </ListItemIcon>
+              {open && <ListItemText primary="Hợp đồng" primaryTypographyProps={{ fontSize: '14px' }} />}
+            </ListItemButton>
+          </LargeTooltip>
         </List>
       </Collapse>
     </>
