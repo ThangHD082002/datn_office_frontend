@@ -30,6 +30,13 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom'
 import StatisticsMenu from '~/pages/Admin/StatisticsManagement/StatisticsMenu'
 
+
+import { useState } from 'react';
+import { Avatar } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
 const cx = classNames.bind(styles)
 const drawerWidth = 240
 
@@ -140,6 +147,16 @@ function SidebarAdmin({ onToggle }) {
     navigate('/login')
   }
 
+  const [openu, setOpenU] = useState(false);
+
+  const handleToggle = () => {
+    setOpenU((prev) => !prev);
+  };
+
+  const showUser = () => {
+    navigate('/admin/detail-manager'); // Thay "/tai-khoan" bằng đường dẫn trang bạn muốn điều hướng đến.
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -163,6 +180,37 @@ function SidebarAdmin({ onToggle }) {
           <Typography variant="h4" noWrap component="div">
             Office Nest
           </Typography>
+          <Box sx={{ position: 'absolute', right: '40px' }}>
+            <Box sx={{ position: 'relative' }}>
+              <IconButton onClick={handleToggle} sx={{ display: 'flex', alignItems: 'center', color: 'white'}}>
+                <Avatar alt="User Avatar" src="/path-to-avatar.jpg" /> {/* Thay ảnh đại diện theo ý bạn */}
+                {openu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+              {openu && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    bgcolor: 'background.paper',
+                    boxShadow: 3,
+                    borderRadius: 1,
+                    mt: 1,
+                    minWidth: 200
+                  }}
+                >
+                  <List>
+                    <ListItem button onClick={showUser} sx={{ cursor: 'pointer' }}>
+                      <ListItemIcon>
+                        <AccountCircleIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Tài khoản" sx={{ color: 'black'}}/>
+                    </ListItem>
+                  </List>
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

@@ -37,6 +37,7 @@ import PaymentResult from '~/utils/PaymentResult'
 import OfficeManagementEdit from '~/pages/Admin/OfficeManagement/Edit'
 import SearchBuilding from '~/pages/SearchBuilding'
 import Payment from '~/pages/Payment'
+import DetailManager from '~/pages/Admin/DetailManager'
 const publicRoutes = [
   {
     path: '/payment-result',
@@ -192,6 +193,11 @@ const publicRoutes = [
   {
     path: '/admin/requests',
     component: RequestManagementList,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/detail-manager',
+    component: DetailManager,
     layout: AdminLayout
   },
   {

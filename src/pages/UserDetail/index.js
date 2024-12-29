@@ -49,7 +49,7 @@ function UserDetail() {
     const fetchUserDetail = async () => {
       setLoading(true)
       try {
-        const response = await axiosInstance.get(`/account`)
+        const response = await axiosInstance.get('/account')
         const userData = response.data
         setFormData({
           login: userData.result.login,
@@ -105,13 +105,13 @@ function UserDetail() {
       if (formData.imageSign) data.append('imageSign', formData.imageSign)
       if (formData.imageAvatar) data.append('imageAvatar', formData.imageAvatar)
 
-      await axiosInstance.put(`/account/update`, data, {
+      await axiosInstance.put('/account/update', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
       setAlertSeverity('success')
       setAlertText('Cập nhật thông tin thành công')
-      setNavigatePath(`/user-infor/${uid}`)
+      setNavigatePath(`user-infor/${uid}`)
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating user details:', error)
