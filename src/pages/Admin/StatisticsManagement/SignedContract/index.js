@@ -5,6 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers'
 import { axiosInstance } from '~/utils/axiosInstance'
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +16,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js'
+import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -24,6 +26,15 @@ const SignedContract = () => {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [chartData, setChartData] = useState(null)
+
+  const [alertText, setAlertText] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [navigatePath, setNavigatePath] = useState('')
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
 
   // Fetch building options on component mount
   useEffect(() => {
@@ -55,7 +66,9 @@ const SignedContract = () => {
 
   const handleSearch = async () => {
     if (!building || !startDate || !endDate) {
-      alert('Please fill in all fields.')
+      setAlertSeverity('warning')
+      setAlertText('Vui lòng chọn tất cả các trường để tìm kiếm.')
+      setSnackbarOpen(true)
       return
     }
 
@@ -83,12 +96,15 @@ const SignedContract = () => {
           values: chartValues
         })
       } else {
-        alert(result.message || 'No data found.')
+        setAlertSeverity('success')
+        setAlertText('Không có hợp đồng nào được ký trong khoảng thời gian đã chọn.')
+        setSnackbarOpen(true)
         setChartData(null)
       }
     } catch (error) {
-      console.error('Error fetching data:', error)
-      alert('Failed to fetch data. Please try again later.')
+      setAlertSeverity('error')
+      setAlertText('Đã xảy ra lỗi khi tìm kiếm thống kê.')
+      setSnackbarOpen(true)
       setChartData(null)
     }
   }
@@ -163,6 +179,13 @@ const SignedContract = () => {
           </Typography>
         )}
       </Box>
+      <CustomSnackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message={alertText}
+        severity={alertSeverity}
+        navigatePath={navigatePath}
+      />
     </LocalizationProvider>
   )
 }

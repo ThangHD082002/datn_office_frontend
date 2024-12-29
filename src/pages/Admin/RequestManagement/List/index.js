@@ -75,6 +75,9 @@ function RequestManagementList() {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedBuilding, setSelectedBuilding] = useState(null);
+  const [buildings, setBuildings] = useState([]);
+
 
   const columns = [
     { id: 'id', name: 'STT', width: 170 },
@@ -108,6 +111,26 @@ function RequestManagementList() {
     }
   };
 
+  const buildingSelectStyle = {
+    width: '300px',
+    '& .MuiOutlinedInput-root': {
+      width: '300px',
+      height: '40px',
+      padding: '0 8px'
+    },
+    '& .MuiAutocomplete-input': {
+      width: '300px !important',
+      padding: '0'
+    },
+    '& .MuiAutocomplete-endAdornment': {
+      position: 'absolute',
+      right: '8px'
+    },
+    '& .MuiInputBase-root': {
+      fontSize: '1.3rem'
+    }
+  };
+
   const buttonStyle = {
     textTransform: 'none',
     fontSize: '1.3rem'
@@ -120,6 +143,8 @@ function RequestManagementList() {
       let url = `/requests/manage-list?page=${pageNumber - 1}`;
       if (selectedStatus !== null)
         url += `&status=${selectedStatus.id}`;
+      if (selectedBuilding !== null)
+        url += `&buildingId=${selectedBuilding.id}`;
       const response = await axiosInstance.get(url);
       setData(response.data.content);
       setTotalElements(response.data.totalElements);
@@ -132,8 +157,24 @@ function RequestManagementList() {
     }
   }
 
+  const fetchBuildings = async () => {
+    try {
+      const response = await axiosInstance.get('/buildings/all');
+      setBuildings(response.data.result);
+    } catch (error) {
+      console.error('Error fetching buildings:', error);
+    }
+  };
+
+  const handleSearch = () => {
+    setPage(1);
+    getData(1);
+  };
+
   const handleReset = () => {
     setSelectedStatus(null);
+    setSelectedBuilding(null);
+
     setPage(1);
     getData(1);
   };
@@ -147,6 +188,12 @@ function RequestManagementList() {
 
   const formatDateTime = (dateString) => {
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+  };
+
+  const formatDateTime2 = (date, time) => {
+    if (!date) return 'Chưa đặt';
+    const timeStr = time ? time.substring(0, 5) : '';
+    return `${dayjs(date).format('DD/MM/YYYY')} ${timeStr}`;
   };
 
   const open = Boolean(anchorEl);
@@ -174,11 +221,11 @@ function RequestManagementList() {
   }
 
   useEffect(() => {
+    fetchBuildings();
     getData(page)
   }, [page])
 
   const handlePageChange = (event, newPage) => {
-    console.log('New page' + newPage)
     setPage(newPage)
   }
 
@@ -227,6 +274,26 @@ function RequestManagementList() {
           }}>
             <Autocomplete
               size="small"
+              options={buildings}
+              getOptionLabel={(option) => option.name}
+              value={selectedBuilding}
+              onChange={(event, newValue) => {
+                setSelectedBuilding(newValue);
+              }}
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <span style={{ fontSize: '1.3rem' }}>
+                    {option.name}
+                  </span>
+                </li>
+              )}
+              sx={buildingSelectStyle}
+              renderInput={(params) => (
+                <TextField {...params} placeholder="Chọn toà nhà" sx={inputStyle} />
+              )}
+            />
+            <Autocomplete
+              size="small"
               options={statusOptions}
               getOptionLabel={(option) => option.name}
               value={selectedStatus}
@@ -254,7 +321,7 @@ function RequestManagementList() {
 
             <Button
               variant="contained"
-              onClick={() => getData(1)}
+              onClick={() => handleSearch()}
               sx={buttonStyle}
               className={cx('btn-search')}
             >
@@ -332,7 +399,7 @@ function RequestManagementList() {
                       {formatDateTime(row.createdDate)}
                     </TableCell>
                     <TableCell className={cx('td')}>
-                      {row.date}&nbsp;{row.time}
+                      {formatDateTime2(row.date, row.time)}
                     </TableCell>
                     <TableCell className={cx('td')}>
                       <span
