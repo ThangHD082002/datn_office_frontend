@@ -309,7 +309,7 @@ function Register() {
             </div>
           </div>
         </div>
-        <p className={cx('text-enter')}>Enter your Information to Register</p>
+        <p className={cx('text-enter')}>Nhập thông tin của bạn để đăng kí tài khoản</p>
         <span className={cx('sucess-register')}>{isCheckSuccessRegister}</span>
         <p className={cx('faild-register')}>{isCheckFaildRegister}</p>
         <form onSubmit={handleSubmit}>
@@ -483,16 +483,16 @@ function Register() {
           </div>
 
           <div className={cx('sign-up-contain')}>
-            <p className={cx('sign-up-note')}>Welcome to join with</p>
+            <p className={cx('sign-up-note')}>Chào mừng bạn đến với </p>
             <a className={cx('sign-up-link')} href="/">
               Rooms
             </a>
           </div>
           <a href="/login" className={cx('sign-in-link')}>
-            Sign in
+            Đăng nhập
           </a>
           <div className={cx('btn-signup')}>
-            <ButtonL submit>SIGN UP</ButtonL>
+            <ButtonL submit>Đăng kí</ButtonL>
           </div>
         </form>
       </div>

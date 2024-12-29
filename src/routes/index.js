@@ -38,6 +38,9 @@ import OfficeManagementEdit from '~/pages/Admin/OfficeManagement/Edit'
 import SearchBuilding from '~/pages/SearchBuilding'
 import Payment from '~/pages/Payment'
 import DetailManager from '~/pages/Admin/DetailManager'
+import ChangePassword from '~/pages/ChangePassword'
+import ChangePasswordManager from '~/pages/Admin/ChangePasswordManager'
+import ForgotPassword from '~/pages/ForgotPassword'
 const publicRoutes = [
   {
     path: '/payment-result',
@@ -53,12 +56,22 @@ const publicRoutes = [
     layout: HeaderSearchLayout
   },
   {
+    path: '/change-password',
+    component: ChangePassword,
+    layout: HeaderSearchLayout
+  },
+  {
     path: '/search-building',
     component: SearchBuilding,
   },
   {
     path: '/login',
     component: Login,
+    layout: LoginLayout
+  },
+  {
+    path: '/forgot-password',
+    component: ForgotPassword,
     layout: LoginLayout
   },
   {
@@ -123,6 +136,11 @@ const publicRoutes = [
   {
     path: '/admin/buildings',
     component: BuildingManagementList,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/change-password-manager',
+    component: ChangePasswordManager,
     layout: AdminLayout
   },
   {

@@ -24,6 +24,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
+import LockIcon from '@mui/icons-material/Lock';
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -123,6 +124,7 @@ function SidebarAdmin({ onToggle }) {
   const [open, setOpen] = React.useState(false)
   const navigate = useNavigate()
   const [avatar, setAvatar] = useState();
+  const role = localStorage.getItem('role')
 
   useEffect(() => {
       axiosInstance
@@ -175,6 +177,10 @@ function SidebarAdmin({ onToggle }) {
     navigate('/admin/detail-manager'); // Thay "/tai-khoan" bằng đường dẫn trang bạn muốn điều hướng đến.
   };
 
+  const changePassword = () => {
+    navigate('/admin/change-password-manager');
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -198,7 +204,8 @@ function SidebarAdmin({ onToggle }) {
           <Typography variant="h4" noWrap component="div">
             Office Nest
           </Typography>
-          <Box sx={{ position: 'absolute', right: '40px' }}>
+          
+          {role.includes('ROLE_MANAGER') && <Box sx={{ position: 'absolute', right: '40px' }}>
             <Box sx={{ position: 'relative' }}>
               <IconButton onClick={handleToggle} sx={{ display: 'flex', alignItems: 'center', color: 'white'}}>
                 <Avatar alt="User Avatar" src={avatar} /> {/* Thay ảnh đại diện theo ý bạn */}
@@ -224,11 +231,17 @@ function SidebarAdmin({ onToggle }) {
                       </ListItemIcon>
                       <ListItemText primary="Tài khoản" sx={{ color: 'black'}}/>
                     </ListItem>
+                    <ListItem button onClick={changePassword} sx={{ cursor: 'pointer' }}>
+                      <ListItemIcon>
+                      <LockIcon/>
+                      </ListItemIcon>
+                      <ListItemText primary="Đổi mật khẩu" sx={{ color: 'black'}}/>
+                    </ListItem>
                   </List>
                 </Box>
               )}
             </Box>
-          </Box>
+          </Box>}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

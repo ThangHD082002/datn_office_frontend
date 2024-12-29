@@ -102,14 +102,15 @@ function Login() {
               setNavigatePath('/') // Đường dẫn chuyển hướng sau khi thành công
             }
           } else {
-            setIsCheckFaildLogin('Tài khoản hoặc mật khẩu không đúng')
+            setAlertSeverity('error')
+            setAlertText(response.data.message)
           }
         })
         .catch(function (error) {
           // handle error
           console.log(error)
           setAlertSeverity('error')
-          setAlertText('Đã có lỗi xảy ra')
+          setAlertText(error.response.data.message)
         })
         .finally(function () {
           // always executed
@@ -180,7 +181,7 @@ function Login() {
             </div>
           </div>
         </div>
-        <p className={cx('text-enter')}>Enter your account to login</p>
+        <p className={cx('text-enter')}>Nhập tài khoản để đăng nhập vào hệ thống </p>
         <span className={cx('faild-login')}>{isCheckFaildLogin}</span>
         <form onSubmit={handleSubmit}>
           <div className={cx('login-body')}>
@@ -207,12 +208,15 @@ function Login() {
             <span className={cx('input-empty')}>{isPasswordEmpty}</span>
           </div>
           <div className={cx('sign-up-contain')}>
-            <p className={cx('sign-up-note')}>you don't have an account?</p>
+            <p className={cx('sign-up-note')}>Bạn không có tài khoản?</p>
             <a className={cx('sign-up-link')} href="/register">
-              Sign up
+              Đăng kí ngay
             </a>
           </div>
-          <ButtonL submit>SIGN IN</ButtonL>
+          <a className={cx('forgot-pass-link')} href="/forgot-password">
+              Quên mật khẩu
+            </a>
+          <ButtonL submit>Đăng nhập</ButtonL>
         </form>
       </div>
       <div>

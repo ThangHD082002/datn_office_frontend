@@ -131,7 +131,7 @@ function DetailManager() {
     <ThemeProvider theme={theme}>
       <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
         <Typography variant="h2" gutterBottom>
-          {isEditing ? 'Chỉnh sửa thông tin' : 'Thông tin người dùng'}
+          {isEditing ? 'Chỉnh sửa thông tin' : 'Thông tin quản lí'}
         </Typography>
         <Divider sx={{ mb: 3 }} />
         <Paper elevation={3} sx={{ p: 3 }}>
