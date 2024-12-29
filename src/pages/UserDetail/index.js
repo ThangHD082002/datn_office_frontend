@@ -42,14 +42,15 @@ function UserDetail() {
   const [alertText, setAlertText] = useState('')
   const [alertSeverity, setAlertSeverity] = useState('success')
   const [navigatePath, setNavigatePath] = useState('')
-
+  let checkUpdateAvatar = false
+  let checkUpdateSign = false
   const handleSnackbarClose = () => setSnackbarOpen(false)
 
   useEffect(() => {
     const fetchUserDetail = async () => {
       setLoading(true)
       try {
-        const response = await axiosInstance.get('/account')
+        const response = await axiosInstance.get(`/account`)
         const userData = response.data
         setFormData({
           login: userData.result.login,
@@ -63,8 +64,12 @@ function UserDetail() {
           imageSign: userData.result.signImage || null,
           imageAvatar: userData.result.imageAvatar || null
         })
-        if (userData.result.signImage) setImageSignPreview(userData.result.signImage)
-        if (userData.result.imageAvatar) setImageAvatarPreview(userData.result.imageAvatar)
+        if (userData.result.signImage) {
+          setImageSignPreview(userData.result.signImage)
+        }
+        if (userData.result.imageAvatar) {
+          setImageAvatarPreview(userData.result.imageAvatar)
+        }
       } catch (error) {
         console.error('Error fetching user details:', error)
       } finally {
@@ -80,9 +85,11 @@ function UserDetail() {
       if (type === 'imageSign') {
         setImageSignPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageSign: file })
+        checkUpdateAvatar = true
       } else if (type === 'imageAvatar') {
         setImageAvatarPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageAvatar: file })
+        checkUpdateSign = true
       }
     }
   }
@@ -102,16 +109,16 @@ function UserDetail() {
       data.append('address', formData.address)
       data.append('dob', formData.dob)
       data.append('phoneNumber', formData.phoneNumber)
-      if (formData.imageSign) data.append('imageSign', formData.imageSign)
-      if (formData.imageAvatar) data.append('imageAvatar', formData.imageAvatar)
+      if (checkUpdateSign) data.append('imageDigitalSignature', formData.imageSign)
+      if (checkUpdateAvatar) data.append('imageAvatar', formData.imageAvatar)
 
-      await axiosInstance.put('/account/update', data, {
+      await axiosInstance.put(`/account/update`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
       setAlertSeverity('success')
       setAlertText('Cập nhật thông tin thành công')
-      setNavigatePath(`user-infor/${uid}`)
+      setNavigatePath(`/user-infor/${uid}`)
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating user details:', error)
