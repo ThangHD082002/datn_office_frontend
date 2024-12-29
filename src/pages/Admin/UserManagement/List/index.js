@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
   Button as MuiButton
 } from '@mui/material'
 import styles from '../UserManagement.module.scss'
@@ -28,21 +29,18 @@ import AddIcon from '@mui/icons-material/Add'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useNavigate } from 'react-router-dom'
-
+import axios from 'axios'
 const cx = classNames.bind(styles)
 
 let theme = createTheme()
 theme = responsiveFontSizes(theme)
-
-const getUserStatus = (activated) => {
-  return activated ? { text: 'Active', color: '#4CAF50' } : { text: 'Inactive', color: '#F44336' }
-}
 
 function UserManagementList() {
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
   const [openDialog, setOpenDialog] = useState(false)
@@ -54,24 +52,26 @@ function UserManagementList() {
     { id: 'fullName', name: 'Full Name', width: 250 },
     { id: 'email', name: 'Email', width: 250 },
     { id: 'phoneNumber', name: 'Phone Number', width: 150 },
-    { id: 'status', name: 'Status', width: 150 },
     { id: 'action', name: 'Action', width: 150 }
   ]
 
-  const fetchData = async (pageNumber) => {
+  const fetchData = async (pageNumber, query = '') => {
     setLoading(true)
     const pageSize = 5 // Số lượng bản ghi trên mỗi trang
-
+    const token = localStorage.getItem('authToken') // Lấy token từ localStorage
+    if (query === '') query = undefined // Nếu query rỗng thì gán undefined để tránh lỗi 400 Bad Request
     try {
-      // Giả sử API hỗ trợ phân trang qua query params ?page= và ?size=
       const response = await axiosInstance.get(`/admin/managers`, {
+        // const response = await axios.get('http://localhost:9999/api/admin/managers', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         params: {
           page: pageNumber - 1, // Backend thường bắt đầu từ 0
-          size: pageSize
+          size: pageSize,
+          search: query // Thêm query tìm kiếm
         }
       })
-
-      // Giả sử API trả về dữ liệu dạng { content, totalPages, totalElements }
       setUsers(response.data.content)
       setTotalPages(response.data.totalPages)
     } catch (error) {
@@ -85,9 +85,15 @@ function UserManagementList() {
     setPage(newPage)
   }
 
-  // Khi useEffect chạy, gọi fetchData với trang hiện tại
+  const handleSearchChange = (event) => {
+    const query = event.target.value
+    setSearchQuery(query)
+    fetchData(1, query) // Reset về trang đầu khi tìm kiếm
+    setPage(1) // Đặt lại trang hiện tại về 1
+  }
+
   useEffect(() => {
-    fetchData(page)
+    fetchData(page, searchQuery)
   }, [page])
 
   const handleDeleteClick = (user) => {
@@ -124,32 +130,39 @@ function UserManagementList() {
           QUẢN LÍ USER MANAGER
         </Typography>
         <Divider />
-        <div>
-          {/* Nút thêm user */}
-          <Button
-            variant="contained"
-            href="/admin/create-managers"
-            sx={{
-              bgcolor: '#0000FF', // Đặt màu nền
-              color: '#fff', // Màu chữ
-              '&:hover': { bgcolor: '#7B00B5' } // Màu nền khi hover
-            }}
-          >
-            Thêm User Manager &nbsp; <AddIcon />
-          </Button>
-
-          {/* Nút gán tòa nhà */}
-          <Button
-            variant="contained"
-            href="/admin/assign-building"
-            sx={{
-              bgcolor: '#0000FF', // Đặt màu nền
-              color: '#fff', // Màu chữ
-              '&:hover': { bgcolor: '#006666' } // Màu nền khi hover
-            }}
-          >
-            Gán Tòa Nhà &nbsp; <AddIcon />
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <TextField
+            label="Tìm kiếm"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            sx={{ width: '300px' }}
+          />
+          <div>
+            <Button
+              variant="contained"
+              href="/admin/create-managers"
+              sx={{
+                bgcolor: '#0000FF',
+                color: '#fff',
+                '&:hover': { bgcolor: '#7B00B5' }
+              }}
+            >
+              Thêm User Manager &nbsp; <AddIcon />
+            </Button>
+            &nbsp;
+            <Button
+              variant="contained"
+              href="/admin/assign-building"
+              sx={{
+                bgcolor: '#0000FF',
+                color: '#fff',
+                '&:hover': { bgcolor: '#006666' }
+              }}
+            >
+              Gán Tòa Nhà &nbsp; <AddIcon />
+            </Button>
+          </div>
         </div>
 
         <Paper sx={{ width: '100%', overflow: 'hidden', position: 'relative' }}>
@@ -189,19 +202,6 @@ function UserManagementList() {
                     <TableCell className={cx('td')}>{user.email}</TableCell>
                     <TableCell className={cx('td')}>{user.phoneNumber}</TableCell>
                     <TableCell className={cx('td')}>
-                      <span
-                        style={{
-                          color: getUserStatus(user.activated).color,
-                          fontWeight: 500,
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          backgroundColor: `${getUserStatus(user.activated).color}20`
-                        }}
-                      >
-                        {getUserStatus(user.activated).text}
-                      </span>
-                    </TableCell>
-                    <TableCell className={cx('td')}>
                       <IconButton
                         color="primary"
                         title="View Details"
@@ -223,7 +223,6 @@ function UserManagementList() {
           </Box>
         </Paper>
 
-        {/* Delete Confirmation Dialog */}
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}
