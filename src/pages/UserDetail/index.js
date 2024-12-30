@@ -42,8 +42,9 @@ function UserDetail() {
   const [alertText, setAlertText] = useState('')
   const [alertSeverity, setAlertSeverity] = useState('success')
   const [navigatePath, setNavigatePath] = useState('')
-  let checkUpdateAvatar = false
-  let checkUpdateSign = false
+  const [checkUpdateAvatar, setCheckUpdateAvatar] = useState(false)
+  const [checkUpdateSign, setCheckUpdateSign] = useState(false)
+
   const handleSnackbarClose = () => setSnackbarOpen(false)
 
   useEffect(() => {
@@ -85,11 +86,11 @@ function UserDetail() {
       if (type === 'imageSign') {
         setImageSignPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageSign: file })
-        checkUpdateAvatar = true
+        setCheckUpdateSign(true)
       } else if (type === 'imageAvatar') {
         setImageAvatarPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageAvatar: file })
-        checkUpdateSign = true
+        setCheckUpdateAvatar(true)
       }
     }
   }
