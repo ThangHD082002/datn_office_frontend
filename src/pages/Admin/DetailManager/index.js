@@ -42,8 +42,8 @@ function DetailManager() {
   const [alertText, setAlertText] = useState('')
   const [alertSeverity, setAlertSeverity] = useState('success')
   const [navigatePath, setNavigatePath] = useState('')
-  let checkUpdateSign = false
-  let checkUpdateAvatar = false
+  const [checkUpdateAvatar, setCheckUpdateAvatar] = useState(false)
+  const [checkUpdateSign, setCheckUpdateSign] = useState(false)
 
   const handleSnackbarClose = () => setSnackbarOpen(false)
 
@@ -51,7 +51,7 @@ function DetailManager() {
     const fetchUserDetail = async () => {
       setLoading(true)
       try {
-        const response = await axiosInstance.get('/account')
+        const response = await axiosInstance.get(`/account`)
         const userData = response.data
         setFormData({
           login: userData.result.login,
@@ -65,8 +65,12 @@ function DetailManager() {
           imageSign: userData.result.signImage || null,
           imageAvatar: userData.result.imageAvatar || null
         })
-        if (userData.result.signImage) setImageSignPreview(userData.result.signImage)
-        if (userData.result.imageAvatar) setImageAvatarPreview(userData.result.imageAvatar)
+        if (userData.result.signImage) {
+          setImageSignPreview(userData.result.signImage)
+        }
+        if (userData.result.imageAvatar) {
+          setImageAvatarPreview(userData.result.imageAvatar)
+        }
       } catch (error) {
         console.error('Error fetching user details:', error)
       } finally {
@@ -82,11 +86,11 @@ function DetailManager() {
       if (type === 'imageSign') {
         setImageSignPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageSign: file })
-        checkUpdateSign = true
+        setCheckUpdateSign(true)
       } else if (type === 'imageAvatar') {
         setImageAvatarPreview(URL.createObjectURL(file))
         setFormData({ ...formData, imageAvatar: file })
-        checkUpdateAvatar = true
+        setCheckUpdateAvatar(true)
       }
     }
   }
@@ -109,13 +113,13 @@ function DetailManager() {
       if (checkUpdateSign) data.append('imageDigitalSignature', formData.imageSign)
       if (checkUpdateAvatar) data.append('imageAvatar', formData.imageAvatar)
 
-      await axiosInstance.put('/account/update', data, {
+      await axiosInstance.put(`/account/update`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
       setAlertSeverity('success')
       setAlertText('Cập nhật thông tin thành công')
-      setNavigatePath(`user-infor/${uid}`)
+      setNavigatePath('/admin/detail-manager')
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating user details:', error)
@@ -131,7 +135,7 @@ function DetailManager() {
     <ThemeProvider theme={theme}>
       <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
         <Typography variant="h2" gutterBottom>
-          {isEditing ? 'Chỉnh sửa thông tin' : 'Thông tin quản lí'}
+          {isEditing ? 'Chỉnh sửa thông tin' : 'Thông tin người dùng'}
         </Typography>
         <Divider sx={{ mb: 3 }} />
         <Paper elevation={3} sx={{ p: 3 }}>
