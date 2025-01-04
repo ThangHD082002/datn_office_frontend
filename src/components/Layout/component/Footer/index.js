@@ -14,7 +14,7 @@ function Footer() {
         <footer className={cx("footer")}>
         <div className={cx("main-part")}>
             <div className={cx("footer-list-wrapper")}>
-                <h3 className={cx("footer-heading")}>Grand Hotel</h3>
+                <h3 className={cx("footer-heading")}>ROOMS</h3>
                 <ul className={cx("footer-list")}>
                     <li className={cx("footer-list-item")}>
                         <a href="#" className={cx("footer-list-link")}>

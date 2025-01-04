@@ -35,6 +35,14 @@ import { MenuItem, Select } from '@mui/material'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 import styles from './UserContract.module.scss'
 import { ArrowUpward } from '@mui/icons-material'
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button as MuiButton
+} from '@mui/material'
 
 const options = [
   { value: 'Draft', color: '#00BFFF' }, // Vàng
@@ -52,6 +60,7 @@ function UserContract() {
   let cid = localStorage.getItem('id_user')
   const [loadingStart, setLoadingStart] = useState(true)
   const [render, setRender] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false)
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [alertText, setAlertText] = useState('')
@@ -78,6 +87,9 @@ function UserContract() {
   const handleReset = () => {
     setSelectedOption('')
     setValueSearch('')
+  }
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
   }
 
   useEffect(() => {
@@ -449,9 +461,10 @@ function UserContract() {
     navigate(`/user/preview-contract/${id}`)
   }
 
-  const HandleDeleteContract = () => {
 
+  const handleConfirmDelete = async () => {
     const did = Number(selected[0])
+    setSelected([])
     axiosInstance
       .delete(
         `/contract/delete/${did}`
@@ -470,6 +483,10 @@ function UserContract() {
         setSnackbarOpen(true)
         console.log('Request completed.')
       })
+    }
+
+  const HandleDeleteContract = () => {
+    setOpenDialog(true)
   }
 
   return (
@@ -791,6 +808,27 @@ function UserContract() {
         severity={alertSeverity}
         navigatePath={navigatePath}
       />
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this contract? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={handleCloseDialog} color="primary">
+            Cancel
+          </MuiButton>
+          <MuiButton onClick={handleConfirmDelete} color="error" autoFocus>
+            Delete
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

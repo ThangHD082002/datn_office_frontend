@@ -16,8 +16,10 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import HistoryIcon from '@mui/icons-material/History'
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from '@mui/icons-material/Lock'
 
+import { Box, Typography, Badge, ListItem, ListItemAvatar, Divider, Slide } from '@mui/material'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import ListItemText from '@mui/material/ListItemText'
@@ -45,6 +47,19 @@ function Header() {
 
   const showSetting = () => {
     setIsListVisible(!isListVisible) // Chuyển đổi trạng thái ẩn/hiện
+  }
+
+  const [open, setOpen] = useState(false)
+  const notifications = [
+    { id: 1, title: 'Thông báo 1', description: 'Mô tả thông báo 1', img: 'https://via.placeholder.com/40' },
+    { id: 2, title: 'Thông báo 2', description: 'Mô tả thông báo 2', img: 'https://via.placeholder.com/40' },
+    { id: 3, title: 'Thông báo 3', description: 'Mô tả thông báo 3', img: 'https://via.placeholder.com/40' },
+    { id: 4, title: 'Thông báo 4', description: 'Mô tả thông báo 4', img: 'https://via.placeholder.com/40' },
+    { id: 5, title: 'Thông báo 5', description: 'Mô tả thông báo 5', img: 'https://via.placeholder.com/40' }
+  ]
+
+  const handleClick = () => {
+    setOpen(!open)
   }
 
   axiosInstance
@@ -201,8 +216,13 @@ function Header() {
             <li className={cx('item')}>
               <h5 className={cx('header-text-item')}>VĂN PHÒNG TRỌN GÓI</h5>
             </li>
-            <li className={cx('item')}>
-              <h5 className={cx('header-text-item')}>LIÊN HỆ</h5>
+            <li className={cx('item-noti')} onClick={handleClick}>
+              <h5 className={cx('header-text-item')}>THÔNG BÁO</h5>
+              <IconButton onClick={handleClick}>
+                <Badge badgeContent={notifications.length} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
             </li>
           </ul>
         </Col>
@@ -287,6 +307,28 @@ function Header() {
           </ListItemButton>
         </List>
       )}
+      <Slide
+        direction="down"
+        in={open}
+        mountOnEnter
+        unmountOnExit
+        sx={{ zIndex: 100000, backgroundColor: 'white', width: '20%', marginLeft: '1060px', borderRadius: '4px' }}
+      >
+        <Box sx={{ marginTop: '16px' }}>
+          <Typography variant="h6" sx={{color: 'black', marginLeft: '5px'}}>Thông báo</Typography>
+          <List sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+            {notifications.slice(0, 5).map((notification) => (
+              <ListItem key={notification.id}>
+                <ListItemAvatar>
+                  <Avatar alt="Notification" src={notification.img} />
+                </ListItemAvatar>
+                <ListItemText primary={notification.title} secondary={notification.description} sx={{color: 'black'}}/>
+              </ListItem>
+            ))}
+            {notifications.length > 5 && <Divider sx={{ marginTop: '8px' }} />}
+          </List>
+        </Box>
+      </Slide>
     </div>
   )
 }

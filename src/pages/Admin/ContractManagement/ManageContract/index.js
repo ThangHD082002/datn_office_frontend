@@ -29,10 +29,18 @@ import TextField from '@mui/material/TextField'
 import { Link, Routes, Route, useNavigate } from 'react-router-dom'
 import { axiosInstance } from '~/utils/axiosInstance'
 import Backdrop from '@mui/material/Backdrop'
-import { CircularProgress } from "@mui/material";
+import { CircularProgress } from '@mui/material'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import styles from './ManageContract.module.scss'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button as MuiButton
+} from '@mui/material'
 
 import { MenuItem, Select } from '@mui/material'
 
@@ -49,8 +57,9 @@ function ManageContract() {
   const [valueSearch, setValueSearch] = useState('')
   const [loading, setLoading] = useState(false) // Trạng thái loading
   const [progress, setProgress] = useState(0) // Tiến trình tải
-  const [loadingStart, setLoadingStart] = useState(true);
-  const [show, setShow] = useState(true);
+  const [loadingStart, setLoadingStart] = useState(true)
+  const [show, setShow] = useState(true)
+  const [openDialog, setOpenDialog] = useState(false)
 
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [alertText, setAlertText] = useState('')
@@ -69,19 +78,50 @@ function ManageContract() {
     setSelectedOption('')
     setValueSearch('')
   }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
+
+  const handleConfirmDelete = async () => {
+    const did = Number(selected[0])
+    setSelected([])
+    console.log('DID')
+    console.log(did)
+    axiosInstance
+      .delete(`/contract/delete/${did}`)
+      .then((response) => {
+        setAlertSeverity('success')
+        setAlertText('Xóa hợp đồng thành công')
+        setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
+        setShow((prev) => !prev)
+      })
+      .catch((error) => {
+        setAlertSeverity('error')
+        setAlertText('Xảy ra lỗi khi thực hiện xóa')
+      })
+      .finally(() => {
+        setSnackbarOpen(true)
+        console.log('Request completed.')
+        handleCloseDialog()
+      })
+  }
+
   useEffect(() => {
     let mid = localStorage.getItem('id_user')
     axiosInstance
       .post('/contract', {
         pageNumber: 0,
         pageSize: 0,
-        filter: [{
-          "operator": "=",
-          "key": "createdBy",
-          "value": mid,
-          "otherValue": null,
-          "valueSelected": null
-        }],
+        filter: [
+          {
+            operator: '=',
+            key: 'createdBy',
+            value: mid,
+            otherValue: null,
+            valueSelected: null
+          }
+        ],
         sortProperty: 'contract.lastModifiedDate',
         sortOrder: 'DESC',
         buildingIds: []
@@ -106,7 +146,7 @@ function ManageContract() {
         }
       })
       .finally(() => {
-        setLoadingStart(false);
+        setLoadingStart(false)
         console.log('Request completed.')
       })
   }, [show])
@@ -378,43 +418,43 @@ function ManageContract() {
   }
 
   const handleSubmitSearch = () => {
-    let x;
-    if (selectedOption === "Draft") {
-      x = "1";
-    } else if (selectedOption === "Pending") {
-      x = "2";
-    } else if (selectedOption === "Finished") {
-      x = "3";
+    let x
+    if (selectedOption === 'Draft') {
+      x = '1'
+    } else if (selectedOption === 'Pending') {
+      x = '2'
+    } else if (selectedOption === 'Finished') {
+      x = '3'
     } else {
-      x = null; // Hoặc giá trị mặc định
+      x = null // Hoặc giá trị mặc định
     }
     let mid = localStorage.getItem('id_user')
     axiosInstance
       .post(
         '/contract', // Sử dụng đường dẫn tương đối
         {
-          "pageNumber": 0,
-          "pageSize": 0,
-          "filter": [
-              {
-                  "operator": "=",
-                  "key": "createdBy",
-                  "value": mid,
-                  "otherValue": null,
-                  "valueSelected": null
-              },
-              {
-                  "operator": "=",
-                  "key": "status",
-                  "value": x,
-                  "otherValue": null,
-                  "valueSelected": null
-              }
+          pageNumber: 0,
+          pageSize: 0,
+          filter: [
+            {
+              operator: '=',
+              key: 'createdBy',
+              value: mid,
+              otherValue: null,
+              valueSelected: null
+            },
+            {
+              operator: '=',
+              key: 'status',
+              value: x,
+              otherValue: null,
+              valueSelected: null
+            }
           ],
-          "sortProperty": "contract.lastModifiedDate",
-          "sortOrder": "DESC",
-          "buildingIds": []
-      }
+          sortProperty: 'contract.lastModifiedDate',
+          sortOrder: 'DESC',
+          buildingIds: []
+        }
       )
       .then((response) => {
         const newArray = response.data.data.map((item) => ({
@@ -447,25 +487,26 @@ function ManageContract() {
   }
 
   const HandleDeleteContract = () => {
-    const did = Number(selected[0])
-    axiosInstance
-      .delete(
-        `/contract/delete/${did}`
-      )
-      .then((response) => {
-        setAlertSeverity('success')
-        setAlertText('Xóa hợp đồng thành công')
-        setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
-        setShow((prev) => !prev);
-      })
-      .catch((error) => {
-        setAlertSeverity('error')
-        setAlertText('Xảy ra lỗi khi thực hiện xóa')
-      })
-      .finally(() => {
-        setSnackbarOpen(true)
-        console.log('Request completed.')
-      })
+    setOpenDialog(true)
+    // const did = Number(selected[0])
+    // axiosInstance
+    //   .delete(
+    //     `/contract/delete/${did}`
+    //   )
+    //   .then((response) => {
+    //     setAlertSeverity('success')
+    //     setAlertText('Xóa hợp đồng thành công')
+    //     setNavigatePath('/admin/contracts') // Đường dẫn chuyển hướng sau khi thành công
+    //     setShow((prev) => !prev);
+    //   })
+    //   .catch((error) => {
+    //     setAlertSeverity('error')
+    //     setAlertText('Xảy ra lỗi khi thực hiện xóa')
+    //   })
+    //   .finally(() => {
+    //     setSnackbarOpen(true)
+    //     console.log('Request completed.')
+    //   })
   }
 
   return (
@@ -572,7 +613,7 @@ function ManageContract() {
         </Box>
       </Box>
       {loadingStart ? (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <CircularProgress />
           <Typography sx={{ marginTop: 2 }}>Đang tải dữ liệu...</Typography>
         </Box>
@@ -773,6 +814,27 @@ function ManageContract() {
         severity={alertSeverity}
         navigatePath={navigatePath}
       />
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this contract? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={handleCloseDialog} color="primary">
+            Cancel
+          </MuiButton>
+          <MuiButton onClick={handleConfirmDelete} color="error" autoFocus>
+            Delete
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }
