@@ -80,7 +80,8 @@ function RequestManagementList() {
 
 
   const columns = [
-    { id: 'id', name: 'STT', width: 170 },
+    { id: 'order', name: 'STT', width: 100 },
+    { id: 'id', name: 'Mã yêu cầu', width: 170 },
     { id: 'user', name: 'Khách hàng', width: 300 },
     { id: 'building', name: 'Tòa nhà', width: 300 },
     { id: 'createdDate', name: 'Thời gian tạo', width: 240 },
@@ -385,6 +386,7 @@ function RequestManagementList() {
                 {data.map((row, index) => (
                   <TableRow key={row.id}>
                     <TableCell className={cx('td')}>{(page - 1) * 10 + index + 1}</TableCell>
+                    <TableCell className={cx('td')}>{row.id}</TableCell>
                     <TableCell className={cx('td')}>
                       <span
                         onMouseEnter={(event) => handleUserHover(event, row.userId)}

@@ -88,7 +88,7 @@ function Header() {
     axiosInstance
       .get(`/notification/read/${cid}`)
       .then(function (response) {
-        console.log('Reaed')
+        console.log('Read')
       })
       .catch(function (error) {
         console.log('ERROR ALL MESSAGE')
@@ -123,7 +123,7 @@ function Header() {
         setNumHaventRead(response.data.content.length)
         if (response.data.content.length == 0) {
           setCheckAllRead(false)
-        } else{
+        } else {
           setCheckAllRead(true)
         }
       })
@@ -139,10 +139,31 @@ function Header() {
     setOpen(!open)
   }
 
+  const requestMsg = (message) => {
+    console.log('message: ', message);
+
+    const [status, requestId] = message.split('|');
+
+    const statusMap = {
+      '0': 'được gửi đi',
+      '1': 'được chấp thuận',
+      '2': 'hoàn thành',
+      '3': 'bị từ chối',
+      '4': 'bị huỷ bỏ'
+    };
+
+    if (status == '99') {
+      return `Bạn có yêu cầu mới. Mã số #${requestId}`;
+    }
+
+    return `Yêu cầu mã số #${requestId} đã ${statusMap[status] || 'cập nhật'}`;
+  }
+
   useEffect(() => {
     const token = localStorage.getItem('authToken') // Token lấy từ hệ thống xác thực của bạn
 
     const socketUrl = `https://office-nest-ohcid.ondigitalocean.app/ws?token=${token}`
+    // const socketUrl = `http://localhost:9999/ws?token=${token}`
 
     const socket = new SockJS(socketUrl)
 
@@ -158,8 +179,17 @@ function Header() {
         // Đăng ký nhận thông báo cá nhân
         stompClient.subscribe(`/topic/requests/${cid}`, (message) => {
           if (message) {
+            const notificationObj = {
+              id: null,
+              topic: `/topic/requests/${cid}`,
+              message: message.body, // original message string
+              status: 1,
+              userId: cid
+            };
+            setAllMessage(prev => [notificationObj, ...prev])
+            setHaventReadMessage(prev => [notificationObj, ...prev]);
             setNumHaventRead((prevNum) => prevNum + 1)
-            console.log('Thông báo cá nhân:', message.body)
+            console.log('Thông báo cá nhân:', requestMsg(message))
           }
         })
       },
@@ -479,7 +509,11 @@ function Header() {
                 <ListItemAvatar>
                   <Avatar alt="Notification" src={notification.img} />
                 </ListItemAvatar>
-                <ListItemText primary={notification.topic} secondary={notification.message} sx={{ color: 'black' }} />
+                <ListItemText primary={notification.topic}
+                  secondary={notification.topic === `/topic/requests/${cid}`
+                    ? requestMsg(notification.message)
+                    : notification.message
+                  } sx={{ color: 'black' }} />
                 {notification.status == 0 && (
                   <Box
                     sx={{
