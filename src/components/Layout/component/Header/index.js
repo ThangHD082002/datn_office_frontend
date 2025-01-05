@@ -437,7 +437,7 @@ function Header() {
         in={open}
         mountOnEnter
         unmountOnExit
-        sx={{ zIndex: 100000, backgroundColor: 'white', width: '20%', marginLeft: '1060px', borderRadius: '4px' }}
+        sx={{ zIndex: 100000, backgroundColor: 'white', width: '20%', marginLeft: '1060px', borderRadius: '4px',boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)' }}
       >
         <Box sx={{ marginTop: '16px' }}>
           <Typography variant="h6" sx={{ color: 'black', marginLeft: '5px' }}>
@@ -504,7 +504,7 @@ function Header() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Xác nhận đã đọc thông báo</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">Đánh dấu tất cả thông báo là đã đọc</DialogContentText>
         </DialogContent>
