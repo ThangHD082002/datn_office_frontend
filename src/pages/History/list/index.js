@@ -175,15 +175,6 @@ function HistoryList() {
                         onClick={() => navigate(`/user/history-detail/${row.id}`)}>
                         <VisibilityIcon />
                       </IconButton>
-                      {1 === 1 && (
-                        <IconButton
-                          color="success"
-                          title="Tạo hợp đồng"
-                          onClick={() => navigate(`/admin/create-contract/${row.id}`)}
-                        >
-                          <AssignmentIcon />
-                        </IconButton>
-                      )}
                       <IconButton color="error" title="Xoá">
                         <DeleteIcon />
                       </IconButton>

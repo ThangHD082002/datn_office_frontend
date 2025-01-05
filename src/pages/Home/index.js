@@ -59,8 +59,8 @@ function Home() {
       .get('/buildings')
       .then(function (response) {
         // handle success
-        console.log('LIST BUILDING')
-        console.log(response)
+        // console.log('LIST BUILDING')
+        // console.log(response)
         setResult(response.data.result.content)
       })
       .catch(function (error) {
@@ -163,8 +163,8 @@ function Home() {
       else if (searchProvince?.id) url += `&provinceId=${searchProvince.id}`
 
       const response = await axiosInstance.get(url)
-      console.log('DATA SEARCH')
-      console.log(response.data.result.content)
+      // console.log('DATA SEARCH')
+      // console.log(response.data.result.content)
       setResult(response.data.result.content)
     } catch (error) {
       console.error(error)

@@ -17,8 +17,24 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import HistoryIcon from '@mui/icons-material/History'
 import LockIcon from '@mui/icons-material/Lock'
-
-import { Box, Typography, Badge, ListItem, ListItemAvatar, Divider, Slide } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import {
+  Box,
+  Typography,
+  Badge,
+  ListItem,
+  ListItemAvatar,
+  Divider,
+  Slide,
+  Tabs,
+  Tab,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button as MuiButton
+} from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
@@ -32,10 +48,14 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import StarBorder from '@mui/icons-material/StarBorder'
 import PaymentIcon from '@mui/icons-material/Payment'
 
+import SockJS from 'sockjs-client'
+import { Client } from '@stomp/stompjs'
+
 import { Avatar } from '@mui/material'
 import { IconButton } from '@mui/material'
 
 import { useNavigate } from 'react-router-dom'
+import { set } from 'date-fns'
 const cx = classNames.bind(styles)
 
 function Header() {
@@ -44,29 +64,125 @@ function Header() {
   const [isListVisible, setIsListVisible] = useState(false)
   const [idUser, setIdUser] = useState('')
   const [avatar, setAvatar] = useState()
+  const [allMessage, setAllMessage] = useState([])
+  const [haventReadMessage, setHaventReadMessage] = useState([])
+  const [numHaventRead, setNumHaventRead] = useState(0)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedNotification, setSelectedNotification] = useState(null)
+  const [checkAllRead, setCheckAllRead] = useState(true)
+  let cid = localStorage.getItem('id_user')
 
   const showSetting = () => {
     setIsListVisible(!isListVisible) // Chuyển đổi trạng thái ẩn/hiện
   }
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
+
+  const handleItemClick = () => {
+    setOpenDialog(true)
+  }
+
+  const handleConfirmRead = () => {
+    axiosInstance
+      .get(`/notification/read/${cid}`)
+      .then(function (response) {
+        console.log('Reaed')
+      })
+      .catch(function (error) {
+        console.log('ERROR ALL MESSAGE')
+        console.log(error)
+      })
+    setNumHaventRead((prevNum) => prevNum + 1)
+    handleCloseDialog()
+  }
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/notification/${cid}`)
+      .then(function (response) {
+        // handle success
+        setAllMessage(response.data.content)
+      })
+      .catch(function (error) {
+        console.log('ERROR ALL MESSAGE')
+        console.log(error)
+      })
+  }, [numHaventRead])
+
+  useEffect(() => {
+    console.log('3')
+    axiosInstance
+      .get(`/notification/unread/${cid}`)
+      .then(function (response) {
+        // handle success
+        console.log('unread')
+        console.log(response.data.content)
+        setHaventReadMessage(response.data.content)
+        setNumHaventRead(response.data.content.length)
+        if (response.data.content.length == 0) {
+          setCheckAllRead(false)
+        } else{
+          setCheckAllRead(true)
+        }
+      })
+      .catch(function (error) {
+        console.log('ERROR Not READ MESSAGE')
+        console.log(error)
+      })
+  }, [numHaventRead])
+
   const [open, setOpen] = useState(false)
-  const notifications = [
-    { id: 1, title: 'Thông báo 1', description: 'Mô tả thông báo 1', img: 'https://via.placeholder.com/40' },
-    { id: 2, title: 'Thông báo 2', description: 'Mô tả thông báo 2', img: 'https://via.placeholder.com/40' },
-    { id: 3, title: 'Thông báo 3', description: 'Mô tả thông báo 3', img: 'https://via.placeholder.com/40' },
-    { id: 4, title: 'Thông báo 4', description: 'Mô tả thông báo 4', img: 'https://via.placeholder.com/40' },
-    { id: 5, title: 'Thông báo 5', description: 'Mô tả thông báo 5', img: 'https://via.placeholder.com/40' }
-  ]
 
   const handleClick = () => {
     setOpen(!open)
   }
 
+  useEffect(() => {
+    const token = localStorage.getItem('authToken') // Token lấy từ hệ thống xác thực của bạn
+
+    const socketUrl = `https://office-nest-ohcid.ondigitalocean.app/ws?token=${token}`
+
+    const socket = new SockJS(socketUrl)
+
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log('Đã kết nối đến WebSocket')
+
+        // Đăng ký nhận thông báo chung
+        stompClient.subscribe('/topic/notifications', (message) => {
+          console.log('Thông báo chung:', message.body)
+        })
+        // Đăng ký nhận thông báo cá nhân
+        stompClient.subscribe(`/topic/requests/${cid}`, (message) => {
+          if (message) {
+            setNumHaventRead((prevNum) => prevNum + 1)
+            console.log('Thông báo cá nhân:', message.body)
+          }
+        })
+      },
+      onStompError: (frame) => {
+        console.error('Lỗi STOMP:', frame.headers['message'])
+      },
+      reconnectDelay: 5000 // Tự động kết nối lại sau 5 giây nếu bị ngắt
+    })
+
+    stompClient.activate()
+
+    return () => {
+      if (stompClient.connected) {
+        stompClient.deactivate()
+      }
+    }
+  }, [])
+
   axiosInstance
     .get('/account')
     .then((response) => {
-      console.log('INFOR')
-      console.log(response)
+      // console.log('INFOR')
+      // console.log(response)
       localStorage.setItem('full_name', response.data.result.fullName)
       setName(response.data.result.login)
       setIdUser(response.data.result.id)
@@ -122,6 +238,14 @@ function Header() {
   const showChangePassword = () => {
     navigate('/change-password')
   }
+
+  const [tabValue, setTabValue] = useState(0)
+
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue)
+  }
+
+  const currentNotifications = tabValue === 0 ? allMessage : haventReadMessage
 
   return (
     <div className={cx('container')}>
@@ -219,7 +343,7 @@ function Header() {
             <li className={cx('item-noti')} onClick={handleClick}>
               <h5 className={cx('header-text-item')}>THÔNG BÁO</h5>
               <IconButton onClick={handleClick}>
-                <Badge badgeContent={notifications.length} color="error">
+                <Badge badgeContent={numHaventRead} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -315,20 +439,83 @@ function Header() {
         sx={{ zIndex: 100000, backgroundColor: 'white', width: '20%', marginLeft: '1060px', borderRadius: '4px' }}
       >
         <Box sx={{ marginTop: '16px' }}>
-          <Typography variant="h6" sx={{color: 'black', marginLeft: '5px'}}>Thông báo</Typography>
+          <Typography variant="h6" sx={{ color: 'black', marginLeft: '5px' }}>
+            Thông báo
+          </Typography>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            textColor="primary"
+            indicatorColor="primary"
+            sx={{ marginLeft: '5px' }}
+          >
+            <Tab
+              label="Tất cả thông báo"
+              sx={{ textTransform: 'none', '&.Mui-selected': { color: 'darkblue', backgroundColor: '#e0f7fa' } }}
+            />
+            <Tab
+              label="Thông báo chưa đọc"
+              sx={{ textTransform: 'none', '&.Mui-selected': { color: 'darkblue', backgroundColor: '#e0f7fa' } }}
+            />
+          </Tabs>
+          {checkAllRead == true && <Button
+            variant="outlined"
+            sx={{
+              margin: '10px',
+              marginLeft: '5px',
+              fontWeight: '660', // Làm chữ đậm
+              display: 'flex',
+              alignItems: 'center'
+            }}
+            onClick={handleItemClick}
+          >
+            Đánh dấu tất cả là đã đọc
+            <CheckIcon sx={{ marginLeft: '8px' }} /> {/* Icon tích bên phải */}
+          </Button>}
           <List sx={{ maxHeight: '300px', overflowY: 'auto' }}>
-            {notifications.slice(0, 5).map((notification) => (
-              <ListItem key={notification.id}>
+            {currentNotifications.map((notification) => (
+              <ListItem key={notification.id} button>
                 <ListItemAvatar>
                   <Avatar alt="Notification" src={notification.img} />
                 </ListItemAvatar>
-                <ListItemText primary={notification.title} secondary={notification.description} sx={{color: 'black'}}/>
+                <ListItemText primary={notification.topic} secondary={notification.message} sx={{ color: 'black' }} />
+                {notification.status == 0 && (
+                  <Box
+                    sx={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: 'green',
+                      marginLeft: 'auto',
+                      alignSelf: 'center'
+                    }}
+                  />
+                )}
               </ListItem>
             ))}
-            {notifications.length > 5 && <Divider sx={{ marginTop: '8px' }} />}
+            {currentNotifications.length > 5 && <Divider sx={{ marginTop: '8px' }} />}
           </List>
         </Box>
       </Slide>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">Đánh dấu tất cả thông báo là đã đọc</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={handleCloseDialog} color="primary">
+            Hủy
+          </MuiButton>
+          <MuiButton onClick={handleConfirmRead} color="error" autoFocus>
+            Đồng ý
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

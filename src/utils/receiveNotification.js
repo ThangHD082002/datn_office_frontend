@@ -19,7 +19,6 @@ const NotificationComponent = () => {
         stompClient.subscribe('/topic/notifications', (message) => {
           console.log('Thông báo chung:', message.body)
         })
-
         // Đăng ký nhận thông báo cá nhân
         stompClient.subscribe('/topic/notifications/1087', (message) => {
           console.log('Thông báo cá nhân:', message.body)
