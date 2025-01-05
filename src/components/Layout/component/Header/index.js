@@ -178,6 +178,7 @@ function Header() {
     }
   }, [])
 
+
   axiosInstance
     .get('/account')
     .then((response) => {

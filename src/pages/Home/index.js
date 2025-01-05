@@ -163,8 +163,8 @@ function Home() {
       else if (searchProvince?.id) url += `&provinceId=${searchProvince.id}`
 
       const response = await axiosInstance.get(url)
-      // console.log('DATA SEARCH')
-      // console.log(response.data.result.content)
+      console.log('DATA SEARCH')
+      console.log(response.data.result.content)
       setResult(response.data.result.content)
     } catch (error) {
       console.error(error)
@@ -360,7 +360,6 @@ function Home() {
                   <div className={cx('room-card-content')}>
                     <h4 className={cx('room-card-heading')}>{r.name}</h4>
                     <p className={cx('room-card-paragraph')}>{r.address}</p>
-                    <p className={cx('room-price')}>$99.00</p>
                     <button className={cx('room-card-btn')}>
                       Book Now
                       <i className={cx('fas fa-angle-double-right btn-arrow')}></i>
