@@ -11,10 +11,24 @@ import FormData from 'form-data'
 import { axiosInstance } from '~/utils/axiosInstance'
 import CustomSnackbar from '~/components/Layout/component/CustomSnackbar'
 import { ArrowUpward } from '@mui/icons-material'
+import { TextField, Stepper, Step, StepLabel, StepContent, Paper } from '@mui/material'
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 const cx = classNames.bind(styles)
-
+const steps = [
+  {
+    label: 'Thực hiện upload chữ kí',
+    description: `Upload chữ kí tại đây`
+  },
+  {
+    label: 'Thực hiện upload khóa cá nhân của bạn',
+    description: 'Upload khóa cá nhân tại đây'
+  },
+  {
+    label: 'Hoàn tất xác thực chữ kí',
+    description: `Nhấn Hoàn thành để hoàn tất`
+  }
+]
 const UserPreviewContract = () => {
   const [pdfFile, setPdfFile] = useState(null) // URL PDF
   const [numPages, setNumPages] = useState(null) // Tổng số trang
@@ -25,7 +39,8 @@ const UserPreviewContract = () => {
   const [signaturePlaced, setSignaturePlaced] = useState(false) // Trạng thái xác định chữ ký đã đặt đúng vị trí chưa
   const [signaturePositionB, setSignaturePositionB] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
   const [signaturePositionA, setSignaturePositionA] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
-
+  const [filePrivateKeyBase64, setFilePrivateKeyBase64] = useState(null)
+   const [fileNamePrivate, setFileNamePrivate] = useState('')
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
   const [dragging, setDragging] = useState(false) // Trạng thái kéo ảnh
@@ -115,25 +130,6 @@ const UserPreviewContract = () => {
   const onLoadSuccess = ({ numPages }) => {
     setNumPages(numPages) // Lưu số trang PDF
   }
-
-  // const goToPreviousPage = () => {
-  //   setPageNumber((prevPageNumber) => Math.max(prevPageNumber - 1, 1)) // Chuyển sang trang trước
-  // }
-
-  // const goToNextPage = () => {
-  //   setPageNumber((prevPageNumber) => Math.min(prevPageNumber + 1, numPages)) // Chuyển sang trang tiếp theo
-  //   if (pageNumber + 1 === numPages) {
-  //     // check role manager thì hiển thị ô kí bên A, client thì hiển thị ô kí bên B
-  //     var role = localStorage.getItem('role');
-  //     if(role.includes("ROLE_USER")){
-  //       document.getElementById('signature-boxA').style.display = 'block';
-  //     } else{
-  //       document.getElementById('signature-boxB').style.display = 'block';
-  //     }
-
-  //     // document.getElementById('signature-boxB').style.display = 'block'
-  //   }
-  // }
 
   const goToNextPage = () => {
     setPageNumber((prevPageNumber) => {
@@ -236,6 +232,300 @@ const UserPreviewContract = () => {
         setSnackbarOpen(true)
       })
   }
+
+  const [activeStep, setActiveStep] = useState(0)
+
+  const handleImageUploadPrivateKey = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setFilePrivateKeyBase64(file)
+      setFileNamePrivate(file.name)
+    } else {
+      setFileNamePrivate('')
+      alert('Vui lòng chọn một tệp hợp lệ!')
+    }
+  }
+
+  const handleNext = () => {
+      if (activeStep == 0) {
+        if (image !== null) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1)
+        } else {
+          setAlertSeverity('error')
+          setAlertText('Vui lòng upload chữ kí của bạn')
+          setSnackbarOpen(true)
+        }
+      } else if (activeStep == 1) {
+        if (filePrivateKeyBase64 !== null) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1)
+        } else {
+          setAlertSeverity('error')
+          setAlertText('Vui lòng upload khóa cá nhân của bạn')
+          setSnackbarOpen(true)
+        }
+      } else {
+        // const readerImage = new FileReader();
+        // const readerPrivateKey = new FileReader();
+  
+        // readerImage.onload = function (e) {
+        //   const imageContent = e.target.result;
+  
+        //   // Hash the image using SHA-256
+        //   const md = forge.md.sha256.create();
+        //   md.update(imageContent);
+  
+        //   const hashHex = md.digest().toHex();
+  
+        //   console.log("hashex")
+        //   console.log(hashHex)
+  
+        //   readerPrivateKey.onload = function (e) {
+        //     const privateKeyBase64 = e.target.result;
+  
+        //     try {
+        //       // Decode the Base64 private key into a byte array
+        //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64);  // Use forge to decode Base64
+  
+        //       // Convert the decoded key into PEM format
+        //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util.encode64(decodedPrivateKey).match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
+  
+        //       // Log the private key to check its structure
+        //       console.log('Formatted Private Key:', formattedPrivateKey);
+  
+        //       // Load the private key using Forge
+        //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
+  
+        //       // Sign the hash
+        //       const signature = privateKey.sign(md);
+  
+        //       // Convert signature to base64
+        //       const signatureBase64 = forge.util.encode64(signature);
+  
+        //       // Prepare data for API request
+        //       const formData = new FormData();
+        //       formData.append('contractId', pid);
+        //       formData.append('signature', signatureBase64);
+  
+        //       // Send API request
+        //       axiosInstance
+        //         .post('/contract/verify-signature-v2', formData)
+        //         .then((response) => {
+        //           console.log('Chữ ký đã được lưu:', response.data);
+        //           setAlertSeverity('success');
+        //           setAlertText('Hoàn tất thực hiện kí xác thực');
+        //           setNavigatePath('/admin/contracts'); // Đường dẫn chuyển hướng sau khi thành công
+        //         })
+        //         .catch((error) => {
+        //           console.log("ERROR VERIFY" + error)
+        //           setAlertSeverity('error');
+        //           setAlertText('Đã xảy ra lỗi trong quá trình kí');
+        //         })
+        //         .finally(function () {
+        //           // always executed
+        //           setSnackbarOpen(true);
+        //         });
+        //     } catch (error) {
+        //       // Handle invalid Base64 or any other error related to decoding
+        //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
+        //       console.error('Lỗi khi giải mã Base64:', error);
+        //     }
+        //   };
+  
+        //   // Make sure the private key is being read as text
+        //   readerPrivateKey.readAsText(filePrivateKeyBase64);
+        // };
+  
+        // // Make sure the image is being read as a data URL
+        // readerImage.readAsDataURL(image);
+  
+        // const readerPrivateKey = new FileReader()
+        // const readerImage = new FileReader()
+  
+        // readerImage.onload = function (e) {
+        //   const imageContent = e.target.result.split(',')[1] // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
+  
+        //   // Decode the Base64 image content into a byte array
+        //   const imageBytes = forge.util.decode64(imageContent)
+  
+        //   // Hash the image bytes using SHA-256
+        //   const md = forge.md.sha256.create()
+        //   md.update(imageBytes)
+  
+        //   // Get the hashed value and convert it to Base64
+        //   const hashBytes = md.digest().bytes()
+        //   const hashBase64 = forge.util.encode64(hashBytes)
+  
+        //   console.log('Hash of the image (Base64):', hashBase64)
+  
+        //   readerPrivateKey.onload = function (e) {
+        //     const privateKeyBase64 = e.target.result
+  
+        //     try {
+        //       // Decode the Base64 private key into a byte array
+        //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64)
+  
+        //       // Convert the decoded key into PEM format
+        //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
+        //         .encode64(decodedPrivateKey)
+        //         .match(/.{1,64}/g)
+        //         .join('\n')}\n-----END PRIVATE KEY-----`
+  
+        //       console.log('Formatted Private Key:', formattedPrivateKey)
+  
+        //       // Load the private key using Forge
+        //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey)
+  
+        //       // Sign the hash
+        //       const signature = privateKey.sign(md)
+  
+        //       // Convert signature to base64
+        //       const signatureBase64 = forge.util.encode64(signature)
+  
+        //       // Prepare data for API request
+        //       const formData = new FormData()
+        //       formData.append('contractId', pid)
+        //       formData.append('signature', signatureBase64)
+  
+        //       // Send API request
+        //       axiosInstance
+        //         .post('/contract/verify-signature-v2', formData)
+        //         .then((response) => {
+        //           console.log('Chữ ký đã được lưu:', response.data)
+        //           setAlertSeverity('success')
+        //           setAlertText('Hoàn tất thực hiện kí xác thực')
+        //           setNavigatePath('/admin/contracts')
+        //         })
+        //         .catch((error) => {
+        //           console.log('ERROR VERIFY', error)
+        //           setAlertSeverity('error')
+        //           setAlertText('Đã xảy ra lỗi trong quá trình kí')
+        //         })
+        //         .finally(function () {
+        //           setSnackbarOpen(true)
+        //         })
+        //     } catch (error) {
+        //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.')
+        //       console.error('Lỗi khi giải mã Base64:', error)
+        //     }
+        //   }
+  
+        //   // Make sure the private key is being read as text
+        //   readerPrivateKey.readAsText(filePrivateKeyBase64)
+        // }
+  
+        // // Make sure the image is being read as a data URL
+        // readerImage.readAsDataURL(image)
+  
+        // const readerPrivateKey = new FileReader();
+        // const readerImage = new FileReader();
+  
+        // readerImage.onload = function (e) {
+        //     const imageContent = e.target.result.split(',')[1]; // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
+  
+        //     // Decode the Base64 image content into a byte array
+        //     const imageBytes = forge.util.decode64(imageContent);
+  
+        //     // Hash the image bytes using SHA-256
+        //     const md = forge.md.sha256.create();
+        //     md.update(imageBytes);
+        //     const hashBytes = md.digest().bytes();
+        //     const hashBase64 = forge.util.encode64(hashBytes);
+  
+        //     console.log('Hash of the image (Base64):', hashBase64);
+  
+        //     readerPrivateKey.onload = function (e) {
+        //         const privateKeyBase64 = e.target.result;
+  
+        //         try {
+        //             // Decode the Base64 private key
+        //             const decodedPrivateKey = forge.util.decode64(privateKeyBase64);
+  
+        //             // Convert the decoded key into PEM format (if needed)
+        //             const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
+        //                 .encode64(decodedPrivateKey)
+        //                 .match(/.{1,64}/g)
+        //                 .join('\n')}\n-----END PRIVATE KEY-----`;
+  
+        //             console.log('Formatted Private Key:', formattedPrivateKey);
+  
+        //             // Load the private key using Forge
+        //             const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
+  
+        //             // Sign the hash (hashBytes)
+        //             const signature = privateKey.sign(forge.md.sha256.create().update(hashBytes));
+  
+        //             // Convert signature to Base64
+        //             const signatureBase64 = forge.util.encode64(signature);
+  
+        //             // Prepare data for API request
+        //             const formData = new FormData();
+        //             formData.append('contractId', pid);
+        //             formData.append('signature', signatureBase64);
+  
+        //             // Send API request
+        //             axiosInstance
+        //                 .post('/contract/verify-signature-v2', formData)
+        //                 .then((response) => {
+        //                     console.log('Chữ ký đã được lưu:', response.data);
+        //                     setAlertSeverity('success');
+        //                     setAlertText('Hoàn tất thực hiện kí xác thực');
+        //                     setNavigatePath('/admin/contracts');
+        //                 })
+        //                 .catch((error) => {
+        //                     console.log('ERROR VERIFY', error);
+        //                     setAlertSeverity('error');
+        //                     setAlertText('Đã xảy ra lỗi trong quá trình kí');
+        //                 })
+        //                 .finally(function () {
+        //                     setSnackbarOpen(true);
+        //                 });
+        //         } catch (error) {
+        //             alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
+        //             console.error('Lỗi khi giải mã Base64:', error);
+        //         }
+        //     };
+  
+        //     // Make sure the private key is being read as text
+        //     readerPrivateKey.readAsText(filePrivateKeyBase64);
+        // };
+  
+        // // Make sure the image is being read as a data URL
+        // readerImage.readAsDataURL(image);
+  
+        const formData = new FormData()
+        formData.set('file-img', image)
+        formData.set('file-key', filePrivateKeyBase64)
+  
+        axiosInstance
+          .post(`/contract/${pid}/verify-signature-v2`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Đảm bảo định dạng gửi là multipart/form-data
+            }
+          })
+          .then((response) => {
+            console.log('Chữ ký đã được lưu:', response.data)
+            setAlertSeverity('success')
+            setAlertText('Hoàn tất thực hiện kí xác thực')
+            setNavigatePath('/admin/contracts')
+          })
+          .catch((error) => {
+            console.log('ERROR VERIFY', error)
+            setAlertSeverity('error')
+            setAlertText(error.response.data.message)
+          })
+          .finally(function () {
+            setSnackbarOpen(true)
+          })
+      }
+    }
+    const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    const handleReset = () => {
+      setActiveStep(0)
+      // setImage(null)
+      // setFilePrivateKeyBase64(null)
+      // setFileNamePrivate('')
+    }
+  
 
   return (
     <div className={cx('container')}>
@@ -371,7 +661,7 @@ const UserPreviewContract = () => {
 
       {/* Phần chữ ký */}
       <div className={cx('signature')}>
-        <div>
+        {/* <div>
           <label htmlFor="image-upload" className={cx('label-upload')}>
             Chọn chữ kí
           </label>
@@ -394,6 +684,77 @@ const UserPreviewContract = () => {
           >
             Lưu
           </Button>
+        </div> */}
+                <div className={cx('login-container')}>
+          <Typography variant="h4" gutterBottom sx={{ marginLeft: '40px', marginTop: '20px', fontWeight: 'bold' }}>
+            Thực hiện theo hướng dẫn để thực hiện xác thực chữ kí
+          </Typography>
+          <Box sx={{ maxWidth: 500, marginLeft: '60px', marginTop: '20px' }}>
+            <Stepper activeStep={activeStep} orientation="vertical">
+              {steps.map((step, index) => (
+                <Step key={step.label}>
+                  <StepLabel
+                    optional={index === steps.length - 1 ? <Typography variant="caption">Last step</Typography> : null}
+                  >
+                    {step.label}
+                  </StepLabel>
+                  <StepContent>
+                    <Typography>{step.description}</Typography>
+                    <Box sx={{ mt: 2, mb: 2 }}>
+                      {index === 0 && (
+                        <div>
+                          <div>
+                            <label htmlFor="image-upload" className={cx('label-upload')}>
+                              Chọn chữ kí
+                            </label>
+                            <input
+                              type="file"
+                              id="image-upload"
+                              name="image"
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      {index === 1 && (
+                        <div>
+                          <div>
+                            <label htmlFor="private-upload" className={cx('label-upload-private')}>
+                              Chọn khóa cá nhân
+                            </label>
+                            <input
+                              type="file"
+                              id="private-upload"
+                              name="private"
+                              onChange={handleImageUploadPrivateKey}
+                            />
+                            {fileNamePrivate && <div className={cx('file-name')}>{fileNamePrivate}</div>}
+                          </div>
+                        </div>
+                      )}
+                    </Box>
+                    <Box sx={{ mb: 2 }}>
+                      <Button variant="contained" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
+                        {index === steps.length - 1 ? 'Hoàn thành' : 'Tiếp tục'}
+                      </Button>
+                      <Button disabled={index === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                        Trở lại
+                      </Button>
+                    </Box>
+                  </StepContent>
+                </Step>
+              ))}
+            </Stepper>
+            {activeStep === steps.length && (
+              <Paper square elevation={0} sx={{ p: 3 }}>
+                <Typography>All steps completed - you&apos;re finished</Typography>
+                <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+                  Reset
+                </Button>
+              </Paper>
+            )}
+          </Box>
         </div>
       </div>
       <CustomSnackbar

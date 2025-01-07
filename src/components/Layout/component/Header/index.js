@@ -239,8 +239,10 @@ function Header() {
         console.log('Request completed.')
       })
     // Xóa dữ liệu người dùng khỏi localStorage/sessionStorage
-    localStorage.removeItem('userToken')
-    localStorage.removeItem('userInfo')
+    localStorage.removeItem("authToken")
+    localStorage.removeItem("fullName")
+    localStorage.removeItem("idUser")
+    localStorage.removeItem("role")
 
     // Thực hiện các logic liên quan đến logout nếu cần
     console.log('User logged out')
@@ -382,7 +384,7 @@ function Header() {
           </ul>
         </Col>
         <Col sm={2} className={cx('info')}>
-          <IconButton sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
+          <IconButton sx={{ display: 'flex', alignItems: 'center', color: 'white' }} onClick={showSetting}>
             <Avatar alt="User Avatar" src={avatar} />
           </IconButton>
           <ButtonU className={cx('user')}>

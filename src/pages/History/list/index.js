@@ -23,6 +23,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useNavigate } from 'react-router-dom'
+import dayjs from 'dayjs';
+
 
 const cx = classNames.bind(styles)
 
@@ -58,8 +60,7 @@ function HistoryList() {
     { id: 'user', name: 'Họ tên', width: 300 },
     { id: 'building', name: 'Tòa nhà', width: 300 },
     { id: 'note', name: 'Ghi chú', width: 300 },
-    { id: 'date', name: 'Ngày yêu cầu', width: 200 },
-    { id: 'time', name: 'Thời gian yêu cầu', width: 170 },
+    { id: 'date', name: 'Thời gian yêu cầu', width: 200 },
     { id: 'status', name: 'Trạng thái', width: 170 },
     { id: 'action', name: 'Hành động', width: 170 }
   ]
@@ -106,6 +107,11 @@ function HistoryList() {
     console.log('New page' + newPage)
     setPage(newPage)
   }
+
+  const formatDateTime = (dateString) => {
+      return dayjs(dateString).format('DD/MM/YYYY HH:mm');
+    };
+  
 
   return (
     <ThemeProvider theme={theme} sx={{marginTop: '100px'}}>
@@ -155,8 +161,7 @@ function HistoryList() {
                     <TableCell className={cx('td')}>{getUserName(row.userDTO)}</TableCell>
                     <TableCell className={cx('td')}>{getBuildingName(row.buildingDTO)}</TableCell>
                     <TableCell className={cx('td')}>{row.note}</TableCell>
-                    <TableCell className={cx('td')}>{row.date}</TableCell>
-                    <TableCell className={cx('td')}>{row.time}</TableCell>
+                    <TableCell className={cx('td')}>{formatDateTime(row.createdDate)}</TableCell>
                     <TableCell className={cx('td')}>
                       <span
                         style={{

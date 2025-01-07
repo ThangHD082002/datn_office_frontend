@@ -169,15 +169,19 @@ function SidebarAdmin({ onToggle }) {
   }
 
   const clickLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('fullName')
+    localStorage.removeItem('idUser')
+    localStorage.removeItem('role')
     // Kiểm tra và xóa 'authToken'
-    if (localStorage.getItem('authToken')) {
-      localStorage.removeItem('authToken')
-    }
+    // if (localStorage.getItem('authToken')) {
+    //   localStorage.removeItem('authToken')
+    // }
 
-    // Kiểm tra và xóa 'role'
-    if (localStorage.getItem('role')) {
-      localStorage.removeItem('role')
-    }
+    // // Kiểm tra và xóa 'role'
+    // if (localStorage.getItem('role')) {
+    //   localStorage.removeItem('role')
+    // }
 
     // Chuyển hướng đến '/login'
     navigate('/login')
@@ -566,7 +570,7 @@ function SidebarAdmin({ onToggle }) {
             {/**
              * User
              * */}
-            <ListItem disablePadding sx={{ display: 'block' }}>
+            {role.includes('ROLE_ADMIN') && <ListItem disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={[
                   {
@@ -595,7 +599,7 @@ function SidebarAdmin({ onToggle }) {
                   sx={[open ? { opacity: 1 } : { opacity: 0 }]}
                 />
               </ListItemButton>
-            </ListItem>
+            </ListItem>}
             {/* Thống kê */}
             <StatisticsMenu open={open} />
             <ListItem disablePadding sx={{ display: 'block' }}>
@@ -673,7 +677,7 @@ function SidebarAdmin({ onToggle }) {
             marginLeft: '0px',
             borderRadius: '4px',
             position: 'absolute',
-            top: '60px',
+            top: '80px',
             right: '80px',
             boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)'
           }}

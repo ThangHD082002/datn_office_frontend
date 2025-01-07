@@ -147,6 +147,8 @@ function RequestManagementList() {
       if (selectedBuilding !== null)
         url += `&buildingId=${selectedBuilding.id}`;
       const response = await axiosInstance.get(url);
+      console.log('request')
+      console.log(response.data.content)
       setData(response.data.content);
       setTotalElements(response.data.totalElements);
       setTotalPages(response.data.totalPages);

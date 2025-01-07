@@ -12,11 +12,10 @@ function HeaderSearch({children}) {
   return (
     <div className={cx("container")}>
       <Header />
-      <h3 className={cx("title-main")}>CHO CHO THUÊ VĂN PHÒNG HÀ NỘI</h3>
+      <h3 className={cx("title-main")}></h3>
       <div className={cx("header-search-title")}>
-        <span className={cx("title-content")}>Trang chủ</span>
-        <div className={cx("vertical")}></div>
-        <span className={cx("title-content")}>Hà Nội</span>
+        <span className={cx("title-content")}></span>
+        <span className={cx("title-content")}></span>
       </div>
       <Search />
       <div className={cx("test")}>{children}</div>

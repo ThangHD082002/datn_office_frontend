@@ -19,6 +19,34 @@
     cursor: pointer;
     color: white;
     padding: 10px 10px;
+    width: 100px;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 12px;
+}
+
+.label-upload-private{
+    display: block;
+    background-color: red;
+    cursor: pointer;
+    color: white;
+    padding: 10px 10px;
+    width: 140px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.login-container {
+    color: black;
+    width: 600px;
+    height: 450px;
+    margin: auto;
+    background-color: white;
+    z-index: 1;
+    font-size: 18px;
+    border-radius: 8px;
+    box-shadow: 10px 10px 5px #ccc;
+}
+
+.file-name{
+    color: black;
 }
