@@ -40,7 +40,7 @@ const UserPreviewContract = () => {
   const [signaturePositionB, setSignaturePositionB] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
   const [signaturePositionA, setSignaturePositionA] = useState({ x: 210, y: 520, width: 350, height: 170 }) // Vị trí và kích thước vùng ký
   const [filePrivateKeyBase64, setFilePrivateKeyBase64] = useState(null)
-   const [fileNamePrivate, setFileNamePrivate] = useState('')
+  const [fileNamePrivate, setFileNamePrivate] = useState('')
   const [image, setImage] = useState(null) // State để lưu ảnh đã upload
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 }) // State để lưu vị trí ảnh
   const [dragging, setDragging] = useState(false) // Trạng thái kéo ảnh
@@ -247,285 +247,284 @@ const UserPreviewContract = () => {
   }
 
   const handleNext = () => {
-      if (activeStep == 0) {
-        if (image !== null) {
-          setActiveStep((prevActiveStep) => prevActiveStep + 1)
-        } else {
-          setAlertSeverity('error')
-          setAlertText('Vui lòng upload chữ kí của bạn')
-          setSnackbarOpen(true)
-        }
-      } else if (activeStep == 1) {
-        if (filePrivateKeyBase64 !== null) {
-          setActiveStep((prevActiveStep) => prevActiveStep + 1)
-        } else {
-          setAlertSeverity('error')
-          setAlertText('Vui lòng upload khóa cá nhân của bạn')
-          setSnackbarOpen(true)
-        }
+    if (activeStep == 0) {
+      if (image !== null) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1)
       } else {
-        // const readerImage = new FileReader();
-        // const readerPrivateKey = new FileReader();
-  
-        // readerImage.onload = function (e) {
-        //   const imageContent = e.target.result;
-  
-        //   // Hash the image using SHA-256
-        //   const md = forge.md.sha256.create();
-        //   md.update(imageContent);
-  
-        //   const hashHex = md.digest().toHex();
-  
-        //   console.log("hashex")
-        //   console.log(hashHex)
-  
-        //   readerPrivateKey.onload = function (e) {
-        //     const privateKeyBase64 = e.target.result;
-  
-        //     try {
-        //       // Decode the Base64 private key into a byte array
-        //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64);  // Use forge to decode Base64
-  
-        //       // Convert the decoded key into PEM format
-        //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util.encode64(decodedPrivateKey).match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
-  
-        //       // Log the private key to check its structure
-        //       console.log('Formatted Private Key:', formattedPrivateKey);
-  
-        //       // Load the private key using Forge
-        //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
-  
-        //       // Sign the hash
-        //       const signature = privateKey.sign(md);
-  
-        //       // Convert signature to base64
-        //       const signatureBase64 = forge.util.encode64(signature);
-  
-        //       // Prepare data for API request
-        //       const formData = new FormData();
-        //       formData.append('contractId', pid);
-        //       formData.append('signature', signatureBase64);
-  
-        //       // Send API request
-        //       axiosInstance
-        //         .post('/contract/verify-signature-v2', formData)
-        //         .then((response) => {
-        //           console.log('Chữ ký đã được lưu:', response.data);
-        //           setAlertSeverity('success');
-        //           setAlertText('Hoàn tất thực hiện kí xác thực');
-        //           setNavigatePath('/admin/contracts'); // Đường dẫn chuyển hướng sau khi thành công
-        //         })
-        //         .catch((error) => {
-        //           console.log("ERROR VERIFY" + error)
-        //           setAlertSeverity('error');
-        //           setAlertText('Đã xảy ra lỗi trong quá trình kí');
-        //         })
-        //         .finally(function () {
-        //           // always executed
-        //           setSnackbarOpen(true);
-        //         });
-        //     } catch (error) {
-        //       // Handle invalid Base64 or any other error related to decoding
-        //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
-        //       console.error('Lỗi khi giải mã Base64:', error);
-        //     }
-        //   };
-  
-        //   // Make sure the private key is being read as text
-        //   readerPrivateKey.readAsText(filePrivateKeyBase64);
-        // };
-  
-        // // Make sure the image is being read as a data URL
-        // readerImage.readAsDataURL(image);
-  
-        // const readerPrivateKey = new FileReader()
-        // const readerImage = new FileReader()
-  
-        // readerImage.onload = function (e) {
-        //   const imageContent = e.target.result.split(',')[1] // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
-  
-        //   // Decode the Base64 image content into a byte array
-        //   const imageBytes = forge.util.decode64(imageContent)
-  
-        //   // Hash the image bytes using SHA-256
-        //   const md = forge.md.sha256.create()
-        //   md.update(imageBytes)
-  
-        //   // Get the hashed value and convert it to Base64
-        //   const hashBytes = md.digest().bytes()
-        //   const hashBase64 = forge.util.encode64(hashBytes)
-  
-        //   console.log('Hash of the image (Base64):', hashBase64)
-  
-        //   readerPrivateKey.onload = function (e) {
-        //     const privateKeyBase64 = e.target.result
-  
-        //     try {
-        //       // Decode the Base64 private key into a byte array
-        //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64)
-  
-        //       // Convert the decoded key into PEM format
-        //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
-        //         .encode64(decodedPrivateKey)
-        //         .match(/.{1,64}/g)
-        //         .join('\n')}\n-----END PRIVATE KEY-----`
-  
-        //       console.log('Formatted Private Key:', formattedPrivateKey)
-  
-        //       // Load the private key using Forge
-        //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey)
-  
-        //       // Sign the hash
-        //       const signature = privateKey.sign(md)
-  
-        //       // Convert signature to base64
-        //       const signatureBase64 = forge.util.encode64(signature)
-  
-        //       // Prepare data for API request
-        //       const formData = new FormData()
-        //       formData.append('contractId', pid)
-        //       formData.append('signature', signatureBase64)
-  
-        //       // Send API request
-        //       axiosInstance
-        //         .post('/contract/verify-signature-v2', formData)
-        //         .then((response) => {
-        //           console.log('Chữ ký đã được lưu:', response.data)
-        //           setAlertSeverity('success')
-        //           setAlertText('Hoàn tất thực hiện kí xác thực')
-        //           setNavigatePath('/admin/contracts')
-        //         })
-        //         .catch((error) => {
-        //           console.log('ERROR VERIFY', error)
-        //           setAlertSeverity('error')
-        //           setAlertText('Đã xảy ra lỗi trong quá trình kí')
-        //         })
-        //         .finally(function () {
-        //           setSnackbarOpen(true)
-        //         })
-        //     } catch (error) {
-        //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.')
-        //       console.error('Lỗi khi giải mã Base64:', error)
-        //     }
-        //   }
-  
-        //   // Make sure the private key is being read as text
-        //   readerPrivateKey.readAsText(filePrivateKeyBase64)
-        // }
-  
-        // // Make sure the image is being read as a data URL
-        // readerImage.readAsDataURL(image)
-  
-        // const readerPrivateKey = new FileReader();
-        // const readerImage = new FileReader();
-  
-        // readerImage.onload = function (e) {
-        //     const imageContent = e.target.result.split(',')[1]; // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
-  
-        //     // Decode the Base64 image content into a byte array
-        //     const imageBytes = forge.util.decode64(imageContent);
-  
-        //     // Hash the image bytes using SHA-256
-        //     const md = forge.md.sha256.create();
-        //     md.update(imageBytes);
-        //     const hashBytes = md.digest().bytes();
-        //     const hashBase64 = forge.util.encode64(hashBytes);
-  
-        //     console.log('Hash of the image (Base64):', hashBase64);
-  
-        //     readerPrivateKey.onload = function (e) {
-        //         const privateKeyBase64 = e.target.result;
-  
-        //         try {
-        //             // Decode the Base64 private key
-        //             const decodedPrivateKey = forge.util.decode64(privateKeyBase64);
-  
-        //             // Convert the decoded key into PEM format (if needed)
-        //             const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
-        //                 .encode64(decodedPrivateKey)
-        //                 .match(/.{1,64}/g)
-        //                 .join('\n')}\n-----END PRIVATE KEY-----`;
-  
-        //             console.log('Formatted Private Key:', formattedPrivateKey);
-  
-        //             // Load the private key using Forge
-        //             const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
-  
-        //             // Sign the hash (hashBytes)
-        //             const signature = privateKey.sign(forge.md.sha256.create().update(hashBytes));
-  
-        //             // Convert signature to Base64
-        //             const signatureBase64 = forge.util.encode64(signature);
-  
-        //             // Prepare data for API request
-        //             const formData = new FormData();
-        //             formData.append('contractId', pid);
-        //             formData.append('signature', signatureBase64);
-  
-        //             // Send API request
-        //             axiosInstance
-        //                 .post('/contract/verify-signature-v2', formData)
-        //                 .then((response) => {
-        //                     console.log('Chữ ký đã được lưu:', response.data);
-        //                     setAlertSeverity('success');
-        //                     setAlertText('Hoàn tất thực hiện kí xác thực');
-        //                     setNavigatePath('/admin/contracts');
-        //                 })
-        //                 .catch((error) => {
-        //                     console.log('ERROR VERIFY', error);
-        //                     setAlertSeverity('error');
-        //                     setAlertText('Đã xảy ra lỗi trong quá trình kí');
-        //                 })
-        //                 .finally(function () {
-        //                     setSnackbarOpen(true);
-        //                 });
-        //         } catch (error) {
-        //             alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
-        //             console.error('Lỗi khi giải mã Base64:', error);
-        //         }
-        //     };
-  
-        //     // Make sure the private key is being read as text
-        //     readerPrivateKey.readAsText(filePrivateKeyBase64);
-        // };
-  
-        // // Make sure the image is being read as a data URL
-        // readerImage.readAsDataURL(image);
-  
-        const formData = new FormData()
-        formData.set('file-img', image)
-        formData.set('file-key', filePrivateKeyBase64)
-  
-        axiosInstance
-          .post(`/contract/${pid}/verify-signature-v2`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data', // Đảm bảo định dạng gửi là multipart/form-data
-            }
-          })
-          .then((response) => {
-            console.log('Chữ ký đã được lưu:', response.data)
-            setAlertSeverity('success')
-            setAlertText('Hoàn tất thực hiện kí xác thực')
-            setNavigatePath('/admin/contracts')
-          })
-          .catch((error) => {
-            console.log('ERROR VERIFY', error)
-            setAlertSeverity('error')
-            setAlertText(error.response.data.message)
-          })
-          .finally(function () {
-            setSnackbarOpen(true)
-          })
+        setAlertSeverity('error')
+        setAlertText('Vui lòng upload chữ kí của bạn')
+        setSnackbarOpen(true)
       }
+    } else if (activeStep == 1) {
+      if (filePrivateKeyBase64 !== null) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      } else {
+        setAlertSeverity('error')
+        setAlertText('Vui lòng upload khóa cá nhân của bạn')
+        setSnackbarOpen(true)
+      }
+    } else {
+      // const readerImage = new FileReader();
+      // const readerPrivateKey = new FileReader();
+
+      // readerImage.onload = function (e) {
+      //   const imageContent = e.target.result;
+
+      //   // Hash the image using SHA-256
+      //   const md = forge.md.sha256.create();
+      //   md.update(imageContent);
+
+      //   const hashHex = md.digest().toHex();
+
+      //   console.log("hashex")
+      //   console.log(hashHex)
+
+      //   readerPrivateKey.onload = function (e) {
+      //     const privateKeyBase64 = e.target.result;
+
+      //     try {
+      //       // Decode the Base64 private key into a byte array
+      //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64);  // Use forge to decode Base64
+
+      //       // Convert the decoded key into PEM format
+      //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util.encode64(decodedPrivateKey).match(/.{1,64}/g).join('\n')}\n-----END PRIVATE KEY-----`;
+
+      //       // Log the private key to check its structure
+      //       console.log('Formatted Private Key:', formattedPrivateKey);
+
+      //       // Load the private key using Forge
+      //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
+
+      //       // Sign the hash
+      //       const signature = privateKey.sign(md);
+
+      //       // Convert signature to base64
+      //       const signatureBase64 = forge.util.encode64(signature);
+
+      //       // Prepare data for API request
+      //       const formData = new FormData();
+      //       formData.append('contractId', pid);
+      //       formData.append('signature', signatureBase64);
+
+      //       // Send API request
+      //       axiosInstance
+      //         .post('/contract/verify-signature-v2', formData)
+      //         .then((response) => {
+      //           console.log('Chữ ký đã được lưu:', response.data);
+      //           setAlertSeverity('success');
+      //           setAlertText('Hoàn tất thực hiện kí xác thực');
+      //           setNavigatePath('/admin/contracts'); // Đường dẫn chuyển hướng sau khi thành công
+      //         })
+      //         .catch((error) => {
+      //           console.log("ERROR VERIFY" + error)
+      //           setAlertSeverity('error');
+      //           setAlertText('Đã xảy ra lỗi trong quá trình kí');
+      //         })
+      //         .finally(function () {
+      //           // always executed
+      //           setSnackbarOpen(true);
+      //         });
+      //     } catch (error) {
+      //       // Handle invalid Base64 or any other error related to decoding
+      //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
+      //       console.error('Lỗi khi giải mã Base64:', error);
+      //     }
+      //   };
+
+      //   // Make sure the private key is being read as text
+      //   readerPrivateKey.readAsText(filePrivateKeyBase64);
+      // };
+
+      // // Make sure the image is being read as a data URL
+      // readerImage.readAsDataURL(image);
+
+      // const readerPrivateKey = new FileReader()
+      // const readerImage = new FileReader()
+
+      // readerImage.onload = function (e) {
+      //   const imageContent = e.target.result.split(',')[1] // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
+
+      //   // Decode the Base64 image content into a byte array
+      //   const imageBytes = forge.util.decode64(imageContent)
+
+      //   // Hash the image bytes using SHA-256
+      //   const md = forge.md.sha256.create()
+      //   md.update(imageBytes)
+
+      //   // Get the hashed value and convert it to Base64
+      //   const hashBytes = md.digest().bytes()
+      //   const hashBase64 = forge.util.encode64(hashBytes)
+
+      //   console.log('Hash of the image (Base64):', hashBase64)
+
+      //   readerPrivateKey.onload = function (e) {
+      //     const privateKeyBase64 = e.target.result
+
+      //     try {
+      //       // Decode the Base64 private key into a byte array
+      //       const decodedPrivateKey = forge.util.decode64(privateKeyBase64)
+
+      //       // Convert the decoded key into PEM format
+      //       const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
+      //         .encode64(decodedPrivateKey)
+      //         .match(/.{1,64}/g)
+      //         .join('\n')}\n-----END PRIVATE KEY-----`
+
+      //       console.log('Formatted Private Key:', formattedPrivateKey)
+
+      //       // Load the private key using Forge
+      //       const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey)
+
+      //       // Sign the hash
+      //       const signature = privateKey.sign(md)
+
+      //       // Convert signature to base64
+      //       const signatureBase64 = forge.util.encode64(signature)
+
+      //       // Prepare data for API request
+      //       const formData = new FormData()
+      //       formData.append('contractId', pid)
+      //       formData.append('signature', signatureBase64)
+
+      //       // Send API request
+      //       axiosInstance
+      //         .post('/contract/verify-signature-v2', formData)
+      //         .then((response) => {
+      //           console.log('Chữ ký đã được lưu:', response.data)
+      //           setAlertSeverity('success')
+      //           setAlertText('Hoàn tất thực hiện kí xác thực')
+      //           setNavigatePath('/admin/contracts')
+      //         })
+      //         .catch((error) => {
+      //           console.log('ERROR VERIFY', error)
+      //           setAlertSeverity('error')
+      //           setAlertText('Đã xảy ra lỗi trong quá trình kí')
+      //         })
+      //         .finally(function () {
+      //           setSnackbarOpen(true)
+      //         })
+      //     } catch (error) {
+      //       alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.')
+      //       console.error('Lỗi khi giải mã Base64:', error)
+      //     }
+      //   }
+
+      //   // Make sure the private key is being read as text
+      //   readerPrivateKey.readAsText(filePrivateKeyBase64)
+      // }
+
+      // // Make sure the image is being read as a data URL
+      // readerImage.readAsDataURL(image)
+
+      // const readerPrivateKey = new FileReader();
+      // const readerImage = new FileReader();
+
+      // readerImage.onload = function (e) {
+      //     const imageContent = e.target.result.split(',')[1]; // Loại bỏ prefix của Data URL để chỉ lấy phần dữ liệu Base64
+
+      //     // Decode the Base64 image content into a byte array
+      //     const imageBytes = forge.util.decode64(imageContent);
+
+      //     // Hash the image bytes using SHA-256
+      //     const md = forge.md.sha256.create();
+      //     md.update(imageBytes);
+      //     const hashBytes = md.digest().bytes();
+      //     const hashBase64 = forge.util.encode64(hashBytes);
+
+      //     console.log('Hash of the image (Base64):', hashBase64);
+
+      //     readerPrivateKey.onload = function (e) {
+      //         const privateKeyBase64 = e.target.result;
+
+      //         try {
+      //             // Decode the Base64 private key
+      //             const decodedPrivateKey = forge.util.decode64(privateKeyBase64);
+
+      //             // Convert the decoded key into PEM format (if needed)
+      //             const formattedPrivateKey = `-----BEGIN PRIVATE KEY-----\n${forge.util
+      //                 .encode64(decodedPrivateKey)
+      //                 .match(/.{1,64}/g)
+      //                 .join('\n')}\n-----END PRIVATE KEY-----`;
+
+      //             console.log('Formatted Private Key:', formattedPrivateKey);
+
+      //             // Load the private key using Forge
+      //             const privateKey = forge.pki.privateKeyFromPem(formattedPrivateKey);
+
+      //             // Sign the hash (hashBytes)
+      //             const signature = privateKey.sign(forge.md.sha256.create().update(hashBytes));
+
+      //             // Convert signature to Base64
+      //             const signatureBase64 = forge.util.encode64(signature);
+
+      //             // Prepare data for API request
+      //             const formData = new FormData();
+      //             formData.append('contractId', pid);
+      //             formData.append('signature', signatureBase64);
+
+      //             // Send API request
+      //             axiosInstance
+      //                 .post('/contract/verify-signature-v2', formData)
+      //                 .then((response) => {
+      //                     console.log('Chữ ký đã được lưu:', response.data);
+      //                     setAlertSeverity('success');
+      //                     setAlertText('Hoàn tất thực hiện kí xác thực');
+      //                     setNavigatePath('/admin/contracts');
+      //                 })
+      //                 .catch((error) => {
+      //                     console.log('ERROR VERIFY', error);
+      //                     setAlertSeverity('error');
+      //                     setAlertText('Đã xảy ra lỗi trong quá trình kí');
+      //                 })
+      //                 .finally(function () {
+      //                     setSnackbarOpen(true);
+      //                 });
+      //         } catch (error) {
+      //             alert('Đã xảy ra lỗi khi giải mã Base64 của private key. Vui lòng kiểm tra lại file.');
+      //             console.error('Lỗi khi giải mã Base64:', error);
+      //         }
+      //     };
+
+      //     // Make sure the private key is being read as text
+      //     readerPrivateKey.readAsText(filePrivateKeyBase64);
+      // };
+
+      // // Make sure the image is being read as a data URL
+      // readerImage.readAsDataURL(image);
+
+      const formData = new FormData()
+      formData.set('file-img', image)
+      formData.set('file-key', filePrivateKeyBase64)
+
+      axiosInstance
+        .post(`/contract/${pid}/verify-signature-v2`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data' // Đảm bảo định dạng gửi là multipart/form-data
+          }
+        })
+        .then((response) => {
+          console.log('Chữ ký đã được lưu:', response.data)
+          setAlertSeverity('success')
+          setAlertText('Hoàn tất thực hiện kí xác thực')
+          setNavigatePath('/user-contract')
+        })
+        .catch((error) => {
+          console.log('ERROR VERIFY', error)
+          setAlertSeverity('error')
+          setAlertText(error.response.data.message)
+        })
+        .finally(function () {
+          setSnackbarOpen(true)
+        })
     }
-    const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
-    const handleReset = () => {
-      setActiveStep(0)
-      // setImage(null)
-      // setFilePrivateKeyBase64(null)
-      // setFileNamePrivate('')
-    }
-  
+  }
+  const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  const handleReset = () => {
+    setActiveStep(0)
+    // setImage(null)
+    // setFilePrivateKeyBase64(null)
+    // setFileNamePrivate('')
+  }
 
   return (
     <div className={cx('container')}>
@@ -685,7 +684,7 @@ const UserPreviewContract = () => {
             Lưu
           </Button>
         </div> */}
-                <div className={cx('login-container')}>
+        <div className={cx('login-container')}>
           <Typography variant="h4" gutterBottom sx={{ marginLeft: '40px', marginTop: '20px', fontWeight: 'bold' }}>
             Thực hiện theo hướng dẫn để thực hiện xác thực chữ kí
           </Typography>
