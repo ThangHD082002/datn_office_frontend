@@ -65,18 +65,21 @@ function HistoryList() {
     { id: 'action', name: 'Hành động', width: 170 }
   ]
 
-  const getData = async (pageNumber) => {
+  const getData = async () => {
     setLoading(true)
     var fullName = localStorage.getItem('full_name');
     try {
-      const response = await axiosInstance.get(`/requests?page=${pageNumber - 1}`)
+      const response = await axiosInstance.get(`/requests`)
       console.log("HISTORY");
       if(Array.isArray(response.data.content)){
         const filteredItems = response.data.content.filter(item => item.userDTO.fullName == fullName);
         setData(filteredItems); // Cập nhật mảng b
+        setTotalPages(Math.ceil(filteredItems.length/5)); //
+        setPage(1);
+        setDataNew(filteredItems.slice(0,5))
       }
       // setData(response.data.content)
-      setTotalPages(response.data.totalPages)
+      // setTotalPages(response.data.totalPages)
       console.log(response)
     } catch (error) {
       console.error(error)
@@ -100,8 +103,14 @@ function HistoryList() {
   }
 
   useEffect(() => {
-    getData(page)
-  }, [page])
+    getData()
+  }, [])
+
+  useEffect(() => {
+      const startIndex = (page - 1) * 5
+      const endIndex = page * 5
+      setDataNew(data.slice(startIndex, endIndex))
+    }, [page, data])
 
   const handlePageChange = (event, newPage) => {
     console.log('New page' + newPage)
@@ -155,7 +164,7 @@ function HistoryList() {
                 ))}
               </TableHead>
               <TableBody>
-                {data.map((row) => (
+                {dataNew.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell className={cx('td')}>{row.id}</TableCell>
                     <TableCell className={cx('td')}>{getUserName(row.userDTO)}</TableCell>
@@ -196,7 +205,8 @@ function HistoryList() {
               justifyContent: 'center'
             }}
           >
-            <Pagination count={totalPages} page={page} onChange={handlePageChange} disabled={loading} />
+            {/* <Pagination count={totalPages} page={page} onChange={handlePageChange} disabled={loading} /> */}
+            <Pagination count={totalPages} page={page} onChange={(e, value) => setPage(value)} color="primary" />
           </div>
         </Paper>
       </div>
