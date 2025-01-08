@@ -23,8 +23,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useNavigate } from 'react-router-dom'
-import dayjs from 'dayjs';
-
+import dayjs from 'dayjs'
 
 const cx = classNames.bind(styles)
 
@@ -67,13 +66,14 @@ function HistoryList() {
 
   const getData = async (pageNumber) => {
     setLoading(true)
-    var fullName = localStorage.getItem('full_name');
+    let userId = localStorage.getItem('id_user')
+    var fullName = localStorage.getItem('full_name')
     try {
-      const response = await axiosInstance.get(`/requests?page=${pageNumber - 1}`)
-      console.log("HISTORY");
-      if(Array.isArray(response.data.content)){
-        const filteredItems = response.data.content.filter(item => item.userDTO.fullName == fullName);
-        setData(filteredItems); // Cập nhật mảng b
+      const response = await axiosInstance.get(`/requests?userId=${userId}&page=${pageNumber - 1}`)
+      console.log('HISTORY')
+      if (Array.isArray(response.data.content)) {
+        const filteredItems = response.data.content.filter((item) => item.userDTO.fullName == fullName)
+        setData(filteredItems) // Cập nhật mảng b
       }
       // setData(response.data.content)
       setTotalPages(response.data.totalPages)
@@ -94,9 +94,9 @@ function HistoryList() {
 
   const getBuildingName = (building) => {
     if (building) {
-      return building.name;
+      return building.name
     }
-    return 'Không xác định';
+    return 'Không xác định'
   }
 
   useEffect(() => {
@@ -109,14 +109,13 @@ function HistoryList() {
   }
 
   const formatDateTime = (dateString) => {
-      return dayjs(dateString).format('DD/MM/YYYY HH:mm');
-    };
-  
+    return dayjs(dateString).format('DD/MM/YYYY HH:mm')
+  }
 
   return (
-    <ThemeProvider theme={theme} sx={{marginTop: '100px'}}>
+    <ThemeProvider theme={theme} sx={{ marginTop: '100px' }}>
       <div>
-        <Typography variant="h2" gutterBottom sx={{color: 'black'}}>
+        <Typography variant="h2" gutterBottom sx={{ color: 'black' }}>
           Lịch sử yêu cầu
         </Typography>
         <Divider />
@@ -126,7 +125,7 @@ function HistoryList() {
           </Button>
         </div> */}
 
-        <Paper sx={{ width: '100%', overflow: 'hidden', position: 'relative', marginTop: '20px'}}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', position: 'relative', marginTop: '20px' }}>
           {loading && (
             <Box
               sx={{
@@ -176,8 +175,11 @@ function HistoryList() {
                       </span>
                     </TableCell>
                     <TableCell className={cx('td')}>
-                      <IconButton color="primary" title="Chi tiết"
-                        onClick={() => navigate(`/user/history-detail/${row.id}`)}>
+                      <IconButton
+                        color="primary"
+                        title="Chi tiết"
+                        onClick={() => navigate(`/user/history-detail/${row.id}`)}
+                      >
                         <VisibilityIcon />
                       </IconButton>
                       <IconButton color="error" title="Xoá">
