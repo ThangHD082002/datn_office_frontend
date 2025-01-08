@@ -88,6 +88,9 @@ function HistoryList() {
     }
   }
 
+  console.log("DATANEW")
+  console.log(dataNew)
+
   const getUserName = (user) => {
     if (user && user.fullName) {
       return `${user.fullName}`
