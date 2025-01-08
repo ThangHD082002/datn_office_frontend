@@ -32,11 +32,13 @@ const cx = classNames.bind(styles)
 function Home() {
   const [result, setResult] = useState([])
   const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
   const itemsPerPage = 4
 
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [keyword, setKeyword] = useState('')
   const [searchProvince, setSearchProvince] = useState(null)
   const [searchDistrict, setSearchDistrict] = useState(null)
@@ -55,30 +57,22 @@ function Home() {
   }
 
   useEffect(() => {
-    axiosInstance
-      .get('/buildings')
-      .then(function (response) {
-        // handle success
-        // console.log('LIST BUILDING')
-        // console.log(response)
-        setResult(response.data.result.content)
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error)
-        if (error.response && error.response.status === 401) {
-          // Chuyển đến trang /error-token nếu mã lỗi là 401 Unauthorized
-          window.location.href = '/error-token'
-        }
-      })
-  }, [])
+    fetchProvinces()
+    getData(page)
+  }, [page])
 
-  const handleChangePage = (event, value) => {
-    setPage(value)
+  // const handleChangePage = (event, value) => {
+  //   setPage(value)
+  // }
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage)
   }
 
-  const startIndex = (page - 1) * itemsPerPage
-  const paginatedResult = result.slice(startIndex, startIndex + itemsPerPage)
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false)
+  }
+
   const inputStyle = {
     width: '200px',
     '& .MuiInputBase-input': {
@@ -102,7 +96,8 @@ function Home() {
   }
 
   const handleSearch = () => {
-    getData()
+    setPage(1) // Reset page to 1 when searching
+    getData(page)
   }
 
   // Update handleReset
@@ -114,7 +109,8 @@ function Home() {
     setProvinces([])
     setDistricts([])
     setWards([])
-    getData()
+    setPage(1)
+    getData(page)
   }
 
   // Add fetch functions
@@ -126,11 +122,6 @@ function Home() {
       console.error('Error fetching provinces:', error)
     }
   }
-
-  useEffect(() => {
-    fetchProvinces() // Fetch provinces when the component mounts
-    getData() // Fetch data when the component mounts
-  }, [])
 
   const fetchDistricts = async (provinceId) => {
     try {
@@ -152,10 +143,11 @@ function Home() {
     }
   }
 
-  const getData = async () => {
+  const getData = async (selectedPage) => {
+    console.log('Current page: ' + selectedPage)
     setLoading(true)
     try {
-      let url = `/buildings?page=0`
+      let url = `/buildings?size=4&page=${selectedPage - 1}`
       // Add query params
       if (keyword !== null && keyword.trim() !== '') url += `&keyword=${keyword}`
       if (searchWard?.id) url += `&wardId=${searchWard.id}`
@@ -165,6 +157,7 @@ function Home() {
       const response = await axiosInstance.get(url)
       console.log('DATA SEARCH')
       console.log(response.data.result.content)
+      setTotalPages(response.data.result.totalPages)
       setResult(response.data.result.content)
     } catch (error) {
       console.error(error)
@@ -341,7 +334,7 @@ function Home() {
       </section>
 
       <section className={cx('rooms')}>
-        <div className={cx('common-header')}> 
+        <div className={cx('common-header')}>
           <h1 className={cx('common-heading')}>
             {searchProvince !== null ? 'Các tòa nhà tại ' + searchProvince.name : 'Danh sách tất cả các tòa nhà'}
           </h1>
@@ -352,8 +345,8 @@ function Home() {
         </div>
 
         <div className={cx('rooms-cards-wrapper')}>
-          {paginatedResult && Array.isArray(paginatedResult) && paginatedResult.length > 0 ? (
-            paginatedResult.map((r) => (
+          {result && Array.isArray(result) && result.length > 0 ? (
+            result.map((r) => (
               <div key={r.id} className={cx('room-card')}>
                 <a href={`/detail-room/${r.id}`} className={cx('item')}>
                   <img src={r.images[0].url} className={cx('room-img')} alt="Room" />
@@ -375,15 +368,14 @@ function Home() {
       </section>
 
       <Pagination
-        count={Math.ceil(result.length / itemsPerPage)}
+        count={totalPages}
         page={page}
-        onChange={handleChangePage}
+        onChange={handlePageChange}
         color="primary"
         sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}
       />
 
-      <div className={cx('rooms-btn-wrapper')}>
-      </div>
+      <div className={cx('rooms-btn-wrapper')}></div>
 
       <IconButton
         onClick={handleScrollToTop}
