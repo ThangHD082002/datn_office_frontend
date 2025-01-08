@@ -50,7 +50,6 @@ function HistoryList() {
 
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
-  const [dataNew, setDataNew] = useState([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
 
@@ -72,11 +71,20 @@ function HistoryList() {
       const response = await axiosInstance.get(`/requests?userId=${userId}&page=${pageNumber - 1}`)
       console.log('HISTORY')
       if (Array.isArray(response.data.content)) {
-        const filteredItems = response.data.content.filter((item) => item.userDTO.fullName == fullName)
-        setData(filteredItems) // Cập nhật mảng b
+        const items = response.data.content
+        setData(items)
+        setTotalPages(response.data.totalPages)
+        // const response = await axiosInstance.get(`/requests`)
+        // console.log("HISTORY");
+        // if(Array.isArray(response.data.content)){
+        //   const filteredItems = response.data.content.filter(item => item.userDTO.fullName == fullName);
+        //   setData(filteredItems); // Cập nhật mảng b
+        //   setTotalPages(Math.ceil(filteredItems.length/5)); //
+        //   setPage(1);
+        //   setDataNew(filteredItems.slice(0,5))
       }
       // setData(response.data.content)
-      setTotalPages(response.data.totalPages)
+      // setTotalPages(response.data.totalPages)
       console.log(response)
     } catch (error) {
       console.error(error)
@@ -104,8 +112,9 @@ function HistoryList() {
   }, [page])
 
   const handlePageChange = (event, newPage) => {
-    console.log('New page' + newPage)
+    console.log('New page ' + newPage)
     setPage(newPage)
+    // getData(newPage)
   }
 
   const formatDateTime = (dateString) => {
@@ -198,7 +207,8 @@ function HistoryList() {
               justifyContent: 'center'
             }}
           >
-            <Pagination count={totalPages} page={page} onChange={handlePageChange} disabled={loading} />
+            {/* <Pagination count={totalPages} page={page} onChange={handlePageChange} disabled={loading} /> */}
+            <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
           </div>
         </Paper>
       </div>
